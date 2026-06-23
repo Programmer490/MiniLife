@@ -5,7 +5,7 @@
 
 
 //define package
-//package com.minilifeteam.minilife;
+package com.minilifeteam.minilife;
 
 //import scanner, stuff for debugging
 import java.util.Scanner;
@@ -46,5 +46,9 @@ public class MiniLifeMain {
         System.out.println("---------------------------------");
         Date currentDate = new Date();
         logger.info("##DEBUG## - Debug Logging Enabled. Current date and time is " + currentDate);
+            
+        //close the input scanner
+        input.close();
+        logger.info("##DEBUG## - Scanner Closed");
         }
 }
