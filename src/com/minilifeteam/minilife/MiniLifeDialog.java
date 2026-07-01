@@ -306,7 +306,7 @@ public class MiniLifeDialog {
             return citiesList.indexOf(searchTerm);
         }
         else if (arrayID == 11){
-            return citiesList.indexOf(searchTerm);
+            return companiesList.indexOf(searchTerm);
         }
         else {
             return 0;
