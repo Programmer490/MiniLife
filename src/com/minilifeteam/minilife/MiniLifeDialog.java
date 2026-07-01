@@ -1,3 +1,10 @@
+//MiniLife Dialog Module
+//Version 1.0-InDev1 
+//Primary Developer(s) on this file: Celeste Manguso
+//Secondary Developer(s) on this file: 
+//This code licensed under the GNU GPL Version 3.0 license. See LICENSE file for more information.
+
+
 package com.minilifeteam.minilife;
 
 import java.util.Arrays;
