@@ -3,6 +3,7 @@
 //Primary Developer(s) on this file: Celeste Manguso
 //Secondary Developer(s) on this file: 
 //This code licensed under the GNU GPL Version 3.0 license. See LICENSE file for more information.
+//No Artificial Intelligence tools were used in the creation of this source code file.
 
 
 package com.minilifeteam.minilife;

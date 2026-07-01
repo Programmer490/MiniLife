@@ -1,8 +1,10 @@
 //MiniLife main program file
 //version 0.0-InDev1 (Jun 23, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
+//No Artificial Intelligence tools were used in the creation of this source code file.
 //Primary Developer(s) on this file: Celeste Manguso
 //Secondary Developer(s) on this file: 
+
 
 
 //define package
