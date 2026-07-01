@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.Date;
 import java.util.InputMismatchException;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class MiniLifeMain {
@@ -71,7 +72,8 @@ public class MiniLifeMain {
             while (doRunDebugMenu == 1){
                 System.out.println("##DEBUG##--Please enter the function you would like to run--##DEBUG##");
                 System.out.println("1: Search Dialog Module");
-                System.out.println("2: Exit Debug Menu");
+                System.out.println("2: Test Dialog Module");
+                System.out.println("3: Exit Debug Menu");
                 debugInput = input.next().trim().toLowerCase();
 
                 if (debugInput.charAt(0) == '1'){
@@ -111,6 +113,21 @@ public class MiniLifeMain {
 
                 }
                 else if (debugInput.charAt(0) == '2'){
+                    logger.info("##DEBUG## Testing Dialog Module. Dialog Module will print a random item from each array");
+                    System.out.println(dialogModule.getDialogWithID(ThreadLocalRandom.current().nextInt(0, 53 + 1)));
+                    System.out.println(dialogModule.getMaleNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1)));
+                    System.out.println(dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)));
+                    System.out.println(dialogModule.getNBNameWithID(ThreadLocalRandom.current().nextInt(0, 78 + 1)));
+                    System.out.println(dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1)));
+                    System.out.println(dialogModule.getLowJobNameWithID(ThreadLocalRandom.current().nextInt(0, 73 + 1)));
+                    System.out.println(dialogModule.getHighJobNameWithID(ThreadLocalRandom.current().nextInt(0, 61 + 1)));
+                    System.out.println(dialogModule.getHouseWithID(ThreadLocalRandom.current().nextInt(0, 16 + 1)));
+                    System.out.println(dialogModule.getCarsWithID(ThreadLocalRandom.current().nextInt(0, 82 + 1)));
+                    System.out.println(dialogModule.getCityNameWithID(ThreadLocalRandom.current().nextInt(0, 85 + 1)));
+                    System.out.println(dialogModule.getCompanyNameWithID(ThreadLocalRandom.current().nextInt(0, 55 + 1)));
+
+                }
+                else if (debugInput.charAt(0) == '3'){
                     doRunDebugMenu = 0;
                     runDebugConsole = 0;
                     break;
