@@ -144,6 +144,13 @@ public class MiniLifeMain {
         logger.info("##DEBUG## - Debug Logging Enabled. Current date and time is " + currentDate);
 
 
+        //load the main menu
+        System.out.println(dialogModule.getDialogWithID(0) + "!");
+        System.out.println("Main Menu: ");
+        System.out.println("1: New Game");
+        System.out.println("2: Exit Game");
+
+
 
 
             
