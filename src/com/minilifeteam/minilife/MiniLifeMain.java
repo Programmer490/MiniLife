@@ -1,5 +1,5 @@
 //MiniLife main program file
-//version 0.0-InDev1 (Jun 23, 2026)
+//version 0.2-InDev1 (Jun 23, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
 //No Artificial Intelligence tools were used in the creation of this source code file.
 //Primary Developer(s) on this file: Celeste Manguso
@@ -18,10 +18,11 @@ import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.concurrent.ThreadLocalRandom;
 
-
 public class MiniLifeMain {
     //create debug logger
     private static final Logger logger = Logger.getLogger(MiniLifeMain.class.getName());
+
+   public static Boolean doRunMainMenu = true;
 
         public static void main(String[] args){
         //enable debug messages if they were enabled on the command line (for debugging builds, comment this out for production builds before compiling)
@@ -137,25 +138,114 @@ public class MiniLifeMain {
     }
 
         //introduce the program
-        System.out.println("MiniLife Version 0.0_InDev1");
+        System.out.println("MiniLife (Demo Version)");
+        System.out.println(dialogModule.getVersionString());
         System.out.println("By: The MiniLife Team");
         System.out.println("---------------------------------");
         Date currentDate = new Date();
         logger.info("##DEBUG## - Debug Logging Enabled. Current date and time is " + currentDate);
 
 
-        //load the main menu
-        System.out.println(dialogModule.getDialogWithID(0) + "!");
-        System.out.println("Main Menu: ");
-        System.out.println("1: New Game");
-        System.out.println("2: Exit Game");
+        //display the main menu
+        while (MiniLifeMain.doRunMainMenu == true){
+        String getMenuChoice = displayMainMenu(input, dialogModule);
 
-
-
-
+        if (getMenuChoice.contentEquals("NewGame")){
+            logger.info("##DEBUG## - user chose to launch a new game.");
+            MiniLifeMain.doRunMainMenu = false;
+            playNewGame(input, dialogModule);
+        }
+        else if (getMenuChoice.contentEquals("loadSaveGame")){
+            logger.info("##DEBUG## - user chose to load save game");
+            System.out.println("Error! Save Game functionality is not currently available in this version!");
+            MiniLifeMain.doRunMainMenu = true;
+            continue;
+        }
+        else if (getMenuChoice.contentEquals("SettingsMenu")){
+            logger.info("##DEBUG## - user chose to load the settings menu.");
+            MiniLifeMain.doRunMainMenu = false;
+            displaySettingsMenu(input, dialogModule);
+        }
+        else if (getMenuChoice.contentEquals("ExitProgram")){
+            logger.info("##DEBUG## - user chose to exit program. exiting...");
+            MiniLifeMain.doRunMainMenu = false;
+            exitGame(input);
+        }
+        else if (getMenuChoice.contentEquals("ExitedLoop")){
+            logger.info("##DEBUG## - Error Detected! Main Menu loop exited incorrectly. restarting loop.");
+            MiniLifeMain.doRunMainMenu = true;
+            continue;
+        }
+    }
             
         //close the input scanner
         input.close();
         logger.info("##DEBUG## - Scanner Closed");
+        }
+
+
+        public static String displayMainMenu (Scanner input, MiniLifeDialog dialogModule){
+            String mainMenuChoice = "-1";
+            System.out.println(dialogModule.getDialogWithID(0) + "!");
+            System.out.println("Main Menu: ");
+            System.out.println("1: New Game");
+            System.out.println("2: Settings Menu");
+            System.out.println("0: Exit Game");
+            while (MiniLifeMain.doRunMainMenu == true){
+                try{
+                    mainMenuChoice = input.next().trim().toLowerCase();} catch (InputMismatchException e){
+                    logger.info("##DEBUG## - InputMismatchException caught. Non-integer entered in mainMenuChoice. fixing mistake and looping");
+                    System.out.println("Error! Letter or special character entered. Please enter an integer.");
+                    mainMenuChoice = "-1";
+                    input.next();
+                    continue;
+                }
+                if (Character.isDigit(mainMenuChoice.charAt(0))){
+                    if (mainMenuChoice.charAt(0) == '1'){
+                        //returns "NewGame", indicating a new game should be started.
+                        MiniLifeMain.doRunMainMenu = false;
+                        return "NewGame";
+                    }
+                    else if (mainMenuChoice.charAt(0) == '2'){
+                        //returns "SettingsMenu", indicating the settings menu should be displayed.
+                        MiniLifeMain.doRunMainMenu = false;
+                        return "SettingsMenu";
+                    }
+                    else if (mainMenuChoice.charAt(0) == '3'){
+                        //returns "loadSaveGame", indicating a saved game should be loaded. not currently available.
+                        MiniLifeMain.doRunMainMenu = false;
+                        return "loadSaveGame";
+                    }
+                    else if (mainMenuChoice.charAt(0) == '0'){
+                        //returns "ExitProgram", indicating the program should be exited.
+                        MiniLifeMain.doRunMainMenu = false;
+                        return "ExitProgram";
+                    }
+                    else {
+                        System.out.println("Error! Invalid input. Please select a correct choice.");
+                        continue;
+                    }
+                }
+            }
+
+            MiniLifeMain.doRunMainMenu = false;
+            return "ExitedLoop";
+        }
+
+        public static void displaySettingsMenu(Scanner input, MiniLifeDialog dialogModule){
+            System.out.println("SettingsMenu");
+        }
+
+        public static void playNewGame(Scanner input, MiniLifeDialog dialogModule /*MiniLifeCharacter characterModule, MiniLifeMinigame, minigame1, etc... */){
+            System.out.println("NewGame");
+        }
+
+        public static void exitGame (Scanner input){
+            //close the scanner
+            input.close();
+            logger.info("##DEBUG## - Scanner successfully closed, exiting program...");
+            
+            //exit the game
+            System.exit(0);
         }
 }
