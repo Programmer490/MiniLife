@@ -1,5 +1,5 @@
 //MiniLife Dialog Module
-//Version 1.1-InDev1 
+//Version 2.0-InDev1 
 //Primary Developer(s) on this file: Celeste Manguso
 //Secondary Developer(s) on this file: 
 //This code licensed under the GNU GPL Version 3.0 license. See LICENSE file for more information.
@@ -164,6 +164,33 @@ public class MiniLifeDialog {
             
         };
 
+        String[] wordGameArray = {"Dairy", "Hairy", "Carry", "Zappy", "Nappy", "Viper", "Harpy", "Altar", "Artsy", "Apron", "Alloy", "Aware", "Badly", "Agile", "Abbey", "Admin", "Audio",
+        "Anger", "Bathe", "Badge", "Bliss", "Blaze", "Bleak", "Bench", "Below", "Befit", "Bawdy", "Block", "Blurt", "Blunt", "Beset", "Bloke", "Blond", "Boozy", "Borax", "Bongo", "Bride",
+        "Bribe", "Brush", "Braid", "Broad", "Birch", "Blush", "Board", "Brain", "Grain", "Gains", "Break", "Hated", "Briny", "Argue", "Bench", "Bread", "Brand", "Birth", "Basic",
+        "Chair", "Chain", "Class", "Colon", "Cliff", "Clamp", "Clang", "Crawl", "Cloud", "Crawl", "Chest", "Charm", "Shard", "Shark", "Chide", "Child", "Chief", "Clock", "Circa",
+        "Chili", "Choke", "Cigar", "Clean", "Clear", "Crane", "Cramp", "Could", "Couch", "Crave", "Cloth", "Civic", "Civil", "Cluck", "Clump", "Cigar", "Click", "Crime", "Cling", "Chore",
+        "Crest", "Brawn", "Crest", "Corny", "Dogma", "Doggy", "Dodgy", "Drape", "Drawn", "Dawns", "Deity", "Daddy", "Daisy", "Delta", "Debug", "Cubit", "Cubic", "Cruel", "Mikus", "Drift", 
+        "Comma", "Doing", "Disco", "Deter", "Dingy", "Dodge", "Eject", "Drone", "Detox", "Debit", "Donor", "Deter", "Dread", "Dream", "Decor", "Denim", "Dicey", "Dozen", "Dowry", "Devil",
+        "Curry", "Curly", "Drink", "Drunk", "Essay", "Erupt", "Foyer", "Frond", "Ember", "Elope", "Every", "Evade", "Error", "Erupt", "Final", "Flute", "Emoji", "Ensue", "Enter", "Elite",
+        "Envoy", "Farce", "Fever", "Fancy", "Faith", "False", "Etude", "Equip", "Enjoy", "Enema", "Equal", "Expel", "Floss", "Erase", "Erode", "Easel", "Drool", "Droop", "Evoke", "Exact",
+        "Fable", "Fruit", "Fetch", "Fjord", "Filet", "Flail", "Flora", "Flute", "Fryer", "Fritz", "Flunk", "Flute", "Frill", "Foist", "Folio", "Foray", "Flour", "Flout", "Flame", "Flaky",
+        "Flank", "Flail", "Floom", "Globe", "Grade", "Grasp", "Gnome", "Famut", "Froze", "Guano", "Gofer", "Genie", "Genie", "Fungi", "Gaudy", "Funky", "Funny", "Fuzzy", "Gamer", "Geese",
+        "Gecko", "Glare", "Genre", "Ghost", "Gouge", "Grace", "Goner", "Gloom", "Golem", "Grave", "Grate", "Grimy", "Grime", "Growl", "Puppy", "Kitty", "Meows", "Barks", "Grind", "Broom",
+        "Haven", "Hazel", "Humor", "Hippo", "Hinge", "Humid", "Humor", "Hyena", "Hyper", "Hilly", "Handy", "Hardy", "Hobby", "Hoist", "Idiom", "Inbox", "Inane", "Index", "Indie",
+        "Igloo", "Hydra", "Itchy", "Inlay", "Islet", "Incur", "Intro", "Jazzy", "Jewel", "Joker", "Joust", "Jiffy", "Judge", "Juice", "Kefir", "Khaki", "Kiosk", "Knack", "Koala", "Krill",
+        "Label", "Labor", "Label", "Labor", "Laden", "Lanky", "Leech", "Lefty", "Leggy", "Lemon", "Lemur", "Level", "Local", "Lingo", "Lodge", "Lofty", "Lusty", "Leash", "Latte", "Leafy",
+        "Loopy", "Magma", "Merit", "Merge", "Mayor", "Major", "Mason", "Marsh", "Match", "Matey", "Matte", "Maven", "Maker", "Major", "Manic", "Mania", "Mango", "Mafia", "Magma", "Madly",
+        "Moose", "Needy", "Onion", "Omega", "Olive", "Ocean", "Oddly", "Naive", "Nanny", "Neigh", "Niece", "Night", "Ninja", "Ninth", "Noble", "Nobly", "Otter", "Other", "Occur", "Oasis",
+        "Panic", "Phase", "Pilot", "Pinch", "Peach", "Plant", "Phone", "Phony", "Photo", "Piano", "Picky", "Piece", "Pixel", "Pixie", "Plain", "Poppy", "Poker", "Polar", "Pound", "Prime",
+        "Primo", "Porch", "Print", "Pecan", "Pasta", "Pedal", "Paper", "Pride", "Queen", "Quark", "Quest", "Radio", "Rabid", "Rapid", "Ratty", "Rayon", "Reach", "React", "Quake", "Queer", 
+        "Ratio", "Rizzy", "Racer", "Ready", "Ramen", "Ranch", "Robot", "Sedan", "Sassy", "Seven", "Sassy", "Saint", "Seedy", "Shout", "Short", "Shape", "Serum", "Serve", "Shell", "Shelf",
+        "Skirt", "Skull", "Sonic", "Snack", "Snail", "Snake", "South", "Snore", "Smile", "Sober", "Spear", "Skate", "Spray", "Spiny", "Tabby", "Table", "Tasty", "Thorn", "Theme", "Third",
+        "Thing", "Thyme", "Theft", "Tardy", "Tacky", "Taffy", "Taste", "Thick", "Thigh", "Thumb", "Truck", "Truly", "Undue", "Truck", "Tweet", "Trout", "Uncle", "Udder", "Usher", "Unfed",
+        "Unfit", "Unzip", "Upper", "Upset", "Ultra", "Valet", "Vinyl", "Viola", "Vodka", "Vixen", "Wagon", "Wordy", "World", "Worry", "Wheat", "Woven", "Zebra", "Zesty", "Yeast", "Yield",
+        "Yacht", "Would", "Furry"
+
+        };
+
 
 
 //--BEGIN CODE SECTION--
@@ -257,10 +284,18 @@ public class MiniLifeDialog {
         return companiesList.get(companyID);
     }
 
+        public String getWGWordWithID(int wordID){      
+        //this sets up a list containing all the re-usable city names, and then returns the city name with the provided ID number. see Quick Reference Handbook or Search Function for ID numbers.  
+        List<String> wordGameList = Arrays.asList(wordGameArray);
+        
+        
+        return wordGameList.get(wordID);
+    }
+
         public String getVersionString(){
-            String currentVersion = "Version 0.2-indev1-demo";
+            String currentVersion = "Version 0.3-indev1-demo";
             return currentVersion;
-        }        
+    }        
     
 
         public int getIndexInArrays(int arrayID, String searchTerm){  
@@ -279,6 +314,7 @@ public class MiniLifeDialog {
         List<String> carList = Arrays.asList(carArray);
         List<String> citiesList = Arrays.asList(citiesArray);
         List<String> companiesList = Arrays.asList(companiesArray);
+        List<String> wordGameList = Arrays.asList(wordGameArray);
 
 
         if (arrayID == 1){
@@ -314,8 +350,11 @@ public class MiniLifeDialog {
         else if (arrayID == 11){
             return companiesList.indexOf(searchTerm);
         }
+        else if (arrayID == 12){
+            return wordGameList.indexOf(searchTerm);
+        }
         else {
-            return 0;
+            return -1;
         }
     }
 }

@@ -1,5 +1,5 @@
 //MiniLife main program file
-//version 0.2-InDev1 (Jul 7, 2026)
+//version 0.3-InDev1 (Jul 7, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
 //No Artificial Intelligence tools were used in the creation of this source code file.
 //Primary Developer(s) on this file: Celeste Manguso
@@ -201,6 +201,7 @@ public class MiniLifeMain {
                     System.out.println("9: Search Cars Array");
                     System.out.println("10: Search Cities Array");                   
                     System.out.println("11: Search Companies Array");
+                    System.out.println("12: Search WordGame Minigame Array");
                     System.out.println("0:  Exit this menu");
 
                     try{
@@ -233,7 +234,7 @@ public class MiniLifeMain {
                     System.out.println(dialogModule.getCarsWithID(ThreadLocalRandom.current().nextInt(0, 82 + 1)));
                     System.out.println(dialogModule.getCityNameWithID(ThreadLocalRandom.current().nextInt(0, 85 + 1)));
                     System.out.println(dialogModule.getCompanyNameWithID(ThreadLocalRandom.current().nextInt(0, 55 + 1)));
-
+                    System.out.println(dialogModule.getWGWordWithID(ThreadLocalRandom.current().nextInt(0, 456 + 1)));
                 }
                 else if (debugInput.charAt(0) == '3'){
                     doRunDebugMenu = 0;
