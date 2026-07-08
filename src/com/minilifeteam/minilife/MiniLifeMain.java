@@ -241,6 +241,7 @@ public class MiniLifeMain {
                     System.out.println(dialogModule.getWGWordWithID(ThreadLocalRandom.current().nextInt(0, 456 + 1)));
                 }
                 else if (debugInput.charAt(0) == '3'){
+                    MiniLife_WordGame.doRunMinigameMenu = true;
                     wordGame.launchWordGame(input, dialogModule, logger, true, isDebug);
                 }
                 else if (debugInput.charAt(0) == '0'){
