@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 
 public class MiniLife_WordGame {
-    private static Boolean doRunMinigameMenu = true;
+    public static Boolean doRunMinigameMenu = true;
 
     public static void launchWordGame(Scanner input, MiniLifeDialog dialogModule, Logger logger, Boolean isMinigameExitable, Boolean isDebug){
         logger.info("##DEBUG## - Minigame1 Launched - WordGame");
