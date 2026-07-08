@@ -49,9 +49,12 @@ public class MiniLifeMain {
         //create a dialog module instance
         MiniLifeDialog dialogModule = new MiniLifeDialog();
 
+        //create an instance of all minigames
+        MiniLife_WordGame wordGame = new MiniLife_WordGame();
+
         //##DEBUG## if mode is DEBUG, ask user if they need to access special functionality:
         if (isDebug){
-         runDebugMenu(input, dialogModule);
+         runDebugMenu(input, dialogModule, wordGame, isDebug);
         }
 
         //introduce the program
@@ -157,7 +160,7 @@ public class MiniLifeMain {
             System.out.println("NewGame");
         }
 
-        public static void runDebugMenu (Scanner input, MiniLifeDialog dialogModule){
+        public static void runDebugMenu (Scanner input, MiniLifeDialog dialogModule, MiniLife_WordGame wordGame, Boolean isDebug){
             int runDebugConsole = 1;
             logger.info("##DEBUG## Debug mode is enabled, launching debug console.");
 
@@ -181,7 +184,8 @@ public class MiniLifeMain {
                 System.out.println("##DEBUG##--Please enter the function you would like to run--##DEBUG##");
                 System.out.println("1: Search Dialog Module");
                 System.out.println("2: Test Dialog Module");
-                System.out.println("3: Exit Debug Menu");
+                System.out.println("3: Launch Minigame 1 - WordGame");
+                System.out.println("0: Exit Debug Menu");
                 debugInput = input.next().trim().toLowerCase();
 
                 if (debugInput.charAt(0) == '1'){
@@ -237,6 +241,9 @@ public class MiniLifeMain {
                     System.out.println(dialogModule.getWGWordWithID(ThreadLocalRandom.current().nextInt(0, 456 + 1)));
                 }
                 else if (debugInput.charAt(0) == '3'){
+                    wordGame.launchWordGame(input, dialogModule, logger, true, isDebug);
+                }
+                else if (debugInput.charAt(0) == '0'){
                     doRunDebugMenu = 0;
                     runDebugConsole = 0;
                     break;
