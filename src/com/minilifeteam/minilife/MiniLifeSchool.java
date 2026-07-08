@@ -18,7 +18,7 @@ public class MiniLifeSchool {
 	private boolean college;
 	private boolean schoolGraduated;
 	
-	public School(){
+	public MiniLifeSchool(){
 		gpa = 1.0;
 		grade = 1;
 		college = false;

@@ -21,10 +21,10 @@ public class MiniLifePlayer {
 	private double money;
 	private int health;
 
-	private Job currentJob;
+	private MiniLifeJob currentJob;
 
 	//initialize Player variables for use
-	public Player(String playerName) {
+	public MiniLifePlayer(String playerName) {
 		this.playerName = playerName;
 		this.age = 0;
 		this.money = 0.0;
@@ -72,11 +72,11 @@ public class MiniLifePlayer {
 	}
 
 	//gets the current player Job
-	public Job getJob() {
+	public MiniLifeJob getJob() {
 		return currentJob;
 	}
 	//draws from the Job class to set up a job
-	public void setJob(Job job) {
+	public void setJob(MiniLifeJob job) {
    		currentJob = job;
 	}
 

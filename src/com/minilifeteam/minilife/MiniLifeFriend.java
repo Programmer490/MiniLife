@@ -5,7 +5,7 @@
 //This code licensed under the GNU GPL Version 3.0 license. See LICENSE file for more information.
 //No Artificial Intelligence tools were used in the creation of this source code file
 
-package com.minilifeteam.minilife;.
+package com.minilifeteam.minilife;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +17,7 @@ public class MiniLifeFriend  {
 		private String name;
 		private int relationship;
 
-		public Friend(String nameFriend) {
+		public MiniLifeFriend(String nameFriend) {
 			this.name = nameFriend;
 			this.relationship = 50;
 		}

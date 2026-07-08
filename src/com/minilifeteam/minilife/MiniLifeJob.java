@@ -19,7 +19,7 @@ public class MiniLifeJob {
 	private int promotions;
 	private int promotionRate;
 
-	public Job (String name, double jobSalary, int promotionRate) {
+	public MiniLifeJob (String name, double jobSalary, int promotionRate) {
 		this.name = name;
 		this.salary = jobSalary;
 		this.promotions = 0;
