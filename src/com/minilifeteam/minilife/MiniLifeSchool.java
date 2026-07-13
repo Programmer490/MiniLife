@@ -18,7 +18,7 @@ public class MiniLifeSchool {
 	private boolean college;
 	private boolean schoolGraduated;
 	
-	public MiniLifeSchool(){
+	public School(){
 		gpa = 1.0;
 		grade = 1;
 		college = false;
@@ -37,6 +37,14 @@ public class MiniLifeSchool {
 		} else { System.out.println ("Your GPA remains the same."); }
 	}
 
+	public double gpaGet(){
+		return gpa;
+	}
+
+	public int gradeGet() {
+		return grade;
+	}
+	
 
 	//increase year method
 	public void advanceYear() {
