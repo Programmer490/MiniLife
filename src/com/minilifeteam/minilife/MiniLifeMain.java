@@ -1,6 +1,7 @@
 //MiniLife main program file
 //version 0.5-InDev2 (Jul 13, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
+//this project uses some code licensed under the Apache License version 2.0. This code includes the Apache Commons Lang library. This license is compatible with GPLv3.
 //No Artificial Intelligence tools were used in the creation of this source code file.
 //Primary Developer(s) on this file: Celeste Manguso
 //Secondary Developer(s) on this file: 
@@ -17,6 +18,7 @@ import java.util.logging.Level;
 import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.concurrent.ThreadLocalRandom;
+import org.apache.commons.lang3.StringUtils;
 
 public class MiniLifeMain {
     //create debug logger
