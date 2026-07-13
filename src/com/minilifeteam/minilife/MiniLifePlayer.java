@@ -20,18 +20,40 @@ public class MiniLifePlayer {
 	private int age;
 	private double money;
 	private int health;
-
+	private String house;
+	private String car;
 	private Job currentJob;
 
 	//initialize Player variables for use
-	public Player(String firstName, lastName) {
+	public Player(String firstName, String lastName) {
 		this.firstName = firstName;
    		this.lastName = lastName;
+		car = "None";
+		house = "None";
 		this.age = 0;
 		this.money = 0.0;
 		this.health = 100;
 	}
-	
+
+	//HOUSE
+	public String getHouse() {
+    return house;
+	}
+
+	public void setHouse(String house) {
+    this.house = house;
+	}
+
+	//CAR
+	public String getCar() {
+    return car;
+	}
+
+	public void setCar(String car) {
+    this.car = car;
+	}
+
+	//NAME
 	public String getFirstName() {
     		return firstName;
 	}
