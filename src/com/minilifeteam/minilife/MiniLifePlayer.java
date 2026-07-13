@@ -1,5 +1,5 @@
 //MiniLife Player Module
-//Version 1.0-InDev1 
+//Version 1.1-InDev2
 //Primary Developer(s) on this file: Chelsea Dal Parsons
 //Secondary Developer(s) on this file: 
 //This code licensed under the GNU GPL Version 3.0 license. See LICENSE file for more information.
@@ -16,16 +16,17 @@ import java.util.Random;
 public class MiniLifePlayer {
 
 	//player variables
-	private String playerName;
+	private String firstName;
+	private String lastName;
 	private int age;
 	private double money;
 	private int health;
 	private String house;
 	private String car;
-	private Job currentJob;
+	private MiniLifeJob currentJob;
 
 	//initialize Player variables for use
-	public Player(String firstName, String lastName) {
+	public void createPlayer(String firstName, String lastName) {
 		this.firstName = firstName;
    		this.lastName = lastName;
 		car = "None";
@@ -66,12 +67,20 @@ public class MiniLifePlayer {
    		 return firstName + " " + lastName;
 	}
 
+	public void changeFirstName(String newName) {
+		this.firstName = newName;
+	}
+
+	public void changeLastName(String newName) {
+		this.lastName = newName;
+	}
+
 	//used to age up player and progress year
 	public void advanceYear() {
 		age += 1;
 	}
 	
-	public int ageGet() {
+	public int getAge() {
 		return age;
 	}
 	
@@ -116,11 +125,11 @@ public class MiniLifePlayer {
 
 
 	//gets the current player Job
-	public Job getJob() {
+	public MiniLifeJob getJob() {
 		return currentJob;
 	}
 	//draws from the Job class to set up a job
-	public void setJob(Job job) {
+	public void setJob(MiniLifeJob job) {
    		currentJob = job;
 	}
 

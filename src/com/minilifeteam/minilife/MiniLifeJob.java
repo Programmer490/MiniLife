@@ -1,5 +1,5 @@
 //MiniLife Job Module
-//Version 1.0-InDev1 
+//Version 1.1-InDev2
 //Primary Developer(s) on this file: Chelsea Dal Parsons
 //Secondary Developer(s) on this file: 
 //This code licensed under the GNU GPL Version 3.0 license. See LICENSE file for more information.
@@ -14,13 +14,15 @@ import java.util.Random;
 public class MiniLifeJob {
 
 	private String name;
+	private String company;
 	private double salary;
 	private int yearsWorked;
 	private int promotions;
 	private int promotionRate;
 
-	public Job (String name, double jobSalary, int promotionRate) {
+	public void createJob(String name, String employerName, double jobSalary, int promotionRate) {
 		this.name = name;
+		this.company = employerName;
 		this.salary = jobSalary;
 		this.promotions = 0;
 		this.yearsWorked = 0;
@@ -32,13 +34,17 @@ public class MiniLifeJob {
 	public double getSalary() {
   		return salary;
 	}
+
+	public String getJobTitle() {
+  		return name;
+	}
+
+	public String getEmployerName() {
+  		return company;
+	}
 	
 	public int yearsworkedGet() {
 		return yearsWorked;
-	}
-
-	public double salarayGet(){
-		return jobSalary;
 	}
 
 	public int promotionsGet() {

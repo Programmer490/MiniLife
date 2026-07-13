@@ -1,5 +1,5 @@
 //MiniLife School Module
-//Version 2.0-InDev1 
+//Version 2.1-InDev2
 //Primary Developer(s) on this file: Chelsea Dal Parsons
 //Secondary Developer(s) on this file: 
 //This code licensed under the GNU GPL Version 3.0 license. See LICENSE file for more information.
@@ -18,7 +18,7 @@ public class MiniLifeSchool {
 	private boolean college;
 	private boolean schoolGraduated;
 	
-	public School(){
+	public void createSchool(){
 		gpa = 1.0;
 		grade = 1;
 		college = false;

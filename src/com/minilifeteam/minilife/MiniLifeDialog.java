@@ -1,5 +1,5 @@
 //MiniLife Dialog Module
-//Version 2.0-InDev1 
+//Version 2.0-InDev2 
 //Primary Developer(s) on this file: Celeste Manguso
 //Secondary Developer(s) on this file: 
 //This code licensed under the GNU GPL Version 3.0 license. See LICENSE file for more information.
@@ -293,7 +293,7 @@ public class MiniLifeDialog {
     }
 
         public String getVersionString(){
-            String currentVersion = "Version 0.3-indev1-demo";
+            String currentVersion = "Version 0.5-indev2-demo";
             return currentVersion;
     }        
     

@@ -1,5 +1,5 @@
 //MiniLife - WordGame minigame program (based on Wordle by the New York Times)
-//version 0.1-InDev1 (Jul 7, 2026)
+//version 0.2-InDev2 (Jul 13, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
 //No Artificial Intelligence tools were used in the creation of this source code file.
 //Primary Developer(s) on this file: Celeste Manguso

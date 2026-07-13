@@ -1,5 +1,5 @@
 //MiniLife main program file
-//version 0.3-InDev1 (Jul 7, 2026)
+//version 0.5-InDev2 (Jul 13, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
 //No Artificial Intelligence tools were used in the creation of this source code file.
 //Primary Developer(s) on this file: Celeste Manguso
@@ -249,44 +249,52 @@ public class MiniLifeMain {
                     wordGame.launchWordGame(input, dialogModule, logger, true, isDebug);
                 }
                 else if (debugInput.charAt(0) == '4'){
+                    System.out.println("##DEBUG## - Job Module Tester");
                     //this tests the job module by creating a job object, and then calling it's getter functions and advancing the year to test the promotion logic.
                     String debug_jobName = dialogModule.getLowJobNameWithID(ThreadLocalRandom.current().nextInt(0, 72 + 1));
+                    String debug_employerName = dialogModule.getCompanyNameWithID(ThreadLocalRandom.current().nextInt(0, 55 + 1));
                     double debug_jobSalary = 45000.0;
                     int debug_jobPromotionRate = 15;
-                    MiniLifeJob debug_job = new MiniLifeJob(debug_jobName, debug_jobSalary, debug_jobPromotionRate);
-                    System.out.println("Job Title: " + debug_job.getJobName());
+                    MiniLifeJob debug_job = new MiniLifeJob();
+                    debug_job.createJob(debug_jobName, debug_employerName, debug_jobSalary, debug_jobPromotionRate);
+                    System.out.println("Job Title: " + debug_job.getJobTitle());
+                    System.out.println("Employer: " + debug_job.getEmployerName());
                     System.out.println("Salary: " + debug_job.getSalary());
-                    System.out.println("Promotion Count: " + debug_job.getPromotionCount());
+                    System.out.println("Promotion Count: " + debug_job.promotionsGet());
                     System.out.println("Advancing Year 3 times...");
                     debug_job.advanceYear();
                     debug_job.advanceYear();
                     debug_job.advanceYear();
                     System.out.println("Salary: " + debug_job.getSalary());
-                    System.out.println("Promotion Count: " + debug_job.getPromotionCount());
+                    System.out.println("Promotion Count: " + debug_job.promotionsGet());
                 }
                 else if (debugInput.charAt(0) == '5'){
                     //test player module
 
                     //initialize 
                     String debug_jobName = dialogModule.getLowJobNameWithID(ThreadLocalRandom.current().nextInt(0, 72 + 1));
+                    String debug_employerName = dialogModule.getCompanyNameWithID(ThreadLocalRandom.current().nextInt(0, 55 + 1));
                     double debug_jobSalary = 45000.0;
                     int debug_jobPromotionRate = 5;
-                    MiniLifeJob debugJob = new MiniLifeJob(debug_jobName, debug_jobSalary, debug_jobPromotionRate);
+                    MiniLifeJob debugJob = new MiniLifeJob();
+                    debugJob.createJob(debug_jobName, debug_employerName, debug_jobSalary, debug_jobPromotionRate);
                     String debug_playerFirstName = dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1));
                     String debug_playerLastName =  dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1));
-                    MiniLifePlayer debugPlayer = new MiniLifePlayer(debug_playerFirstName, debug_playerLastName);
+                    MiniLifePlayer debugPlayer = new MiniLifePlayer();
+                    debugPlayer.createPlayer(debug_playerFirstName, debug_playerLastName);
                     debugPlayer.setJob(debugJob);
 
                     //print initial player information
                     System.out.println("##DEBUG## - Player Module Tester");
                     System.out.println("--Player Info--");
-                    System.out.println("First Name: " + debugPlayer.getPlayerName());
-                    System.out.println("Last Name: " + debugPlayer.getPlayerLastName());
-                    System.out.println("Age: " + debugPlayer.getCurrentAge());
+                    System.out.println("First Name: " + debugPlayer.getFirstName());
+                    System.out.println("Last Name: " + debugPlayer.getLastName());
+                    System.out.println("Age: " + debugPlayer.getAge());
                     System.out.println("Money: " + debugPlayer.getMoney());
-                    System.out.println("Health: " + debugPlayer.getCurrentHealth());
+                    System.out.println("Health: " + debugPlayer.getHealth());
                     System.out.println("--Job Info--");
-                    System.out.println("Job Title: " + debugPlayer.getJob().getJobName());
+                    System.out.println("Job Title: " + debugPlayer.getJob().getJobTitle());
+                    System.out.println("Employer: " + debugPlayer.getJob().getEmployerName());
                     System.out.println("Salary: " + debugPlayer.getJob().getSalary());
                     
                     //make some stuff happen to the player and then display all the info again
@@ -301,18 +309,19 @@ public class MiniLifeMain {
                     debugPlayer.advanceYear();
                     debugPlayer.advanceYear();
                     debugPlayer.advanceYear();
-                    debugPlayer.changePlayerName(dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)));
-                    debugPlayer.changePlayerLastName(dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1)));
+                    debugPlayer.changeFirstName(dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)));
+                    debugPlayer.changeLastName(dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1)));
 
                     //display the info again after all the changes
                     System.out.println("--Player Info--");
-                    System.out.println("First Name: " + debugPlayer.getPlayerName());
-                    System.out.println("Last Name: " + debugPlayer.getPlayerLastName());
-                    System.out.println("Age: " + debugPlayer.getCurrentAge());
+                    System.out.println("First Name: " + debugPlayer.getFirstName());
+                    System.out.println("Last Name: " + debugPlayer.getLastName());
+                    System.out.println("Age: " + debugPlayer.getAge());
                     System.out.println("Money: " + debugPlayer.getMoney());
-                    System.out.println("Health: " + debugPlayer.getCurrentHealth());
+                    System.out.println("Health: " + debugPlayer.getHealth());
                     System.out.println("--Job Info--");
-                    System.out.println("Job Title: " + debugPlayer.getJob().getJobName());
+                    System.out.println("Job Title: " + debugPlayer.getJob().getJobTitle());
+                    System.out.println("Employer: " + debugPlayer.getJob().getEmployerName());
                     System.out.println("Salary: " + debugPlayer.getJob().getSalary());
 
                 }
