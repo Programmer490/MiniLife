@@ -21,19 +21,36 @@ public class MiniLifePlayer {
 	private double money;
 	private int health;
 
-	private MiniLifeJob currentJob;
+	private Job currentJob;
 
 	//initialize Player variables for use
-	public MiniLifePlayer(String playerName) {
-		this.playerName = playerName;
+	public Player(String firstName, lastName) {
+		this.firstName = firstName;
+   		this.lastName = lastName;
 		this.age = 0;
 		this.money = 0.0;
 		this.health = 100;
+	}
+	
+	public String getFirstName() {
+    		return firstName;
+	}
+
+	public String getLastName() {
+    		return lastName;
+	}
+
+	public String getFullName() {
+   		 return firstName + " " + lastName;
 	}
 
 	//used to age up player and progress year
 	public void advanceYear() {
 		age += 1;
+	}
+	
+	public int ageGet() {
+		return age;
 	}
 	
 	//shows money
@@ -71,12 +88,17 @@ public class MiniLifePlayer {
 		}
 	}
 
+	public int getHealth() {
+		return health;
+	}
+
+
 	//gets the current player Job
-	public MiniLifeJob getJob() {
+	public Job getJob() {
 		return currentJob;
 	}
 	//draws from the Job class to set up a job
-	public void setJob(MiniLifeJob job) {
+	public void setJob(Job job) {
    		currentJob = job;
 	}
 
