@@ -11,8 +11,11 @@ public class MiniLifeNPC {
 
 	private String nameNPC;
 	
-	public MiniLifeNPC (String name) {
+	public NPC (String name) {
 		this.nameNPC = name;
 	}
 	
+	public String nameGet () {
+		return nameNPC;
+	}
 }
