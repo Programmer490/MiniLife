@@ -185,14 +185,16 @@ public class MiniLifeMain {
                 System.out.println("1: Search Dialog Module");
                 System.out.println("2: Test Dialog Module");
                 System.out.println("3: Launch Minigame 1 - WordGame");
+                System.out.println("4: Test Jobs Module");
+                System.out.println("5: Test Player Module");
+                System.out.println("6: Test NPC Module");
+                System.out.println("7: Test School Module");
                 System.out.println("0: Exit Debug Menu");
                 debugInput = input.next().trim().toLowerCase();
 
                 if (debugInput.charAt(0) == '1'){
                     //debug menu - search dialog module functionality
                     int arrayID = 0;
-                    //String searchTerm = "";
-
                     System.out.println("Please enter the array ID");
                     System.out.println("1: Search Dialog Array");
                     System.out.println("2: Search Male Name Array");
@@ -226,13 +228,14 @@ public class MiniLifeMain {
 
                 }
                 else if (debugInput.charAt(0) == '2'){
+                    //tests the dialog module by using each of it's getter functions to get a random result.
                     logger.info("##DEBUG## Testing Dialog Module. Dialog Module will print a random item from each array");
                     System.out.println(dialogModule.getDialogWithID(ThreadLocalRandom.current().nextInt(0, 53 + 1)));
                     System.out.println(dialogModule.getMaleNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1)));
                     System.out.println(dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)));
                     System.out.println(dialogModule.getNBNameWithID(ThreadLocalRandom.current().nextInt(0, 78 + 1)));
                     System.out.println(dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1)));
-                    System.out.println(dialogModule.getLowJobNameWithID(ThreadLocalRandom.current().nextInt(0, 73 + 1)));
+                    System.out.println(dialogModule.getLowJobNameWithID(ThreadLocalRandom.current().nextInt(0, 72 + 1)));
                     System.out.println(dialogModule.getHighJobNameWithID(ThreadLocalRandom.current().nextInt(0, 61 + 1)));
                     System.out.println(dialogModule.getHouseWithID(ThreadLocalRandom.current().nextInt(0, 16 + 1)));
                     System.out.println(dialogModule.getCarsWithID(ThreadLocalRandom.current().nextInt(0, 82 + 1)));
@@ -241,10 +244,86 @@ public class MiniLifeMain {
                     System.out.println(dialogModule.getWGWordWithID(ThreadLocalRandom.current().nextInt(0, 456 + 1)));
                 }
                 else if (debugInput.charAt(0) == '3'){
+                    //launches the WordGame minigame with debugging features enabled, in exitable mode.
                     MiniLife_WordGame.doRunMinigameMenu = true;
                     wordGame.launchWordGame(input, dialogModule, logger, true, isDebug);
                 }
+                else if (debugInput.charAt(0) == '4'){
+                    //this tests the job module by creating a job object, and then calling it's getter functions and advancing the year to test the promotion logic.
+                    String debug_jobName = dialogModule.getLowJobNameWithID(ThreadLocalRandom.current().nextInt(0, 72 + 1));
+                    double debug_jobSalary = 45000.0;
+                    int debug_jobPromotionRate = 15;
+                    MiniLifeJob debug_job = new MiniLifeJob(debug_jobName, debug_jobSalary, debug_jobPromotionRate);
+                    System.out.println("Job Title: " + debug_job.getJobName());
+                    System.out.println("Salary: " + debug_job.getSalary());
+                    System.out.println("Promotion Count: " + debug_job.getPromotionCount());
+                    System.out.println("Advancing Year 3 times...");
+                    debug_job.advanceYear();
+                    debug_job.advanceYear();
+                    debug_job.advanceYear();
+                    System.out.println("Salary: " + debug_job.getSalary());
+                    System.out.println("Promotion Count: " + debug_job.getPromotionCount());
+                }
+                else if (debugInput.charAt(0) == '5'){
+                    //test player module
+
+                    //initialize 
+                    String debug_jobName = dialogModule.getLowJobNameWithID(ThreadLocalRandom.current().nextInt(0, 72 + 1));
+                    double debug_jobSalary = 45000.0;
+                    int debug_jobPromotionRate = 5;
+                    MiniLifeJob debugJob = new MiniLifeJob(debug_jobName, debug_jobSalary, debug_jobPromotionRate);
+                    String debug_playerFirstName = dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1));
+                    String debug_playerLastName =  dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1));
+                    MiniLifePlayer debugPlayer = new MiniLifePlayer(debug_playerFirstName, debug_playerLastName);
+                    debugPlayer.setJob(debugJob);
+
+                    //print initial player information
+                    System.out.println("##DEBUG## - Player Module Tester");
+                    System.out.println("--Player Info--");
+                    System.out.println("First Name: " + debugPlayer.getPlayerName());
+                    System.out.println("Last Name: " + debugPlayer.getPlayerLastName());
+                    System.out.println("Age: " + debugPlayer.getCurrentAge());
+                    System.out.println("Money: " + debugPlayer.getMoney());
+                    System.out.println("Health: " + debugPlayer.getCurrentHealth());
+                    System.out.println("--Job Info--");
+                    System.out.println("Job Title: " + debugPlayer.getJob().getJobName());
+                    System.out.println("Salary: " + debugPlayer.getJob().getSalary());
+                    
+                    //make some stuff happen to the player and then display all the info again
+                    System.out.println("Making some changes happen...");
+                    debugPlayer.addHealth(5);
+                    debugPlayer.addMoney(25000);
+                    debugPlayer.removeMoney(10000);
+                    debugPlayer.takeHealth(15);
+                    debugPlayer.getJob().advanceYear();
+                    debugPlayer.getJob().advanceYear();
+                    debugPlayer.getJob().advanceYear();
+                    debugPlayer.advanceYear();
+                    debugPlayer.advanceYear();
+                    debugPlayer.advanceYear();
+                    debugPlayer.changePlayerName(dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)));
+                    debugPlayer.changePlayerLastName(dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1)));
+
+                    //display the info again after all the changes
+                    System.out.println("--Player Info--");
+                    System.out.println("First Name: " + debugPlayer.getPlayerName());
+                    System.out.println("Last Name: " + debugPlayer.getPlayerLastName());
+                    System.out.println("Age: " + debugPlayer.getCurrentAge());
+                    System.out.println("Money: " + debugPlayer.getMoney());
+                    System.out.println("Health: " + debugPlayer.getCurrentHealth());
+                    System.out.println("--Job Info--");
+                    System.out.println("Job Title: " + debugPlayer.getJob().getJobName());
+                    System.out.println("Salary: " + debugPlayer.getJob().getSalary());
+
+                }
+                else if (debugInput.charAt(0) == '6'){
+                    //test NPC module
+                }
+                else if (debugInput.charAt(0) == '7'){
+                    //test school module
+                }
                 else if (debugInput.charAt(0) == '0'){
+                    //exits the debug menu
                     doRunDebugMenu = 0;
                     runDebugConsole = 0;
                     break;
