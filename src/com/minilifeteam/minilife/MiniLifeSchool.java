@@ -45,6 +45,10 @@ public class MiniLifeSchool {
 		return grade;
 	}
 
+	public boolean collegeGet() { 
+		return college;
+	}
+	
 	public boolean schoolgraduatedGet() {
 		return schoolGraduated;
 	}
