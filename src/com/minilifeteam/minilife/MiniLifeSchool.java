@@ -44,7 +44,10 @@ public class MiniLifeSchool {
 	public int gradeGet() {
 		return grade;
 	}
-	
+
+	public boolean schoolgraduatedGet() {
+		return schoolGraduated;
+	}
 
 	//increase year method
 	public void advanceYear() {
