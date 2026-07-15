@@ -293,9 +293,14 @@ public class MiniLifeDialog {
     }
 
         public String getVersionString(){
-            String currentVersion = "Version 0.5-indev2-demo";
+            String currentVersion = "Version 0.12-indev3-demo";
             return currentVersion;
-    }        
+    }      
+    
+        public String getDevelopmentMilestoneString(){
+            String devMilestone = "Milestone 3";
+            return devMilestone;
+    }   
     
 
         public int getIndexInArrays(int arrayID, String searchTerm){  

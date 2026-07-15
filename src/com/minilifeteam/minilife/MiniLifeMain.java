@@ -1,5 +1,5 @@
 //MiniLife main program file
-//version 0.5-InDev2 (Jul 14, 2026)
+//version 0.12-InDev3 (Jul 15, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
 //this project uses some code licensed under the Apache License version 2.0. This code includes the Apache Commons Lang library. This license is compatible with GPLv3.
 //No Artificial Intelligence tools were used in the creation of this source code file.
@@ -19,12 +19,16 @@ import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.lang3.StringUtils;
+import java.util.List;
+import java.util.ArrayList;
 
 public class MiniLifeMain {
     //create debug logger
     private static final Logger logger = Logger.getLogger(MiniLifeMain.class.getName());
 
-   public static Boolean doRunMainMenu = true;
+    public static Boolean gameIsDemo = true;
+
+    public static Boolean doRunMainMenu = true;
 
         public static void main(String[] args){
         //enable debug messages if they were enabled on the command line (for debugging builds, comment this out for production builds before compiling)
@@ -60,10 +64,12 @@ public class MiniLifeMain {
         }
 
         //introduce the program
-        System.out.println("MiniLife (Demo Version)");
-        System.out.println(dialogModule.getVersionString());
-        System.out.println("By: The MiniLife Team");
-        System.out.println("---------------------------------");
+
+        int width = 40;
+        System.out.println(StringUtils.rightPad("*", width - 1, "-") + "*");
+        System.out.println(StringUtils.center(StringUtils.center("MiniLife (Demo Version)", width - 2), width, "|"));
+        System.out.println(StringUtils.center( StringUtils.center(dialogModule.getVersionString(), width - 2), width, "|" ));
+        System.out.println(StringUtils.rightPad("*", width - 1, "-") + "*");
         Date currentDate = new Date();
         logger.info("##DEBUG## - Debug Logging Enabled. Current date and time is " + currentDate);
 
@@ -75,7 +81,7 @@ public class MiniLifeMain {
         if (getMenuChoice.contentEquals("NewGame")){
             logger.info("##DEBUG## - user chose to launch a new game.");
             MiniLifeMain.doRunMainMenu = false;
-            playNewGame(input, dialogModule);
+            playNewGame(input, dialogModule, isDebug);
         }
         else if (getMenuChoice.contentEquals("loadSaveGame")){
             logger.info("##DEBUG## - user chose to load save game");
@@ -158,8 +164,136 @@ public class MiniLifeMain {
             System.out.println("SettingsMenu");
         }
 
-        public static void playNewGame(Scanner input, MiniLifeDialog dialogModule /*MiniLifeCharacter characterModule, MiniLifeMinigame, minigame1, etc... */){
-            System.out.println("NewGame");
+        public static void playNewGame(Scanner input, MiniLifeDialog dialogModule, Boolean isDebug /*MiniLifeCharacter characterModule, MiniLifeMinigame, minigame1, etc... */){
+
+            //clear the console (if not in debug mode, ask if in debug mode)
+            if (!isDebug){
+                clearConsole();
+            }
+            else if (isDebug){
+                logger.info("##DEBUG## - Clear the console?: ");
+                String doClearConsole = input.next().trim().toLowerCase();
+                if (doClearConsole.charAt(0) == '1' || doClearConsole.charAt(0) == 'y' || doClearConsole.charAt(0) == 't'){
+                    clearConsole();
+                }
+            }
+            
+
+            int menu_width = 80;
+            System.out.println(StringUtils.rightPad("*", menu_width - 1, "~") + "*");
+            System.out.println(StringUtils.center(StringUtils.center("New Game!", menu_width - 2), menu_width, "!"));
+            System.out.println(StringUtils.rightPad("*", menu_width - 1, "~") + "*");
+
+            //initialize the player character, create a school for them, etc.
+            MiniLifePlayer playerCharacter = new MiniLifePlayer();
+            MiniLifeSchool playerSchool = new MiniLifeSchool();
+            
+            //gender stuff
+            int initialPlayerGender = ThreadLocalRandom.current().nextInt(0, 2);
+            logger.info("Initial Gender: " + initialPlayerGender);
+
+            //city stuff
+            String playerCity = dialogModule.getCityNameWithID(ThreadLocalRandom.current().nextInt(0, 85 + 1));
+            logger.info("##DEBUG## - city name set. city name: " + playerCity);
+            String schoolName = playerCity + " - " + dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)) + " Elementary School";
+            logger.info("##DEBUG## - school name set. school name: " + schoolName);
+
+            //family stuff
+            List<MiniLifeNPC> playerSiblingsList = new ArrayList<MiniLifeNPC>();
+            MiniLifeNPC playerMother = new MiniLifeNPC();
+            String playerMotherName = dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1));
+            int playerMotherAge = ThreadLocalRandom.current().nextInt(23, 56);
+            MiniLifeNPC playerFather = new MiniLifeNPC();
+            String playerFatherName = dialogModule.getMaleNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1));
+            int playerFatherAge = ThreadLocalRandom.current().nextInt((playerMotherAge - 3), (playerMotherAge + 4));
+
+            //friends stuff
+            List<MiniLifeFriend> playerFriendsList = new ArrayList<MiniLifeFriend>();
+            Boolean playerHasFriends = false;
+
+            //job/school stuff
+            Boolean playerIsInSchool = false;
+            Boolean playerDidGraduateCollege = false;
+
+            //name stuff
+            String playerFirstName = "";
+            String playerLastName = dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1));
+
+            if (initialPlayerGender == 0){
+                playerFirstName = dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1));
+            }
+            else if (initialPlayerGender == 1){
+                playerFirstName = dialogModule.getMaleNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1));
+            }
+            else{
+                logger.info("##DEBUG## - Irrational Response recieved in inital gender module. Setting gender to non-binary");
+                initialPlayerGender = 3;
+                playerFirstName = dialogModule.getNBNameWithID(ThreadLocalRandom.current().nextInt(0, 78 + 1));
+            }
+
+            //fully initialize the school
+            playerSchool.createSchool(schoolName);
+
+            //decide if the player will have a sibling, and if so, create one for them.
+            int randomSiblingsCheck = ThreadLocalRandom.current().nextInt(0, 11);
+            Boolean playerWillHaveSiblings;
+            if (randomSiblingsCheck > 5){
+                playerWillHaveSiblings = true;
+            }
+            else{
+                playerWillHaveSiblings = false;
+            }
+
+            if (playerWillHaveSiblings){
+                MiniLifeNPC playerSibling = new MiniLifeNPC();
+                String playerSiblingName = "";
+                int ageOfSibling = ThreadLocalRandom.current().nextInt(2, 12);
+                int playerSiblingGender = ThreadLocalRandom.current().nextInt(0, 2);
+
+                if (playerSiblingGender == 0){
+                    playerSiblingName = dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1));
+                }
+                else if (playerSiblingGender == 1){
+                    playerSiblingName = dialogModule.getMaleNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1));
+                }
+                else{
+                    playerSiblingGender = 3;
+                    playerSiblingName = dialogModule.getNBNameWithID(ThreadLocalRandom.current().nextInt(0, 78 + 1));
+                }
+
+                //create the sibling
+                playerSibling.createNPC(playerSiblingName, playerLastName, ageOfSibling);
+
+                //add the sibling to the list
+                playerSiblingsList.add(playerSibling);
+            }
+
+            //initialize the player's parents
+            playerMother.createNPC(playerMotherName, playerLastName, playerMotherAge);
+            playerFather.createNPC(playerFatherName, playerLastName, playerFatherAge);
+
+            //finally, initialize the player object with all of it's data.
+            playerCharacter.createPlayer(playerFirstName, playerLastName, initialPlayerGender, playerMother, playerFather, playerFriendsList, playerCity);
+            if (playerWillHaveSiblings){
+                playerCharacter.updateSiblingsList(playerSiblingsList);
+            }   
+            playerCharacter.setSchool(playerSchool);
+
+            
+
+            //display the player info for the first time
+            List<Boolean> DebugFlags = new ArrayList<Boolean>();
+            if (isDebug){
+                DebugFlags.add(false); //job field
+                DebugFlags.add(true); //school field
+                DebugFlags.add(true); //college field
+                DebugFlags.add(false); //siblings field
+                DebugFlags.add(false); //friends field
+                DebugFlags.add(gameIsDemo);
+            }
+            displayPlayerInfo(playerCharacter, dialogModule, isDebug, DebugFlags, menu_width);
+
+
         }
 
         public static void runDebugMenu (Scanner input, MiniLifeDialog dialogModule, MiniLife_WordGame wordGame, Boolean isDebug){
@@ -183,15 +317,22 @@ public class MiniLifeMain {
             }
 
             while (doRunDebugMenu == 1){
-                System.out.println("##DEBUG##--Please enter the function you would like to run--##DEBUG##");
-                System.out.println("1: Search Dialog Module");
-                System.out.println("2: Test Dialog Module");
-                System.out.println("3: Launch Minigame 1 - WordGame");
-                System.out.println("4: Test Jobs Module");
-                System.out.println("5: Test Player Module");
-                System.out.println("6: Test NPC Module");
-                System.out.println("7: Test School Module");
-                System.out.println("0: Exit Debug Menu");
+                int width = 85;
+                System.out.println(StringUtils.rightPad("##DEBUG##", width - 9, "\u25AC") + "##DEBUG##");
+                System.out.println(StringUtils.center( StringUtils.center("--Debugger's Paradise--", width - 2), width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center("Please enter the function you would like to run", width - 2), width , "\u258B" ));
+                System.out.println(StringUtils.rightPad("##DEBUG##", width - 9, "\u25AC") + "##DEBUG##");
+
+                System.out.println(StringUtils.center( StringUtils.center("1: Search Dialog Module", width - 2), width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center("2: Test Dialog Module", width - 2), width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center("3: Launch Minigame 1 - WordGame", width - 2), width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center("4: Test Jobs Module", width - 2), width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center("5: Test Player Module", width - 2), width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center("6: Test NPC Module", width - 2), width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center("7: Test School Module", width - 2), width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center("8: Clear Console", width - 2), width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center("0: Exit Debug Module", width - 2), width , "\u258B" ));
+                System.out.println(StringUtils.rightPad("\u25CF", width - 1, "\u25AC") + "\u25CF");
                 debugInput = input.next().trim().toLowerCase();
 
                 if (debugInput.charAt(0) == '1'){
@@ -282,9 +423,31 @@ public class MiniLifeMain {
                     debugJob.createJob(debug_jobName, debug_employerName, debug_jobSalary, debug_jobPromotionRate);
                     String debug_playerFirstName = dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1));
                     String debug_playerLastName =  dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1));
+                    String debug_playerCity = dialogModule.getCityNameWithID(ThreadLocalRandom.current().nextInt(0, 85 + 1));
                     MiniLifePlayer debugPlayer = new MiniLifePlayer();
-                    debugPlayer.createPlayer(debug_playerFirstName, debug_playerLastName);
+                    MiniLifeNPC debug_mother = new MiniLifeNPC();
+                    MiniLifeNPC debug_father = new MiniLifeNPC();
+                    MiniLifeFriend debug_friend = new MiniLifeFriend();
+                    MiniLifeNPC debug_sister = new MiniLifeNPC();
+                    List<MiniLifeFriend> debug_friendslist = new ArrayList<MiniLifeFriend>();
+                    List<MiniLifeNPC> debug_siblingslist = new ArrayList<MiniLifeNPC>();
+
+                    //setup the friends and parents with names
+                    debug_mother.createNPC(dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)), debug_playerLastName, 47);
+                    debug_father.createNPC(dialogModule.getMaleNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1)), debug_playerLastName, 53);
+                    debug_friend.createFriend(
+                        dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)),
+                        dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1)),
+                        2
+                    );
+                    debug_sister.createNPC(dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)), debug_playerLastName, 12);
+
+                    debug_friendslist.add(debug_friend);
+                    debug_siblingslist.add(debug_sister);
+
+                    debugPlayer.createPlayer(debug_playerFirstName, debug_playerLastName, 0, debug_mother, debug_father, debug_friendslist, debug_playerCity);
                     debugPlayer.setJob(debugJob);
+                    debugPlayer.updateSiblingsList(debug_siblingslist);
 
                     //print initial player information
                     System.out.println("##DEBUG## - Player Module Tester");
@@ -294,10 +457,19 @@ public class MiniLifeMain {
                     System.out.println("Age: " + debugPlayer.getAge());
                     System.out.println("Money: " + debugPlayer.getMoney());
                     System.out.println("Health: " + debugPlayer.getHealth());
+                    System.out.println("Gender: " + debugPlayer.getPlayerGender());
+                    System.out.println("City: " + debugPlayer.getPlayerCity());
                     System.out.println("--Job Info--");
                     System.out.println("Job Title: " + debugPlayer.getJob().getJobTitle());
                     System.out.println("Employer: " + debugPlayer.getJob().getEmployerName());
                     System.out.println("Salary: " + debugPlayer.getJob().getSalary());
+                    System.out.println("--Friends and Family Info--");
+                    System.out.println("Mother's Name: " + debugPlayer.getPlayerMother().nameGet());
+                    System.out.println("Father's Name: " + debugPlayer.getPlayerFather().nameGet());
+                    System.out.println("Friend Names: " + debugPlayer.getFriendsList().get(0).getFriendName());
+                    System.out.println("Sibling Name: " + debugPlayer.getPlayerSiblings().get(0).nameGet());
+                    System.out.println("Sibling Age: " + debugPlayer.getPlayerSiblings().get(0).getAge());
+
                     
                     //make some stuff happen to the player and then display all the info again
                     System.out.println("Making some changes happen...");
@@ -311,8 +483,14 @@ public class MiniLifeMain {
                     debugPlayer.advanceYear();
                     debugPlayer.advanceYear();
                     debugPlayer.advanceYear();
+                    debugPlayer.getPlayerSiblings().get(0).advanceYear();
+                    debugPlayer.getPlayerSiblings().get(0).advanceYear();
+                    debugPlayer.getPlayerSiblings().get(0).advanceYear();
                     debugPlayer.changeFirstName(dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)));
                     debugPlayer.changeLastName(dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1)));
+                    debugPlayer.getPlayerSiblings().get(0).changeFirstName(
+                        dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1))
+                    );
 
                     //display the info again after all the changes
                     System.out.println("--Player Info--");
@@ -321,19 +499,122 @@ public class MiniLifeMain {
                     System.out.println("Age: " + debugPlayer.getAge());
                     System.out.println("Money: " + debugPlayer.getMoney());
                     System.out.println("Health: " + debugPlayer.getHealth());
+                    System.out.println("Gender: " + debugPlayer.getPlayerGender());
                     System.out.println("--Job Info--");
                     System.out.println("Job Title: " + debugPlayer.getJob().getJobTitle());
                     System.out.println("Employer: " + debugPlayer.getJob().getEmployerName());
                     System.out.println("Salary: " + debugPlayer.getJob().getSalary());
+                    System.out.println("--Friends and Family Info--");
+                    System.out.println("Mother's Name: " + debugPlayer.getPlayerMother().nameGet());
+                    System.out.println("Father's Name: " + debugPlayer.getPlayerFather().nameGet());
+                    System.out.println("Friend Names: " + debugPlayer.getFriendsList().get(0).getFriendName());
+                    System.out.println("Sibling Name: " + debugPlayer.getPlayerSiblings().get(0).nameGet());
+                    System.out.println("Sibling Age: " + debugPlayer.getPlayerSiblings().get(0).getAge());
 
                 }
                 else if (debugInput.charAt(0) == '6'){
                     //test NPC module
                     System.out.println("##DEBUG## - NPC Module Tester");
+
+                    //create NPC with random first and last name
+                    MiniLifeNPC debug_NPC = new MiniLifeNPC();
+
+                    //set the first and last names of the NPC to random names from the Dialog module.
+                    debug_NPC.createNPC(
+                        dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)), 
+                        dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1)),
+                        ThreadLocalRandom.current().nextInt(18, 89) 
+                    );
+
+                    //print the first and last names of the NPC.
+                    System.out.println("---NPC Info---");
+                    System.out.println("First Name: " + debug_NPC.nameGet());
+                    System.out.println("Last Name: " + debug_NPC.getLastName());
+                    System.out.println("Age: " + debug_NPC.getAge());
                 }
                 else if (debugInput.charAt(0) == '7'){
                     //test school module
                     System.out.println("##DEBUG## - School Module Tester");
+
+                    //create a school object
+                    MiniLifeSchool debug_school = new MiniLifeSchool();
+                    String cityName = dialogModule.getCityNameWithID(ThreadLocalRandom.current().nextInt(0, 85 + 1));
+
+                    //call the initializer
+                    debug_school.createSchool(cityName + " - Elementary School");
+
+                    //display school info (first time)
+                    System.out.println("---School Info---");
+                    System.out.println("School Name: " + debug_school.getSchoolName());
+                    System.out.println("Grade: " + debug_school.gradeGet());
+                    System.out.println("GPA: " + debug_school.gpaGet());
+                    System.out.println("Graduated School: " + debug_school.schoolgraduatedGet());
+                    System.out.println("Graduated College: " + debug_school.collegeGraduatedGet());
+                    System.out.println("Current Degree: " + debug_school.getDegreeName());
+
+                    //change some stuff (increase to middle school, increase the gpa a bit, change school name, etc.)
+                    debug_school.advanceYear();
+                    debug_school.advanceYear();
+                    debug_school.advanceYear();
+                    debug_school.advanceYear();
+                    debug_school.advanceYear();
+                    debug_school.advanceYear();
+                    debug_school.advanceYear();
+                    debug_school.gpaUp();
+                    debug_school.gpaUp();
+                    debug_school.gpaUp();
+                    debug_school.setSchoolName(cityName + " - Middle School");
+
+                    //display school info (second time)
+                    System.out.println("---School Info---");
+                    System.out.println("School Name: " + debug_school.getSchoolName());
+                    System.out.println("Grade: " + debug_school.gradeGet());
+                    System.out.println("GPA: " + debug_school.gpaGet());
+                    System.out.println("Graduated School: " + debug_school.schoolgraduatedGet());
+                    System.out.println("Graduated College: " + debug_school.collegeGraduatedGet());
+                    System.out.println("Current Degree: " + debug_school.getDegreeName());
+
+
+                    //change some stuff (graduate from high school, begin college, set name accordingly, etc.)
+                    debug_school.advanceYear();
+                    debug_school.advanceYear();
+                    debug_school.advanceYear();
+                    debug_school.advanceYear();
+                    debug_school.advanceYear();
+                    debug_school.gpaUp();
+                    debug_school.gpaUp();
+                    debug_school.attendCollege("Univeristy of " + cityName);
+
+                    //display school info (third time)
+                    System.out.println("---School Info---");
+                    System.out.println("School Name: " + debug_school.getSchoolName());
+                    System.out.println("Grade: " + debug_school.gradeGet());
+                    System.out.println("GPA: " + debug_school.gpaGet());
+                    System.out.println("Graduated School: " + debug_school.schoolgraduatedGet());
+                    System.out.println("Graduated College: " + debug_school.collegeGraduatedGet());
+                    System.out.println("Current Degree: " + debug_school.getDegreeName());
+
+                     //change some stuff (graduate from college with a bachelor's degree)
+                    debug_school.advanceYear();
+                    debug_school.advanceYear();
+                    debug_school.advanceYear();
+                    debug_school.gpaUp();
+                    debug_school.gpaUp();
+                    debug_school.graduateCollege();
+
+                    //display school info (fourth time)
+                    System.out.println("---School Info---");
+                    System.out.println("School Name: " + debug_school.getSchoolName());
+                    System.out.println("Grade: " + debug_school.gradeGet());
+                    System.out.println("GPA: " + debug_school.gpaGet());
+                    System.out.println("Graduated School: " + debug_school.schoolgraduatedGet());
+                    System.out.println("Graduated College: " + debug_school.collegeGraduatedGet());
+                    System.out.println("Current Degree: " + debug_school.getDegreeName());
+
+
+                }
+                else if (debugInput.charAt(0) == '8'){
+                    clearConsole();
                 }
                 else if (debugInput.charAt(0) == '0'){
                     //exits the debug menu
@@ -343,6 +624,124 @@ public class MiniLifeMain {
                 }
             }
         }while(runDebugConsole == 1);
+        }
+
+        public static void displayGameMenu(Scanner input, MiniLifeDialog dialogModule, MiniLifePlayer playerCharacter){
+
+        }
+
+        public static void clearConsole(){
+            try{
+                //clear console using OS-specific console clear commands
+                String currentOS = System.getProperty("os.name").toLowerCase();
+
+                if (currentOS.contains("win")) {
+                    new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+                }
+                else {
+                    new ProcessBuilder("clear").inheritIO().start().waitFor();
+                }
+            }catch (Exception error){
+                //fallback by printing a bunch of blank lines
+                logger.info("##DEBUG## - clearConsole - fallback triggered, printing blank lines");
+                for (int n = 0; n < 50; n++){
+                    System.out.println();
+                }
+            }
+        }
+
+        public static void displayPlayerInfo(MiniLifePlayer playerCharacter, MiniLifeDialog dialogModule, Boolean isDebug, List<Boolean>DebugEnabledFlags, int menu_width){
+
+                    Boolean jobFieldEnabled = false;
+                    Boolean schoolFieldEnabled = false;
+                    Boolean collegeFieldEnabled = false;
+                    Boolean siblingsFieldEnabled = false;
+                    Boolean friendsFieldEnabled = false;
+                    Boolean gameIsDemo = true;
+
+                if (isDebug){
+                    jobFieldEnabled = DebugEnabledFlags.get(0);
+                    schoolFieldEnabled = DebugEnabledFlags.get(1);
+                    collegeFieldEnabled = DebugEnabledFlags.get(2);
+                    siblingsFieldEnabled = DebugEnabledFlags.get(3);
+                    friendsFieldEnabled = DebugEnabledFlags.get(4);
+                    gameIsDemo = DebugEnabledFlags.get(5);
+                    logger.info("##DEBUG## - Special DisplayPlayerInfo Debug Flags: " + "jobFieldEnabled - " + jobFieldEnabled + ", schoolFieldEnabled - " + schoolFieldEnabled + ", collegeFieldEnabled - " + collegeFieldEnabled +
+                    ", siblingsFieldEnabled - " + siblingsFieldEnabled + ", friendsFieldEnabled - " + friendsFieldEnabled + ", gameIsDemo - " + gameIsDemo);
+                }
+
+                
+
+
+                //begin player info screen
+                System.out.println(StringUtils.rightPad("\u25CF", menu_width - 1, "\u25AC") + "\u25CF");
+                //player info
+                System.out.println(StringUtils.center( StringUtils.center("----Player Info----", menu_width - 2), menu_width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center(("First Name: " + playerCharacter.getFirstName()), menu_width - 2), menu_width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center(("Last Name: " + playerCharacter.getLastName()), menu_width - 2), menu_width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center(("Age: " + playerCharacter.getAge()), menu_width - 2), menu_width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center(("Money: " + playerCharacter.getMoney()), menu_width - 2), menu_width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center(("Health: " + playerCharacter.getHealth()), menu_width - 2), menu_width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center(("Gender: " + playerCharacter.getPlayerGender()), menu_width - 2), menu_width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center(("City: " + playerCharacter.getPlayerCity()), menu_width - 2), menu_width , "\u258B" ));
+
+                System.out.println(StringUtils.rightPad("\u25CF", menu_width - 1, "\u25AC") + "\u25CF");
+                //job
+                if (playerCharacter.doesPlayerHaveJob() || jobFieldEnabled){
+                    System.out.println(StringUtils.center( StringUtils.center("----Job Info----", menu_width - 2), menu_width , "\u258B" ));
+                    System.out.println(StringUtils.center( StringUtils.center(("Job Title: " + playerCharacter.getJob().getJobTitle()), menu_width - 2), menu_width , "\u258B" ));
+                    System.out.println(StringUtils.center( StringUtils.center(("Salary: " + playerCharacter.getJob().getSalary()), menu_width - 2), menu_width , "\u258B" ));
+                    System.out.println(StringUtils.center( StringUtils.center(("Employer: " + playerCharacter.getJob().getEmployerName()), menu_width - 2), menu_width , "\u258B" ));
+
+                    System.out.println(StringUtils.rightPad("\u25CF", menu_width - 1, "\u25AC") + "\u25CF");
+                }
+                //friends and family
+                System.out.println(StringUtils.center( StringUtils.center("----Friends and Family Info----", menu_width - 2), menu_width , "\u258B" ));
+                //displays mother's and father's first and last names
+                System.out.println(StringUtils.center( StringUtils.center(("Mother's Name: " + playerCharacter.getPlayerMother().nameGet() + " " + playerCharacter.getPlayerMother().getLastName()), menu_width - 2), menu_width , "\u258B" ));
+                System.out.println(StringUtils.center( StringUtils.center(("Father's Name: " + playerCharacter.getPlayerFather().nameGet() + " " + playerCharacter.getPlayerFather().getLastName()), menu_width - 2), menu_width , "\u258B" ));
+                if (playerCharacter.doesPlayerHaveSiblings() || siblingsFieldEnabled){
+                    //displays the name of the player's sibling (only one is supported in the demo version)
+                    System.out.println(StringUtils.center( StringUtils.center(("Sibling's Name: " + playerCharacter.getPlayerSiblings().get(0).nameGet() + " " + playerCharacter.getPlayerSiblings().get(0).getLastName()), menu_width - 2), menu_width , "\u258B" ));
+                }
+                if (playerCharacter.doesPlayerHaveFriends() || friendsFieldEnabled){
+                    for (int n = 0; n > playerCharacter.getFriendsList().size(); n++){
+                        //displays friend names for each friend in the friendslist.
+                        System.out.println(StringUtils.center( StringUtils.center(("Friend's Name: " + playerCharacter.getFriendsList().get(n).getFriendName() + " " + playerCharacter.getFriendsList().get(n).getLastName()), menu_width - 2), menu_width , "\u258B" ));
+                    }
+                }
+                System.out.println(StringUtils.rightPad("\u25CF", menu_width - 1, "\u25AC") + "\u25CF");
+                //school info
+                if (playerCharacter.isPlayerInSchool() || schoolFieldEnabled){
+                    System.out.println(StringUtils.center( StringUtils.center("----School Info----", menu_width - 2), menu_width , "\u258B" ));
+                    System.out.println(StringUtils.center( StringUtils.center(("School Name: " + playerCharacter.getSchool().getSchoolName()), menu_width - 2), menu_width , "\u258B" ));
+                    System.out.println(StringUtils.center( StringUtils.center(("Grade: " + playerCharacter.getSchool().gradeGet()), menu_width - 2), menu_width , "\u258B" ));
+                    System.out.println(StringUtils.center( StringUtils.center(("GPA: " + playerCharacter.getSchool().gpaGet()), menu_width - 2), menu_width , "\u258B" ));
+                    if ((playerCharacter.getSchool().gradeGet() > 12 && playerCharacter.getSchool().schoolgraduatedGet()) || schoolFieldEnabled){
+                        //for if the player graduated high school
+                        System.out.println(StringUtils.center( StringUtils.center(("Degree: " + playerCharacter.getSchool().getDegreeName()), menu_width - 2), menu_width , "\u258B" ));
+                    };
+                    System.out.println(StringUtils.rightPad("\u25CF", menu_width - 1, "\u25AC") + "\u25CF");
+                }
+                else if (playerCharacter.getSchool().collegeGraduatedGet() || collegeFieldEnabled){
+                    //for the if the player already graduated college
+                    System.out.println(StringUtils.center( StringUtils.center("----School Info----", menu_width - 2), menu_width , "\u258B" ));
+                    System.out.println(StringUtils.center( StringUtils.center(("Degree: " + playerCharacter.getSchool().getDegreeName()), menu_width - 2), menu_width , "\u258B" ));
+                    System.out.println(StringUtils.rightPad("\u25CF", menu_width - 1, "\u25AC") + "\u25CF");
+                };
+                
+                
+
+                if (isDebug){
+                    //debugging stuff
+                    System.out.println(StringUtils.center( StringUtils.center("####Debug Info####", menu_width - 2), menu_width , "\u258B" ));
+                    System.out.println(StringUtils.center( StringUtils.center(("Demo Version: " + gameIsDemo), menu_width - 2), menu_width , "\u258B" ));
+                    System.out.println(StringUtils.center( StringUtils.center(("Version: " + dialogModule.getVersionString()), menu_width - 2), menu_width , "\u258B" ));
+                    System.out.println(StringUtils.center( StringUtils.center(("Development Milestone: " + dialogModule.getDevelopmentMilestoneString()), menu_width - 2), menu_width , "\u258B" ));
+                    System.out.println(StringUtils.center( StringUtils.center(("Current Operating System: " + System.getProperty("os.name")), menu_width - 2), menu_width , "\u258B" ));
+                    System.out.println(StringUtils.rightPad("\u25CF", menu_width - 1, "\u25AC") + "\u25CF");
+                }
+
         }
 
         public static void exitGame (Scanner input){

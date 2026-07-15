@@ -1,5 +1,5 @@
 //MiniLife Job Module
-//Version 1.1-InDev2
+//Version 1.2-InDev3
 //Primary Developer(s) on this file: Chelsea Dal Parsons
 //Secondary Developer(s) on this file: 
 //This code licensed under the GNU GPL Version 3.0 license. See LICENSE file for more information.

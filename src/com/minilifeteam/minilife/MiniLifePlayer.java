@@ -1,17 +1,16 @@
 //MiniLife Player Module
-//Version 1.1-InDev2
+//Version 2.0-InDev3
 //Primary Developer(s) on this file: Chelsea Dal Parsons
-//Secondary Developer(s) on this file: 
+//Secondary Developer(s) on this file: Celeste Manguso
 //This code licensed under the GNU GPL Version 3.0 license. See LICENSE file for more information.
 //No Artificial Intelligence tools were used in the creation of this source code file
 
 package com.minilifeteam.minilife;
 
-
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.List;
 
 public class MiniLifePlayer {
 
@@ -24,16 +23,33 @@ public class MiniLifePlayer {
 	private String house;
 	private String car;
 	private MiniLifeJob currentJob;
+	private MiniLifeSchool currentSchool;
+	private int playerGender;
+	private MiniLifeNPC playerMother;
+	private MiniLifeNPC playerFather;
+	private List<MiniLifeFriend> playerFriends;
+	private List<MiniLifeNPC> playerSiblings;
+	private String playerCity;
+	private Boolean playerHasJob = false;
+	private Boolean playerIsInSchool = false;
+	private Boolean playerHasSiblings = false;
+	private Boolean playerHasFriends = false;
 
 	//initialize Player variables for use
-	public void createPlayer(String firstName, String lastName) {
+	public void createPlayer(String firstName, String lastName, int genderCode, MiniLifeNPC mother, MiniLifeNPC father, List<MiniLifeFriend> friends, String cityName) {
 		this.firstName = firstName;
    		this.lastName = lastName;
 		car = "None";
 		house = "None";
-		this.age = 0;
+		this.age = 1;
 		this.money = 0.0;
 		this.health = 100;
+		this.playerGender = genderCode;
+		this.playerMother = mother;
+		this.playerFather = father;
+		this.playerFriends = friends;
+		this.playerCity = cityName;
+		
 	}
 
 	//HOUSE
@@ -43,6 +59,78 @@ public class MiniLifePlayer {
 
 	public void setHouse(String house) {
     this.house = house;
+	}
+
+	//gender
+	public void setGender(int genderCode){
+		this.playerGender = genderCode;
+	}
+
+	public String getPlayerGender(){
+		if (this.playerGender == 0){
+			return "Female";
+		}
+		else if (this.playerGender == 1){
+			return "Male";
+		}
+		else if (this.playerGender == 2){
+			return "Non-Binary";
+		}
+		else {
+			return "UnknownGender";
+		}
+	}
+
+	//friends and relatives
+	public MiniLifeNPC getPlayerMother(){
+		return playerMother;
+	}
+
+	public MiniLifeNPC getPlayerFather(){
+		return playerFather;
+	}
+
+	public void updateSiblingsList(List<MiniLifeNPC> newSiblingsList){
+		this.playerSiblings = newSiblingsList;
+		playerHasSiblings = true;
+	}
+
+	public List<MiniLifeNPC> getPlayerSiblings(){
+		return playerSiblings;
+	}
+
+	public List<MiniLifeFriend> getFriendsList(){
+		return playerFriends;
+	}
+
+	public void updateFriendsList(List<MiniLifeFriend> newFriendsList){
+		this.playerFriends = newFriendsList;
+		playerHasFriends = true;
+	}
+
+	public Boolean doesPlayerHaveSiblings(){
+		return playerHasSiblings;
+	}
+
+	public Boolean doesPlayerHaveFriends(){
+		return playerHasFriends;
+	}
+
+	public void setSiblingsStatus(Boolean doesPlayerHaveSiblings){
+		this.playerHasSiblings = false;
+	}
+
+	public void setFriendsStatus(Boolean doesPlayerHaveFriends){
+		this.playerHasFriends = false;
+	}
+
+	//city
+	public String getPlayerCity() {
+		return playerCity;
+	}
+
+	public void updatePlayerCity(String newCityName){
+		this.playerCity = newCityName;
 	}
 
 	//CAR
@@ -128,9 +216,43 @@ public class MiniLifePlayer {
 	public MiniLifeJob getJob() {
 		return currentJob;
 	}
+
+	//returns true if the player has a job
+	public Boolean doesPlayerHaveJob(){
+		return playerHasJob;
+	}
+
 	//draws from the Job class to set up a job
 	public void setJob(MiniLifeJob job) {
    		currentJob = job;
+		playerHasJob = true;
+	}
+
+	public void setJobStatus(Boolean playerHasJob){
+		this.playerHasJob = playerHasJob;
+	}
+
+	//gets the current player school
+	public MiniLifeSchool getSchool() {
+		return currentSchool;
+	}
+
+	//returns true if the player is in school.
+	public Boolean isPlayerInSchool(){
+		return playerIsInSchool;
+	}
+
+	public void setInSchoolStatus(Boolean playerIsInSchool){
+		this.playerIsInSchool = playerIsInSchool;
+	}
+
+
+	//draws from the school class to attach a school object
+	public void setSchool(MiniLifeSchool school) {
+   		currentSchool = school;
+		if (this.age > 5){
+			this.playerIsInSchool = true;
+		}
 	}
 
 //last bracket
