@@ -9,6 +9,13 @@
             "name": "MiniLifeMain",
             "request": "launch",
             "mainClass": "com.minilifeteam.minilife.MiniLifeMain",
+            "projectName": "MiniLife_a4b3a660"
+        },
+        {
+            "type": "java",
+            "name": "MiniLifeMain",
+            "request": "launch",
+            "mainClass": "com.minilifeteam.minilife.MiniLifeMain",
             "projectName": "MiniLife_efe96e5d"
         },
         {
