@@ -1,5 +1,5 @@
 //MiniLife main program file
-//version 0.5-InDev2 (Jul 13, 2026)
+//version 0.5-InDev2 (Jul 14, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
 //this project uses some code licensed under the Apache License version 2.0. This code includes the Apache Commons Lang library. This license is compatible with GPLv3.
 //No Artificial Intelligence tools were used in the creation of this source code file.
@@ -329,9 +329,11 @@ public class MiniLifeMain {
                 }
                 else if (debugInput.charAt(0) == '6'){
                     //test NPC module
+                    System.out.println("##DEBUG## - NPC Module Tester");
                 }
                 else if (debugInput.charAt(0) == '7'){
                     //test school module
+                    System.out.println("##DEBUG## - School Module Tester");
                 }
                 else if (debugInput.charAt(0) == '0'){
                     //exits the debug menu
