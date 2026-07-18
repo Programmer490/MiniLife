@@ -30,6 +30,8 @@ public class MiniLifeMain {
 
     public static Boolean doRunMainMenu = true;
 
+    public static Boolean doRunGameMenu = true;
+
         public static void main(String[] args){
         //enable debug messages if they were enabled on the command line (for debugging builds, comment this out for production builds before compiling)
         int argsLength = args.length;
@@ -292,6 +294,17 @@ public class MiniLifeMain {
                 DebugFlags.add(gameIsDemo);
             }
             displayPlayerInfo(playerCharacter, dialogModule, isDebug, DebugFlags, menu_width);
+
+            //display the game menu
+            List<Boolean> menuDebugFlags = new ArrayList<Boolean>();
+            if (isDebug){
+                menuDebugFlags.add(true); //show debug menu
+                menuDebugFlags.add(gameIsDemo); //game is demo - true if game is the demo version, false otherwise
+            }
+
+            while (doRunGameMenu){
+                displayGameMenu(input, dialogModule, playerCharacter, isDebug, menuDebugFlags, menu_width);
+            }
 
 
         }
@@ -626,7 +639,59 @@ public class MiniLifeMain {
         }while(runDebugConsole == 1);
         }
 
-        public static void displayGameMenu(Scanner input, MiniLifeDialog dialogModule, MiniLifePlayer playerCharacter){
+        public static void displayGameMenu(Scanner input, MiniLifeDialog dialogModule, MiniLifePlayer playerCharacter, Boolean isDebug, List<Boolean>DebugEnabledFlags, int menu_width){
+                    Boolean showDebugSettings = false;
+
+                    Boolean gameIsDemo = true;
+
+                if (isDebug){
+                    showDebugSettings = DebugEnabledFlags.get(0);
+                    gameIsDemo = DebugEnabledFlags.get(1);
+                    logger.info("##DEBUG## - Special displayGameMenu Debug Flags: " + "showDebugSettings - " + showDebugSettings + ", gameIsDemo - " + gameIsDemo);
+                }
+
+                String sepPadLeft = "\u25CF";
+                String sepPadRight = "\u25CF";
+                String sepLine = "\u25AC";
+                String elementPad = "\u258B";
+
+                menuSeperator("*", "~", "*", menu_width, 1);
+
+                menuElement("---Game Menu---","", menu_width, 2, "!");
+
+                menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
+
+                menuElement("What would you like to do?","", menu_width, 2, elementPad);
+                menuElement("1: Check Stats","", menu_width, 2, elementPad);
+                menuElement("2: Check Inventory","", menu_width, 2, elementPad);
+                menuElement("3: Purchase...","", menu_width, 2, elementPad);
+                menuElement("4: Increase Age","", menu_width, 2, elementPad);
+                menuElement("5: Settings Menu","", menu_width, 2, elementPad);
+                menuElement("0: Exit to main menu (without saving)","", menu_width, 2, elementPad);
+                
+                if (isDebug && showDebugSettings){
+                    menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
+                    menuElement("##DEBUG## - 99: Debug Menu","", menu_width, 2, elementPad);
+                }
+
+                menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
+
+
+                //temporary code until input mechanism is implemented so the menu doesn't repeat itself 500 times with no way to end it
+                if (isDebug){
+                    doRunGameMenu = false;
+                }
+                else{
+                    try{Thread.sleep(1000);}
+                    catch (InterruptedException error){
+                        System.out.println("InterruptedException Caught");
+                    }
+                }
+
+
+            
+
+
 
         }
 
@@ -670,78 +735,139 @@ public class MiniLifeMain {
                     ", siblingsFieldEnabled - " + siblingsFieldEnabled + ", friendsFieldEnabled - " + friendsFieldEnabled + ", gameIsDemo - " + gameIsDemo);
                 }
 
-                
+                String sepPadLeft = "\u25CF";
+                String sepPadRight = "\u25CF";
+                String sepLine = "\u25AC";
+                String elementPad = "\u258B";
 
 
                 //begin player info screen
-                System.out.println(StringUtils.rightPad("\u25CF", menu_width - 1, "\u25AC") + "\u25CF");
+                menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
                 //player info
-                System.out.println(StringUtils.center( StringUtils.center("----Player Info----", menu_width - 2), menu_width , "\u258B" ));
-                System.out.println(StringUtils.center( StringUtils.center(("First Name: " + playerCharacter.getFirstName()), menu_width - 2), menu_width , "\u258B" ));
-                System.out.println(StringUtils.center( StringUtils.center(("Last Name: " + playerCharacter.getLastName()), menu_width - 2), menu_width , "\u258B" ));
-                System.out.println(StringUtils.center( StringUtils.center(("Age: " + playerCharacter.getAge()), menu_width - 2), menu_width , "\u258B" ));
-                System.out.println(StringUtils.center( StringUtils.center(("Money: " + playerCharacter.getMoney()), menu_width - 2), menu_width , "\u258B" ));
-                System.out.println(StringUtils.center( StringUtils.center(("Health: " + playerCharacter.getHealth()), menu_width - 2), menu_width , "\u258B" ));
-                System.out.println(StringUtils.center( StringUtils.center(("Gender: " + playerCharacter.getPlayerGender()), menu_width - 2), menu_width , "\u258B" ));
-                System.out.println(StringUtils.center( StringUtils.center(("City: " + playerCharacter.getPlayerCity()), menu_width - 2), menu_width , "\u258B" ));
+                menuElement("----Player Info----", "", menu_width, 2, elementPad);
+                menuElement("First Name: ", playerCharacter.getFirstName(), menu_width, 2, elementPad);
+                menuElement("Last Name: ", playerCharacter.getLastName(), menu_width, 2, elementPad);
+                menuElement("Age: ", playerCharacter.getAge(), menu_width, 2, elementPad);
+                menuElement("Money: ", playerCharacter.getMoney(), menu_width, 2, elementPad);
+                menuElement("Health: ", playerCharacter.getHealth(), menu_width, 2, elementPad);
+                menuElement("Gender: ", playerCharacter.getPlayerGender(), menu_width, 2, elementPad);
+                menuElement("City: ", playerCharacter.getPlayerCity(), menu_width, 2, elementPad);
 
-                System.out.println(StringUtils.rightPad("\u25CF", menu_width - 1, "\u25AC") + "\u25CF");
+                menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
                 //job
                 if (playerCharacter.doesPlayerHaveJob() || jobFieldEnabled){
-                    System.out.println(StringUtils.center( StringUtils.center("----Job Info----", menu_width - 2), menu_width , "\u258B" ));
-                    System.out.println(StringUtils.center( StringUtils.center(("Job Title: " + playerCharacter.getJob().getJobTitle()), menu_width - 2), menu_width , "\u258B" ));
-                    System.out.println(StringUtils.center( StringUtils.center(("Salary: " + playerCharacter.getJob().getSalary()), menu_width - 2), menu_width , "\u258B" ));
-                    System.out.println(StringUtils.center( StringUtils.center(("Employer: " + playerCharacter.getJob().getEmployerName()), menu_width - 2), menu_width , "\u258B" ));
+                    menuElement("----Job Info----", "", menu_width, 2, elementPad);
+                    
+                    menuElement("Salary: ", playerCharacter.getJob().getSalary(), menu_width, 2, elementPad);
+                    menuElement("Employer: ", playerCharacter.getJob().getEmployerName(), menu_width, 2, elementPad);
 
-                    System.out.println(StringUtils.rightPad("\u25CF", menu_width - 1, "\u25AC") + "\u25CF");
+                    menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
                 }
                 //friends and family
-                System.out.println(StringUtils.center( StringUtils.center("----Friends and Family Info----", menu_width - 2), menu_width , "\u258B" ));
+                menuElement("----Friends and Family Info----", "", menu_width, 2, elementPad);
                 //displays mother's and father's first and last names
-                System.out.println(StringUtils.center( StringUtils.center(("Mother's Name: " + playerCharacter.getPlayerMother().nameGet() + " " + playerCharacter.getPlayerMother().getLastName()), menu_width - 2), menu_width , "\u258B" ));
-                System.out.println(StringUtils.center( StringUtils.center(("Father's Name: " + playerCharacter.getPlayerFather().nameGet() + " " + playerCharacter.getPlayerFather().getLastName()), menu_width - 2), menu_width , "\u258B" ));
+                menuElement("Mother's Name: ", (playerCharacter.getPlayerMother().nameGet() + " " + playerCharacter.getLastName()), menu_width, 2, elementPad);
+                menuElement("Father's Name: ", (playerCharacter.getPlayerFather().nameGet() + " " + playerCharacter.getLastName()), menu_width, 2, elementPad);
                 if (playerCharacter.doesPlayerHaveSiblings() || siblingsFieldEnabled){
                     //displays the name of the player's sibling (only one is supported in the demo version)
-                    System.out.println(StringUtils.center( StringUtils.center(("Sibling's Name: " + playerCharacter.getPlayerSiblings().get(0).nameGet() + " " + playerCharacter.getPlayerSiblings().get(0).getLastName()), menu_width - 2), menu_width , "\u258B" ));
+                    menuElement("Sibling's Name: ", (playerCharacter.getPlayerSiblings().get(0).nameGet() + " " + playerCharacter.getPlayerSiblings().get(0).getLastName()), menu_width, 2, elementPad);
                 }
                 if (playerCharacter.doesPlayerHaveFriends() || friendsFieldEnabled){
                     for (int n = 0; n > playerCharacter.getFriendsList().size(); n++){
                         //displays friend names for each friend in the friendslist.
-                        System.out.println(StringUtils.center( StringUtils.center(("Friend's Name: " + playerCharacter.getFriendsList().get(n).getFriendName() + " " + playerCharacter.getFriendsList().get(n).getLastName()), menu_width - 2), menu_width , "\u258B" ));
+                        menuElement("Friend's Name: ", (playerCharacter.getFriendsList().get(n).getFriendName() + " " + playerCharacter.getFriendsList().get(n).getLastName()), menu_width, 2, elementPad);
                     }
                 }
-                System.out.println(StringUtils.rightPad("\u25CF", menu_width - 1, "\u25AC") + "\u25CF");
+                menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
                 //school info
                 if (playerCharacter.isPlayerInSchool() || schoolFieldEnabled){
-                    System.out.println(StringUtils.center( StringUtils.center("----School Info----", menu_width - 2), menu_width , "\u258B" ));
-                    System.out.println(StringUtils.center( StringUtils.center(("School Name: " + playerCharacter.getSchool().getSchoolName()), menu_width - 2), menu_width , "\u258B" ));
-                    System.out.println(StringUtils.center( StringUtils.center(("Grade: " + playerCharacter.getSchool().gradeGet()), menu_width - 2), menu_width , "\u258B" ));
-                    System.out.println(StringUtils.center( StringUtils.center(("GPA: " + playerCharacter.getSchool().gpaGet()), menu_width - 2), menu_width , "\u258B" ));
+                    menuElement("----School Info----", "", menu_width, 2, elementPad);
+                    menuElement("School Name: ", playerCharacter.getSchool().getSchoolName(), menu_width, 2, elementPad);
+                    menuElement("Grade: ", playerCharacter.getSchool().gradeGet(), menu_width, 2, elementPad);
+                    menuElement("GPA: ", playerCharacter.getSchool().gpaGet(), menu_width, 2, elementPad);
                     if ((playerCharacter.getSchool().gradeGet() > 12 && playerCharacter.getSchool().schoolgraduatedGet()) || schoolFieldEnabled){
                         //for if the player graduated high school
-                        System.out.println(StringUtils.center( StringUtils.center(("Degree: " + playerCharacter.getSchool().getDegreeName()), menu_width - 2), menu_width , "\u258B" ));
+                        menuElement("Degree: ", playerCharacter.getSchool().getDegreeName(), menu_width, 2, elementPad);
                     };
-                    System.out.println(StringUtils.rightPad("\u25CF", menu_width - 1, "\u25AC") + "\u25CF");
+                    menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
                 }
                 else if (playerCharacter.getSchool().collegeGraduatedGet() || collegeFieldEnabled){
                     //for the if the player already graduated college
-                    System.out.println(StringUtils.center( StringUtils.center("----School Info----", menu_width - 2), menu_width , "\u258B" ));
-                    System.out.println(StringUtils.center( StringUtils.center(("Degree: " + playerCharacter.getSchool().getDegreeName()), menu_width - 2), menu_width , "\u258B" ));
-                    System.out.println(StringUtils.rightPad("\u25CF", menu_width - 1, "\u25AC") + "\u25CF");
+                    menuElement("----School Info----", "", menu_width, 2, elementPad);
+                    menuElement("Degree: ", playerCharacter.getSchool().getDegreeName(), menu_width, 2, elementPad);
+                    menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
                 };
-                
-                
 
                 if (isDebug){
                     //debugging stuff
-                    System.out.println(StringUtils.center( StringUtils.center("####Debug Info####", menu_width - 2), menu_width , "\u258B" ));
-                    System.out.println(StringUtils.center( StringUtils.center(("Demo Version: " + gameIsDemo), menu_width - 2), menu_width , "\u258B" ));
-                    System.out.println(StringUtils.center( StringUtils.center(("Version: " + dialogModule.getVersionString()), menu_width - 2), menu_width , "\u258B" ));
-                    System.out.println(StringUtils.center( StringUtils.center(("Development Milestone: " + dialogModule.getDevelopmentMilestoneString()), menu_width - 2), menu_width , "\u258B" ));
-                    System.out.println(StringUtils.center( StringUtils.center(("Current Operating System: " + System.getProperty("os.name")), menu_width - 2), menu_width , "\u258B" ));
-                    System.out.println(StringUtils.rightPad("\u25CF", menu_width - 1, "\u25AC") + "\u25CF");
+                    menuElement("####Debug Info####", "", menu_width, 2, elementPad);
+                    menuElement("Demo Version: ", gameIsDemo, menu_width, 2, elementPad);
+                    menuElement("Version: ", dialogModule.getVersionString(), menu_width, 2, elementPad);
+                    menuElement("Development Milestone: ", dialogModule.getDevelopmentMilestoneString(), menu_width, 2, elementPad);
+                    menuElement("Current Operating System: ", System.getProperty("os.name"), menu_width, 2, elementPad);
+                    menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
                 }
 
+        }
+
+        /**
+        *  This function displays the standard menu seperator. it is recommended to use Unicode u25CF for the pads, and Unicode u25AC for the line. 
+        *  @param left_pad - this parameter is used for the left padding character. recommended: u25CF - type: String
+        *  @param line - this parameter is used for the line character. recommended: u25AC - type: String
+        *  @param right_pad - this parameter is used for the right padding character. recommended: u25CF - type: String
+        *  @param menu_width - this parameter is used for the width of the menu element. - type: int
+        *  @param minusFromMenuWidth - this parameter removes a specified number from the menu_width. - recommended: 1 - type: int
+        */
+        public static void menuSeperator(String left_pad, String line, String right_pad, int menu_width, int minusFromMenuWidth){
+            System.out.println(StringUtils.rightPad(left_pad, menu_width - minusFromMenuWidth, line) + right_pad);
+        }
+        
+        /**
+         * This function displays a menu element in the standard format.
+         * @param elementText - this is the actual text of the menu element. type - String
+         * @param specialString - this is any special, auxillary string (or strings as a concatenated input) - type: String
+         * @param menu_width - this is the width of the menu element. - type: int
+         * @param minusFromMenuWidth - this is the amount to remove from the menu width. - type: int
+         * @param padString - this is the string to use on the ends of the element. recommended: Unicode u258B - type: String
+         */
+        public static void menuElement(String elementText, String specialString, int menu_width, int minusFromMenuWidth, String padString){
+            System.out.println(StringUtils.center( StringUtils.center((elementText + specialString), menu_width - minusFromMenuWidth), menu_width , padString ));
+        }
+
+        /**
+         * This function displays a menu element in the standard format.
+         * @param elementText - this is the actual text of the menu element. type - String
+         * @param specialInt - this is any special, auxillary integer (or integers as a concatenated input) - type: int
+         * @param menu_width - this is the width of the menu element. - type: int
+         * @param minusFromMenuWidth - this is the amount to remove from the menu width. - type: int
+         * @param padString - this is the string to use on the ends of the element. recommended: Unicode u258B - type: String
+         */
+        public static void menuElement(String elementText, int specialInt, int menu_width, int minusFromMenuWidth, String padString){
+            System.out.println(StringUtils.center( StringUtils.center((elementText + specialInt), menu_width - minusFromMenuWidth), menu_width , padString ));
+        }
+
+        /**
+         * This function displays a menu element in the standard format.
+         * @param elementText - this is the actual text of the menu element. type - String
+         * @param specialDouble - this is any special, auxillary double (or doubles as a concatenated input) - type: int
+         * @param menu_width - this is the width of the menu element. - type: int
+         * @param minusFromMenuWidth - this is the amount to remove from the menu width. - type: int
+         * @param padString - this is the string to use on the ends of the element. recommended: Unicode u258B - type: String
+         */
+        public static void menuElement(String elementText, double specialDouble, int menu_width, int minusFromMenuWidth, String padString){
+            System.out.println(StringUtils.center( StringUtils.center((elementText + specialDouble), menu_width - minusFromMenuWidth), menu_width , padString ));
+        }
+
+        /**
+         * This function displays a menu element in the standard format.
+         * @param elementText - this is the actual text of the menu element. type - String
+         * @param specialBoolean - this is any special, auxillary boolean (or booleans as a concatenated input) - type: boolean
+         * @param menu_width - this is the width of the menu element. - type: int
+         * @param minusFromMenuWidth - this is the amount to remove from the menu width. - type: int
+         * @param padString - this is the string to use on the ends of the element. recommended: Unicode u258B - type: String
+         */
+        public static void menuElement(String elementText, boolean specialBoolean, int menu_width, int minusFromMenuWidth, String padString){
+            System.out.println(StringUtils.center( StringUtils.center((elementText + specialBoolean), menu_width - minusFromMenuWidth), menu_width , padString ));
         }
 
         public static void exitGame (Scanner input){
