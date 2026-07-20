@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.Date;
 import java.util.InputMismatchException;
+import java.lang.UnsupportedOperationException;
 import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.lang3.StringUtils;
 import java.util.List;
@@ -302,6 +303,7 @@ public class MiniLifeMain {
                 menuDebugFlags.add(gameIsDemo); //game is demo - true if game is the demo version, false otherwise
             }
 
+            doRunGameMenu = true;
             while (doRunGameMenu){
                 displayGameMenu(input, dialogModule, playerCharacter, isDebug, menuDebugFlags, menu_width);
             }
@@ -640,9 +642,9 @@ public class MiniLifeMain {
         }
 
         public static void displayGameMenu(Scanner input, MiniLifeDialog dialogModule, MiniLifePlayer playerCharacter, Boolean isDebug, List<Boolean>DebugEnabledFlags, int menu_width){
-                    Boolean showDebugSettings = false;
-
-                    Boolean gameIsDemo = true;
+                //debug stuff
+                Boolean showDebugSettings = false;
+                Boolean gameIsDemo = true;
 
                 if (isDebug){
                     showDebugSettings = DebugEnabledFlags.get(0);
@@ -650,31 +652,127 @@ public class MiniLifeMain {
                     logger.info("##DEBUG## - Special displayGameMenu Debug Flags: " + "showDebugSettings - " + showDebugSettings + ", gameIsDemo - " + gameIsDemo);
                 }
 
-                String sepPadLeft = "\u25CF";
-                String sepPadRight = "\u25CF";
-                String sepLine = "\u25AC";
-                String elementPad = "\u258B";
+                //create the menus
+                MiniLifeMenu gameMenuHeader = new MiniLifeMenu();
+                gameMenuHeader.createMenu("*", "*", "~", "!", menu_width);
 
-                menuSeperator("*", "~", "*", menu_width, 1);
+                MiniLifeMenu gameMenu = new MiniLifeMenu();
+                gameMenu.createMenu("\u25CF", "\u25CF", "\u25AC", "\u258B", menu_width);
 
-                menuElement("---Game Menu---","", menu_width, 2, "!");
+                //header
+                gameMenuHeader.displaySeperator(1);
+                gameMenuHeader.menuElement("---Game Menu---", "", 2);
+                gameMenuHeader.displaySeperator(1);
 
-                menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
-
-                menuElement("What would you like to do?","", menu_width, 2, elementPad);
-                menuElement("1: Check Stats","", menu_width, 2, elementPad);
-                menuElement("2: Check Inventory","", menu_width, 2, elementPad);
-                menuElement("3: Purchase...","", menu_width, 2, elementPad);
-                menuElement("4: Increase Age","", menu_width, 2, elementPad);
-                menuElement("5: Settings Menu","", menu_width, 2, elementPad);
-                menuElement("0: Exit to main menu (without saving)","", menu_width, 2, elementPad);
+                //game menu
+                gameMenu.menuElement("What would you like to do?", "", 2);
+                gameMenu.menuElement("1: Check Stats", "", 2);
+                gameMenu.menuElement("2: Check Inventory", "", 2);
+                gameMenu.menuElement("3: Purchase...", "", 2);
+                gameMenu.menuElement("4: Increase Age", "", 2);
+                gameMenu.menuElement("5: Settings Menu", "", 2);
+                gameMenu.menuElement("0: Exit game (without saving)", "", 2);
                 
                 if (isDebug && showDebugSettings){
-                    menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
-                    menuElement("##DEBUG## - 99: Debug Menu","", menu_width, 2, elementPad);
+                    gameMenu.displaySeperator(1);
+                    gameMenu.menuElement("##DEBUG## - 99: Debug Menu", "", 2);
                 }
 
-                menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
+                //stuff to setup displayPlayerInfo
+                List<Boolean> playerInfoDebugFlags = new ArrayList<Boolean>();
+                if (isDebug){
+                    playerInfoDebugFlags.add(false); //job field
+                    playerInfoDebugFlags.add(true); //school field
+                    playerInfoDebugFlags.add(true); //college field
+                    playerInfoDebugFlags.add(false); //siblings field
+                    playerInfoDebugFlags.add(false); //friends field
+                    playerInfoDebugFlags.add(gameIsDemo);
+                }
+
+                
+
+                gameMenu.displaySeperator(1);
+
+                String menuChoice;
+                char[] menuChoiceChar = {};
+                Boolean doRunMenuChooser = true;
+                //begin input section
+
+                while (doRunMenuChooser){
+                    //menu input
+                    try{
+                        System.out.println("Please make a selection: ");
+                        menuChoice = input.next().trim().toLowerCase();
+
+                        //make sure the input is valid, loop if not
+                       if (Character.isDigit(menuChoice.charAt(0))){
+                            menuChoiceChar = menuChoice.toCharArray();
+                            doRunMenuChooser = false;
+                            break;
+                       }
+                        else {
+                            logger.info("##DEBUG## - game menu input - invalid input recieved. clearing variable and looping input.");
+                            menuChoice = "";
+                            doRunMenuChooser = true;
+                            continue;
+                        }
+
+
+                    }catch (InputMismatchException error){
+                        menuChoice = "";
+                        input.next();
+                        doRunMenuChooser = true;
+                        continue;
+                    }
+                }
+
+
+
+                switch(menuChoiceChar[0]) {
+                    case '1':
+                        //choice 1 code here
+                        logger.info("##DEBUG## - game menu - choice 1 selected - check stats");
+                        displayPlayerInfo(playerCharacter, dialogModule, isDebug, playerInfoDebugFlags, menu_width);
+                        break;
+                    case '2':
+                        //choice 2 code here
+                        logger.info("##DEBUG## - game menu - choice 2 selected - inv check");
+                        break;
+                    case '3':
+                        //choice 3 code here
+                        logger.info("##DEBUG## - game menu - choice 3 selected - purchase");
+                        break;
+                    case '4':
+                        //choice 4 code here
+                        logger.info("##DEBUG## - game menu - choice 4 selected - advance year");
+                        break;
+                    case '5':
+                        //choice 5 code here
+                        logger.info("##DEBUG## - game menu - choice 5 selected - increase age");
+                        break;
+                    case '6':
+                        //choice 6 code here
+                        logger.info("##DEBUG## - game menu - choice 6 selected - settings menu");
+                        displaySettingsMenu(input, dialogModule);
+                        break;
+                    case '0':
+                        //choice 0 code here
+                        logger.info("##DEBUG## - game menu - choice 0 selected - exit game");
+                        exitGame(input);
+                        break;
+                    case '9':
+                        if (isDebug){
+                            if (menuChoiceChar[1] == '9'){
+                                //debug choice code here
+                                logger.info("##DEBUG## - game menu - choice 99 selected - debug");
+                                System.out.println("Meow!!!");
+                                break;
+                            }
+                        }
+                    default:
+                        logger.info("##DEBUG## - exception - unknown program state. switch block in game menu resulted in unhandled choice. closing program with error to prevent unintended behavior");
+                        throw new UnsupportedOperationException("Invalid Program State in Game Menu. Switch-Block reported impossible result.");
+                }
 
 
                 //temporary code until input mechanism is implemented so the menu doesn't repeat itself 500 times with no way to end it
@@ -687,12 +785,6 @@ public class MiniLifeMain {
                         System.out.println("InterruptedException Caught");
                     }
                 }
-
-
-            
-
-
-
         }
 
         public static void clearConsole(){
@@ -734,140 +826,76 @@ public class MiniLifeMain {
                     logger.info("##DEBUG## - Special DisplayPlayerInfo Debug Flags: " + "jobFieldEnabled - " + jobFieldEnabled + ", schoolFieldEnabled - " + schoolFieldEnabled + ", collegeFieldEnabled - " + collegeFieldEnabled +
                     ", siblingsFieldEnabled - " + siblingsFieldEnabled + ", friendsFieldEnabled - " + friendsFieldEnabled + ", gameIsDemo - " + gameIsDemo);
                 }
-
-                String sepPadLeft = "\u25CF";
-                String sepPadRight = "\u25CF";
-                String sepLine = "\u25AC";
-                String elementPad = "\u258B";
+                
+                //create the menu
+                MiniLifeMenu playerInfoScreen = new MiniLifeMenu();
+                playerInfoScreen.createMenu("\u25CF", "\u25CF", "\u25AC", "\u258B", menu_width);
 
 
                 //begin player info screen
-                menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
+                playerInfoScreen.displaySeperator(1);
                 //player info
-                menuElement("----Player Info----", "", menu_width, 2, elementPad);
-                menuElement("First Name: ", playerCharacter.getFirstName(), menu_width, 2, elementPad);
-                menuElement("Last Name: ", playerCharacter.getLastName(), menu_width, 2, elementPad);
-                menuElement("Age: ", playerCharacter.getAge(), menu_width, 2, elementPad);
-                menuElement("Money: ", playerCharacter.getMoney(), menu_width, 2, elementPad);
-                menuElement("Health: ", playerCharacter.getHealth(), menu_width, 2, elementPad);
-                menuElement("Gender: ", playerCharacter.getPlayerGender(), menu_width, 2, elementPad);
-                menuElement("City: ", playerCharacter.getPlayerCity(), menu_width, 2, elementPad);
-
-                menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
+                playerInfoScreen.menuElement("----Player Info----", "", 2);
+                playerInfoScreen.menuElement("First Name: ", playerCharacter.getFirstName(), 2);
+                playerInfoScreen.menuElement("Last Name: ", playerCharacter.getLastName(), 2);
+                playerInfoScreen.menuElement("Age: ", playerCharacter.getAge(), 2);
+                playerInfoScreen.menuElement("Money: ", playerCharacter.getMoney(), 2);
+                playerInfoScreen.menuElement("Health: : ", playerCharacter.getHealth(), 2);
+                playerInfoScreen.menuElement("Gender: : ", playerCharacter.getPlayerGender(), 2);
+                playerInfoScreen.menuElement("City: : ", playerCharacter.getPlayerCity(), 2);
+                playerInfoScreen.displaySeperator(1);
                 //job
                 if (playerCharacter.doesPlayerHaveJob() || jobFieldEnabled){
-                    menuElement("----Job Info----", "", menu_width, 2, elementPad);
-                    
-                    menuElement("Salary: ", playerCharacter.getJob().getSalary(), menu_width, 2, elementPad);
-                    menuElement("Employer: ", playerCharacter.getJob().getEmployerName(), menu_width, 2, elementPad);
-
-                    menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
+                    playerInfoScreen.menuElement("----Job Info----", "", 2);
+                    playerInfoScreen.menuElement("Salary: ", playerCharacter.getJob().getSalary(), 2);
+                    playerInfoScreen.menuElement("Employer: ", playerCharacter.getJob().getEmployerName(), 2);
+                    playerInfoScreen.displaySeperator(1);
                 }
                 //friends and family
-                menuElement("----Friends and Family Info----", "", menu_width, 2, elementPad);
+                playerInfoScreen.menuElement("----Friends and Family Info----", "", 2);
                 //displays mother's and father's first and last names
-                menuElement("Mother's Name: ", (playerCharacter.getPlayerMother().nameGet() + " " + playerCharacter.getLastName()), menu_width, 2, elementPad);
-                menuElement("Father's Name: ", (playerCharacter.getPlayerFather().nameGet() + " " + playerCharacter.getLastName()), menu_width, 2, elementPad);
-                if (playerCharacter.doesPlayerHaveSiblings() || siblingsFieldEnabled){
+                playerInfoScreen.menuElement("Mother's Name: ", (playerCharacter.getPlayerMother().nameGet() + " " + playerCharacter.getLastName()), 2);
+                playerInfoScreen.menuElement("Father's Name: ", (playerCharacter.getPlayerFather().nameGet() + " " + playerCharacter.getLastName()), 2);
+                if (playerCharacter.getPlayerBooleanInfo(3) || siblingsFieldEnabled){
                     //displays the name of the player's sibling (only one is supported in the demo version)
-                    menuElement("Sibling's Name: ", (playerCharacter.getPlayerSiblings().get(0).nameGet() + " " + playerCharacter.getPlayerSiblings().get(0).getLastName()), menu_width, 2, elementPad);
+                    playerInfoScreen.menuElement("Sibling's Name: ", (playerCharacter.getPlayerSiblings().get(0).nameGet() + " " + playerCharacter.getLastName()), 2);
                 }
-                if (playerCharacter.doesPlayerHaveFriends() || friendsFieldEnabled){
+                if (playerCharacter.getPlayerBooleanInfo(4) || friendsFieldEnabled){
                     for (int n = 0; n > playerCharacter.getFriendsList().size(); n++){
                         //displays friend names for each friend in the friendslist.
-                        menuElement("Friend's Name: ", (playerCharacter.getFriendsList().get(n).getFriendName() + " " + playerCharacter.getFriendsList().get(n).getLastName()), menu_width, 2, elementPad);
+                        playerInfoScreen.menuElement("Sibling's Name: ", (playerCharacter.getFriendsList().get(n).getFriendName() + " " + playerCharacter.getFriendsList().get(n).getLastName()), 2);
                     }
                 }
-                menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
+                playerInfoScreen.displaySeperator(1);
                 //school info
                 if (playerCharacter.isPlayerInSchool() || schoolFieldEnabled){
-                    menuElement("----School Info----", "", menu_width, 2, elementPad);
-                    menuElement("School Name: ", playerCharacter.getSchool().getSchoolName(), menu_width, 2, elementPad);
-                    menuElement("Grade: ", playerCharacter.getSchool().gradeGet(), menu_width, 2, elementPad);
-                    menuElement("GPA: ", playerCharacter.getSchool().gpaGet(), menu_width, 2, elementPad);
+                    playerInfoScreen.menuElement("----School Info----", "", 2);
+                    playerInfoScreen.menuElement("School Name: ", playerCharacter.getSchool().getSchoolName(), 2);
+                    playerInfoScreen.menuElement("Grade: ", playerCharacter.getSchool().gradeGet(), 2);
+                    playerInfoScreen.menuElement("GPA: ", playerCharacter.getSchool().gpaGet(), 2);
                     if ((playerCharacter.getSchool().gradeGet() > 12 && playerCharacter.getSchool().schoolgraduatedGet()) || schoolFieldEnabled){
                         //for if the player graduated high school
-                        menuElement("Degree: ", playerCharacter.getSchool().getDegreeName(), menu_width, 2, elementPad);
+                        playerInfoScreen.menuElement("Degree: ", playerCharacter.getSchool().getDegreeName(), 2);
                     };
-                    menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
+                    playerInfoScreen.displaySeperator(1);
                 }
                 else if (playerCharacter.getSchool().collegeGraduatedGet() || collegeFieldEnabled){
                     //for the if the player already graduated college
-                    menuElement("----School Info----", "", menu_width, 2, elementPad);
-                    menuElement("Degree: ", playerCharacter.getSchool().getDegreeName(), menu_width, 2, elementPad);
-                    menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
+                    playerInfoScreen.menuElement("----School Info----", "", 2);
+                    playerInfoScreen.menuElement("Degree: ", playerCharacter.getSchool().getDegreeName(), 2);
+                    playerInfoScreen.displaySeperator(1);
                 };
 
                 if (isDebug){
                     //debugging stuff
-                    menuElement("####Debug Info####", "", menu_width, 2, elementPad);
-                    menuElement("Demo Version: ", gameIsDemo, menu_width, 2, elementPad);
-                    menuElement("Version: ", dialogModule.getVersionString(), menu_width, 2, elementPad);
-                    menuElement("Development Milestone: ", dialogModule.getDevelopmentMilestoneString(), menu_width, 2, elementPad);
-                    menuElement("Current Operating System: ", System.getProperty("os.name"), menu_width, 2, elementPad);
-                    menuSeperator(sepPadLeft, sepLine, sepPadRight, menu_width, 1);
+                    playerInfoScreen.menuElement("####DEBUG Info###//#endregion", "", 2);
+                    playerInfoScreen.menuElement("Demo Version: ", gameIsDemo, 2);
+                    playerInfoScreen.menuElement("Version: ", dialogModule.getVersionString(), 2);
+                    playerInfoScreen.menuElement("Development Milestone: ", dialogModule.getDevelopmentMilestoneString(), 2);
+                    playerInfoScreen.menuElement("Current Operating System: ", System.getProperty("os.name"), 2);
+                    playerInfoScreen.displaySeperator(1);
                 }
 
-        }
-
-        /**
-        *  This function displays the standard menu seperator. it is recommended to use Unicode u25CF for the pads, and Unicode u25AC for the line. 
-        *  @param left_pad - this parameter is used for the left padding character. recommended: u25CF - type: String
-        *  @param line - this parameter is used for the line character. recommended: u25AC - type: String
-        *  @param right_pad - this parameter is used for the right padding character. recommended: u25CF - type: String
-        *  @param menu_width - this parameter is used for the width of the menu element. - type: int
-        *  @param minusFromMenuWidth - this parameter removes a specified number from the menu_width. - recommended: 1 - type: int
-        */
-        public static void menuSeperator(String left_pad, String line, String right_pad, int menu_width, int minusFromMenuWidth){
-            System.out.println(StringUtils.rightPad(left_pad, menu_width - minusFromMenuWidth, line) + right_pad);
-        }
-        
-        /**
-         * This function displays a menu element in the standard format.
-         * @param elementText - this is the actual text of the menu element. type - String
-         * @param specialString - this is any special, auxillary string (or strings as a concatenated input) - type: String
-         * @param menu_width - this is the width of the menu element. - type: int
-         * @param minusFromMenuWidth - this is the amount to remove from the menu width. - type: int
-         * @param padString - this is the string to use on the ends of the element. recommended: Unicode u258B - type: String
-         */
-        public static void menuElement(String elementText, String specialString, int menu_width, int minusFromMenuWidth, String padString){
-            System.out.println(StringUtils.center( StringUtils.center((elementText + specialString), menu_width - minusFromMenuWidth), menu_width , padString ));
-        }
-
-        /**
-         * This function displays a menu element in the standard format.
-         * @param elementText - this is the actual text of the menu element. type - String
-         * @param specialInt - this is any special, auxillary integer (or integers as a concatenated input) - type: int
-         * @param menu_width - this is the width of the menu element. - type: int
-         * @param minusFromMenuWidth - this is the amount to remove from the menu width. - type: int
-         * @param padString - this is the string to use on the ends of the element. recommended: Unicode u258B - type: String
-         */
-        public static void menuElement(String elementText, int specialInt, int menu_width, int minusFromMenuWidth, String padString){
-            System.out.println(StringUtils.center( StringUtils.center((elementText + specialInt), menu_width - minusFromMenuWidth), menu_width , padString ));
-        }
-
-        /**
-         * This function displays a menu element in the standard format.
-         * @param elementText - this is the actual text of the menu element. type - String
-         * @param specialDouble - this is any special, auxillary double (or doubles as a concatenated input) - type: int
-         * @param menu_width - this is the width of the menu element. - type: int
-         * @param minusFromMenuWidth - this is the amount to remove from the menu width. - type: int
-         * @param padString - this is the string to use on the ends of the element. recommended: Unicode u258B - type: String
-         */
-        public static void menuElement(String elementText, double specialDouble, int menu_width, int minusFromMenuWidth, String padString){
-            System.out.println(StringUtils.center( StringUtils.center((elementText + specialDouble), menu_width - minusFromMenuWidth), menu_width , padString ));
-        }
-
-        /**
-         * This function displays a menu element in the standard format.
-         * @param elementText - this is the actual text of the menu element. type - String
-         * @param specialBoolean - this is any special, auxillary boolean (or booleans as a concatenated input) - type: boolean
-         * @param menu_width - this is the width of the menu element. - type: int
-         * @param minusFromMenuWidth - this is the amount to remove from the menu width. - type: int
-         * @param padString - this is the string to use on the ends of the element. recommended: Unicode u258B - type: String
-         */
-        public static void menuElement(String elementText, boolean specialBoolean, int menu_width, int minusFromMenuWidth, String padString){
-            System.out.println(StringUtils.center( StringUtils.center((elementText + specialBoolean), menu_width - minusFromMenuWidth), menu_width , padString ));
         }
 
         public static void exitGame (Scanner input){

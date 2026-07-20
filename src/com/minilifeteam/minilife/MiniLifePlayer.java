@@ -20,8 +20,6 @@ public class MiniLifePlayer {
 	private int age;
 	private double money;
 	private int health;
-	private String house;
-	private String car;
 	private MiniLifeJob currentJob;
 	private MiniLifeSchool currentSchool;
 	private int playerGender;
@@ -29,18 +27,33 @@ public class MiniLifePlayer {
 	private MiniLifeNPC playerFather;
 	private List<MiniLifeFriend> playerFriends;
 	private List<MiniLifeNPC> playerSiblings;
+	private List<MiniLifeFriend> playerRomanticInterests;
 	private String playerCity;
+	MiniLifeInventory playerInventory = new MiniLifeInventory();
+	private String playerPersonalityType;
+
+
+
+	//boolean block - flags
 	private Boolean playerHasJob = false;
 	private Boolean playerIsInSchool = false;
 	private Boolean playerHasSiblings = false;
 	private Boolean playerHasFriends = false;
+	private Boolean playerIsInPrision = false;
+	private Boolean playerIsASmoker = false;
+	private Boolean playerDoesHaveCancer = false;
+	private Boolean playerDidFailCollege = false;
+	private Boolean playerHasArrestRecord = false;
+	private Boolean playerHasRomanticInterest = false;
+	private Boolean playerIsMarried = false;
+	private Boolean playerFamilyDidWinLottery = false;
+
+	
 
 	//initialize Player variables for use
 	public void createPlayer(String firstName, String lastName, int genderCode, MiniLifeNPC mother, MiniLifeNPC father, List<MiniLifeFriend> friends, String cityName) {
 		this.firstName = firstName;
    		this.lastName = lastName;
-		car = "None";
-		house = "None";
 		this.age = 1;
 		this.money = 0.0;
 		this.health = 100;
@@ -49,17 +62,112 @@ public class MiniLifePlayer {
 		this.playerFather = father;
 		this.playerFriends = friends;
 		this.playerCity = cityName;
-		
 	}
 
-	//HOUSE
-	public String getHouse() {
-    return house;
+	/**
+	 * this function returns the status of a specified Boolean value attached to the player. 
+	 * @param boolID_1 - playerHasJob
+	 * @param boolID_2 - playerIsInSchool
+	 * @param boolID_3 - playerHasSiblings
+	 * @param boolID_4 - playerHasFriends
+	 * @param boolID_5 - playerIsInPrison
+	 * @param boolID_6 - playerIsASmoker
+	 * @param boolID_7 - playerDoesHaveCancer
+	 * @param boolID_8 - playerDidFailCollege
+	 * @param boolID_9 - playerHasArrestRecord
+	 * @param boolID_10 - playerHasRomanticInterest
+	 * @param boolID_11 - playerIsMarried
+	 * @param boolID_12 - playerFamilyDidWinLottery
+	 * @param boolID - pass one of the above numbers as the argument for this function to get the status of the named boolean.
+	 * @return Boolean status of the specified boolID
+	 */
+
+	public Boolean getPlayerBooleanInfo(int boolID){
+		switch(boolID){
+			case 1:
+				return playerHasJob;
+			case 2: 
+				return playerIsInSchool;
+			case 3:
+				return playerHasSiblings;
+			case 4:
+				return playerHasFriends;
+			case 5: 
+				return playerIsInPrision;
+			case 6:
+				return playerIsASmoker;
+			case 7:
+				return playerDoesHaveCancer;
+			case 8:
+				return playerDidFailCollege;
+			case 9:
+				return playerHasArrestRecord;
+			case 10:
+				return playerHasRomanticInterest;
+			case 11:
+				return playerIsMarried;
+			case 12:
+				return playerFamilyDidWinLottery;
+			default:
+				System.out.println("###Error! Logic Error occured in getPlayerBooleanInfo. Result returned false as failsafe.###");
+				return false;
+		}
 	}
 
-	public void setHouse(String house) {
-    this.house = house;
+	/**
+	 * this function sets a new status for a specified boolean in the player boolean block.
+	 * @param boolID - pass one of the below numbers as the argument for this function to set the named boolean.
+	 * @param boolID_1 - playerHasJob
+	 * @param boolID_2 - playerIsInSchool
+	 * @param boolID_3 - playerHasSiblings
+	 * @param boolID_4 - playerHasFriends
+	 * @param boolID_5 - playerIsInPrison
+	 * @param boolID_6 - playerIsASmoker
+	 * @param boolID_7 - playerDoesHaveCancer
+	 * @param boolID_8 - playerDidFailCollege
+	 * @param boolID_9 - playerHasArrestRecord
+	 * @param boolID_10 - playerHasRomanticInterest
+	 * @param boolID_11 - playerIsMarried
+	 * @param boolID_12 - playerFamilyDidWinLottery
+	 * @param newStatus - Boolean to set as the new status for the specified boolID
+	 */
+
+	public void setPlayerBooleanInfo(int boolID, Boolean newStatus){
+		switch(boolID){
+			case 1:
+				this.playerHasJob = newStatus;
+				break;
+			case 2: 
+				this.playerIsInSchool = newStatus;
+				break;
+			case 3:
+				this.playerHasSiblings = newStatus;
+			case 4:
+				this.playerHasFriends = newStatus;
+			case 5: 
+				 this.playerIsInPrision = newStatus;
+			case 6:
+				 this.playerIsASmoker = newStatus;
+			case 7:
+				 this.playerDoesHaveCancer = newStatus;
+			case 8:
+				 this.playerDidFailCollege = newStatus;
+			case 9:
+				 this.playerHasArrestRecord = newStatus;
+			case 10:
+				this.playerHasRomanticInterest = newStatus;
+			case 11:
+				this.playerIsMarried = newStatus;
+			case 12:
+				this.playerFamilyDidWinLottery = newStatus;
+			default:
+				System.out.println("###Error! Logic Error occured in setPlayerBooleanInfo. Unable to set specified boolID.###");
+				break;
+		}
 	}
+
+
+
 
 	//gender
 	public void setGender(int genderCode){
@@ -78,6 +186,39 @@ public class MiniLifePlayer {
 		}
 		else {
 			return "UnknownGender";
+		}
+	}
+
+	//personality
+	public void setPersonalityType(int personalityCode){
+		switch(personalityCode){
+			case 1:
+				playerPersonalityType = "Friendly-Cheerful";
+				break;
+			case 2:
+				playerPersonalityType = "Friendly-Shy";
+				break;
+			case 3:
+				playerPersonalityType = "Emotional-Shy";
+				break;
+			case 4:
+				playerPersonalityType = "Emotional-Withdrawn";
+				break;
+			case 5:
+				playerPersonalityType = "Angry-Withdrawn";
+				break;
+			case 6:
+				playerPersonalityType = "Angry-Outward";
+				break;
+			case 7:
+				playerPersonalityType = "Depressed";
+				break;
+			case 8:
+				playerPersonalityType = "Delinquent";
+				break;
+			case 9:
+				playerPersonalityType = "Criminal";
+				break;
 		}
 	}
 
@@ -108,39 +249,41 @@ public class MiniLifePlayer {
 		playerHasFriends = true;
 	}
 
-	public Boolean doesPlayerHaveSiblings(){
-		return playerHasSiblings;
-	}
+	// public Boolean doesPlayerHaveSiblings(){
+	// 	return playerHasSiblings;
+	// }
 
-	public Boolean doesPlayerHaveFriends(){
-		return playerHasFriends;
-	}
+	// public Boolean doesPlayerHaveFriends(){
+	// 	return playerHasFriends;
+	// }
 
-	public void setSiblingsStatus(Boolean doesPlayerHaveSiblings){
-		this.playerHasSiblings = false;
-	}
+	// public void setSiblingsStatus(Boolean doesPlayerHaveSiblings){
+	// 	this.playerHasSiblings = false;
+	// }
 
-	public void setFriendsStatus(Boolean doesPlayerHaveFriends){
-		this.playerHasFriends = false;
-	}
+	// public void setFriendsStatus(Boolean doesPlayerHaveFriends){
+	// 	this.playerHasFriends = false;
+	// }
 
 	//city
 	public String getPlayerCity() {
 		return playerCity;
 	}
+	
 
 	public void updatePlayerCity(String newCityName){
 		this.playerCity = newCityName;
 	}
 
-	//CAR
-	public String getCar() {
-    return car;
+	//inventory
+	public void setPlayerInventory(MiniLifeInventory inv) {
+		this.playerInventory = inv;
 	}
 
-	public void setCar(String car) {
-    this.car = car;
+	public MiniLifeInventory getInventory(){
+		return playerInventory;
 	}
+
 
 	//NAME
 	public String getFirstName() {
