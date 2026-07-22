@@ -7,5 +7,6 @@
         "lib/**/*.jar"
     ],
     "git.enableCommitSigning": true,
-    "git.enableSmartCommit": true
+    "git.enableSmartCommit": true,
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
