@@ -293,7 +293,7 @@ public class MiniLifeDialog {
     }
 
         public String getVersionString(){
-            String currentVersion = "Version 0.12-indev3-demo";
+            String currentVersion = "Version 0.20-indev3-demo";
             return currentVersion;
     }      
     

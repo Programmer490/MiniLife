@@ -1,7 +1,8 @@
 //MiniLife main program file
-//version 0.12-InDev3 (Jul 15, 2026)
+//version 0.20-InDev3 (Jul 22, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
-//this project uses some code licensed under the Apache License version 2.0. This code includes the Apache Commons Lang library. This license is compatible with GPLv3.
+//this project uses some code licensed under the Apache License version 2.0. This code includes the Apache Commons Lang library. see the "apache-LICENSE.txt" file for license terms.
+//This project uses some code licensed under the BSD 3-clause license. This code includes the Jline3 library. see "jline-license.txt" for license terms.
 //No Artificial Intelligence tools were used in the creation of this source code file.
 //Primary Developer(s) on this file: Celeste Manguso
 //Secondary Developer(s) on this file: 
@@ -20,6 +21,9 @@ import java.util.InputMismatchException;
 import java.lang.UnsupportedOperationException;
 import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.lang3.StringUtils;
+import org.jline.terminal.*;
+import org.jline.utils.*;
+import org.jline.style.*;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -32,8 +36,10 @@ public class MiniLifeMain {
     public static Boolean doRunMainMenu = true;
 
     public static Boolean doRunGameMenu = true;
+    
 
-        public static void main(String[] args){
+
+        public static void main(String[] args) throws Exception{
         //enable debug messages if they were enabled on the command line (for debugging builds, comment this out for production builds before compiling)
         int argsLength = args.length;
         Boolean isDebug = false;
@@ -55,6 +61,10 @@ public class MiniLifeMain {
         Scanner input = new Scanner(System.in);
         logger.info("##DEBUG## - Scanner Created");
 
+        Terminal sysTerm = TerminalBuilder.builder().system(true).ffm(true).streams(System.in, System.out).build();
+
+
+
         //create a dialog module instance
         MiniLifeDialog dialogModule = new MiniLifeDialog();
 
@@ -63,18 +73,19 @@ public class MiniLifeMain {
 
         //##DEBUG## if mode is DEBUG, ask user if they need to access special functionality:
         if (isDebug){
-         runDebugMenu(input, dialogModule, wordGame, isDebug);
+         runDebugMenu(input, dialogModule, wordGame, isDebug, sysTerm);
         }
 
         //introduce the program
-
-        int width = 40;
+        int width = sysTerm.getWidth() - 5;
         System.out.println(StringUtils.rightPad("*", width - 1, "-") + "*");
         System.out.println(StringUtils.center(StringUtils.center("MiniLife (Demo Version)", width - 2), width, "|"));
         System.out.println(StringUtils.center( StringUtils.center(dialogModule.getVersionString(), width - 2), width, "|" ));
         System.out.println(StringUtils.rightPad("*", width - 1, "-") + "*");
         Date currentDate = new Date();
         logger.info("##DEBUG## - Debug Logging Enabled. Current date and time is " + currentDate);
+
+
 
 
         //display the main menu
@@ -84,7 +95,7 @@ public class MiniLifeMain {
         if (getMenuChoice.contentEquals("NewGame")){
             logger.info("##DEBUG## - user chose to launch a new game.");
             MiniLifeMain.doRunMainMenu = false;
-            playNewGame(input, dialogModule, isDebug);
+            playNewGame(input, dialogModule, isDebug, sysTerm);
         }
         else if (getMenuChoice.contentEquals("loadSaveGame")){
             logger.info("##DEBUG## - user chose to load save game");
@@ -100,7 +111,7 @@ public class MiniLifeMain {
         else if (getMenuChoice.contentEquals("ExitProgram")){
             logger.info("##DEBUG## - user chose to exit program. exiting...");
             MiniLifeMain.doRunMainMenu = false;
-            exitGame(input);
+            exitGame(input, sysTerm);
         }
         else if (getMenuChoice.contentEquals("ExitedLoop")){
             logger.info("##DEBUG## - Error Detected! Main Menu loop exited incorrectly. restarting loop.");
@@ -167,7 +178,7 @@ public class MiniLifeMain {
             System.out.println("SettingsMenu");
         }
 
-        public static void playNewGame(Scanner input, MiniLifeDialog dialogModule, Boolean isDebug /*MiniLifeCharacter characterModule, MiniLifeMinigame, minigame1, etc... */){
+        public static void playNewGame(Scanner input, MiniLifeDialog dialogModule, Boolean isDebug, Terminal sysTerm /*MiniLifeCharacter characterModule, MiniLifeMinigame, minigame1, etc... */) throws Exception{
 
             //clear the console (if not in debug mode, ask if in debug mode)
             if (!isDebug){
@@ -182,7 +193,7 @@ public class MiniLifeMain {
             }
             
 
-            int menu_width = 120;
+            int menu_width = sysTerm.getWidth() - 5;
             System.out.println(StringUtils.rightPad("*", menu_width - 1, "~") + "*");
             System.out.println(StringUtils.center(StringUtils.center("New Game!", menu_width - 2), menu_width, "!"));
             System.out.println(StringUtils.rightPad("*", menu_width - 1, "~") + "*");
@@ -294,7 +305,7 @@ public class MiniLifeMain {
                 DebugFlags.add(false); //friends field
                 DebugFlags.add(gameIsDemo);
             }
-            displayPlayerInfo(playerCharacter, dialogModule, isDebug, DebugFlags, menu_width);
+            displayPlayerInfo(playerCharacter, dialogModule, isDebug, DebugFlags, menu_width, sysTerm);
 
             //display the game menu
             List<Boolean> menuDebugFlags = new ArrayList<Boolean>();
@@ -305,13 +316,13 @@ public class MiniLifeMain {
 
             doRunGameMenu = true;
             while (doRunGameMenu){
-                displayGameMenu(input, dialogModule, playerCharacter, isDebug, menuDebugFlags, menu_width);
+                displayGameMenu(input, dialogModule, playerCharacter, isDebug, menuDebugFlags, menu_width, sysTerm);
             }
 
 
         }
 
-        public static void runDebugMenu (Scanner input, MiniLifeDialog dialogModule, MiniLife_WordGame wordGame, Boolean isDebug){
+        public static void runDebugMenu (Scanner input, MiniLifeDialog dialogModule, MiniLife_WordGame wordGame, Boolean isDebug, Terminal sysTerm) throws Exception{
             int runDebugConsole = 1;
             logger.info("##DEBUG## Debug mode is enabled, launching debug console.");
 
@@ -686,7 +697,7 @@ public class MiniLifeMain {
                     gameplayLoop1.initGameModule(debugPlayer, dialogModule, input, logger, isDebug, debugFlagsGPL1);
 
                     //call the gameplay loop 1
-                    gameplayLoop1.callGameWithID(1, isDebug);
+                    gameplayLoop1.callGameWithID(1, isDebug, sysTerm);
 
                     System.out.println("playerAge: " + debugPlayer.getAge());
 
@@ -758,7 +769,7 @@ public class MiniLifeMain {
                     gameplayLoop2.initGameModule(debugPlayer, dialogModule, input, logger, isDebug, debugFlagsGPL2);
 
                     //call the gameplay loop 2
-                    gameplayLoop2.callGameWithID(2, isDebug);
+                    gameplayLoop2.callGameWithID(2, isDebug, sysTerm);
 
 
                 }
@@ -825,15 +836,23 @@ public class MiniLifeMain {
 
 
                     //create a new game instance
-                    List<Boolean> debugFlags = new ArrayList<Boolean>();
+                    List<Boolean> debugFlagsGPL3 = new ArrayList<Boolean>();
 
-                    debugFlags.add(gameIsDemo); //demo indicator
+                    debugFlagsGPL3.add(gameIsDemo); //demo indicator
+                    debugFlagsGPL3.add(true);//minigame debug mode
+                    debugFlagsGPL3.add(true);//minigame force enable
+                    debugFlagsGPL3.add(true); //lottery win force enable
+                    debugFlagsGPL3.add(true); //force player injury
+                    debugFlagsGPL3.add(true); //force player cancer
+                    debugFlagsGPL3.add(true); //force heirloom check
+                    debugFlagsGPL3.add(true); //force friend gain
+                    debugFlagsGPL3.add(true); //force trivia game
 
                     MiniLifeGameplay gameplayLoop3 = new MiniLifeGameplay();
-                    gameplayLoop3.initGameModule(debugPlayer, dialogModule, input, logger, isDebug, debugFlags);
+                    gameplayLoop3.initGameModule(debugPlayer, dialogModule, input, logger, isDebug, debugFlagsGPL3);
 
                     //call the gameplay loop 3
-                    gameplayLoop3.callGameWithID(3, isDebug);
+                    gameplayLoop3.callGameWithID(3, isDebug, sysTerm);
                 }
                 else if (debugInput.charAt(0) == '1' && debugInput.charAt(1) == '2'){
                     logger.info("##DEBUG## - debugMenu - test gameplay loop 4");
@@ -920,7 +939,7 @@ public class MiniLifeMain {
                     gameplayLoop4.initGameModule(debugPlayer, dialogModule, input, logger, isDebug, debugFlags);
 
                     //call the gameplay loop 4
-                    gameplayLoop4.callGameWithID(4, isDebug);
+                    gameplayLoop4.callGameWithID(4, isDebug, sysTerm);
                 }
                 else if (debugInput.charAt(0) == '1' && debugInput.charAt(1) == '3'){
                     logger.info("##DEBUG## - debugMenu - test gameplay loop 5");
@@ -1019,7 +1038,7 @@ public class MiniLifeMain {
                     gameplayLoop5.initGameModule(debugPlayer, dialogModule, input, logger, isDebug, debugFlags);
 
                     //call the gameplay loop 4
-                    gameplayLoop5.callGameWithID(5, isDebug);
+                    gameplayLoop5.callGameWithID(5, isDebug, sysTerm);
                 }
                 else if (debugInput.charAt(0) == '1' && debugInput.charAt(1) == '4'){
                     logger.info("##DEBUG## - debugMenu - test gameplay loop 6");
@@ -1134,7 +1153,7 @@ public class MiniLifeMain {
                     gameplayLoop6.initGameModule(debugPlayer, dialogModule, input, logger, isDebug, debugFlags);
 
                     //call the gameplay loop 6
-                    gameplayLoop6.callGameWithID(6, isDebug);
+                    gameplayLoop6.callGameWithID(6, isDebug, sysTerm);
 
 
                 }
@@ -1226,7 +1245,7 @@ public class MiniLifeMain {
                     gameplayLoop7.initGameModule(debugPlayer, dialogModule, input, logger, isDebug, debugFlags);
 
                     //call the gameplay loop 6
-                    gameplayLoop7.callGameWithID(7, isDebug);
+                    gameplayLoop7.callGameWithID(7, isDebug, sysTerm);
                 }
                 else if (debugInput.charAt(0) == '0'){
                     //exits the debug menu
@@ -1238,7 +1257,7 @@ public class MiniLifeMain {
         }while(runDebugConsole == 1);
         }
 
-        public static void displayGameMenu(Scanner input, MiniLifeDialog dialogModule, MiniLifePlayer playerCharacter, Boolean isDebug, List<Boolean>DebugEnabledFlags, int menu_width){
+        public static void displayGameMenu(Scanner input, MiniLifeDialog dialogModule, MiniLifePlayer playerCharacter, Boolean isDebug, List<Boolean>DebugEnabledFlags, int menu_width, Terminal sysTerm) throws Exception{
                 //debug stuff
                 Boolean showDebugSettings = false;
                 Boolean gameIsDemo = true;
@@ -1251,10 +1270,10 @@ public class MiniLifeMain {
 
                 //create the menus
                 MiniLifeMenu gameMenuHeader = new MiniLifeMenu();
-                gameMenuHeader.createMenu("*", "*", "~", "!", menu_width);
+                gameMenuHeader.createMenu("*", "*", "~", "!", menu_width, false, sysTerm);
 
                 MiniLifeMenu gameMenu = new MiniLifeMenu();
-                gameMenu.createMenu("\u25CF", "\u25CF", "\u25AC", "\u258B", menu_width);
+                gameMenu.createMenu("\u25CF", "\u25CF", "\u25AC", "\u258B", menu_width, false, sysTerm);
 
                 //header
                 gameMenuHeader.displaySeperator(1);
@@ -1329,7 +1348,7 @@ public class MiniLifeMain {
                     case '1':
                         //choice 1 code here
                         logger.info("##DEBUG## - game menu - choice 1 selected - check stats");
-                        displayPlayerInfo(playerCharacter, dialogModule, isDebug, playerInfoDebugFlags, menu_width);
+                        displayPlayerInfo(playerCharacter, dialogModule, isDebug, playerInfoDebugFlags, menu_width, sysTerm);
                         break;
                     case '2':
                         //choice 2 code here
@@ -1363,7 +1382,7 @@ public class MiniLifeMain {
                                 gameplayLoop1.initGameModule(playerCharacter, dialogModule, input, logger, isDebug, debugFlagsGPL1);
 
                                 //call the gameplay loop 1
-                                gameplayLoop1.callGameWithID(1, false);
+                                gameplayLoop1.callGameWithID(1, false, sysTerm);
                                 break;
 
                             case 5, 6, 7, 8, 9, 10:
@@ -1384,7 +1403,30 @@ public class MiniLifeMain {
                                 gameplayLoop2.initGameModule(playerCharacter, dialogModule, input, logger, isDebug, debugFlagsGPL2);
 
                                 //call the gameplay loop 2
-                                gameplayLoop2.callGameWithID(2, false);
+                                gameplayLoop2.callGameWithID(2, false, sysTerm);
+                                break;
+
+                            case 11, 12, 13:
+                                //create a new game instance
+                                List<Boolean> debugFlagsGPL3 = new ArrayList<Boolean>();
+
+                                debugFlagsGPL3.add(gameIsDemo); //demo indicator
+                                debugFlagsGPL3.add(false);//minigame debug mode
+                                debugFlagsGPL3.add(false);//minigame force enable
+                                debugFlagsGPL3.add(false); //lottery win force enable
+                                debugFlagsGPL3.add(false); //force player injury
+                                debugFlagsGPL3.add(false); //force player cancer
+                                debugFlagsGPL3.add(false); //heirloom force enable
+                                debugFlagsGPL3.add(false); //new friend force enable
+                                debugFlagsGPL3.add(false); //trivia game force enable
+
+                                MiniLifeGameplay gameplayLoop3 = new MiniLifeGameplay();
+                                gameplayLoop3.initGameModule(playerCharacter, dialogModule, input, logger, isDebug, debugFlagsGPL3);
+
+                                //call the gameplay loop 3
+                                gameplayLoop3.callGameWithID(3, false, sysTerm);
+                                break;
+
                         }
 
 
@@ -1407,7 +1449,7 @@ public class MiniLifeMain {
                     case '0':
                         //choice 0 code here
                         logger.info("##DEBUG## - game menu - choice 0 selected - exit game");
-                        exitGame(input);
+                        exitGame(input, sysTerm);
                         break;
                     case '9':
                         if (isDebug){
@@ -1425,15 +1467,10 @@ public class MiniLifeMain {
 
 
                 //temporary code until input mechanism is implemented so the menu doesn't repeat itself 500 times with no way to end it
-                if (isDebug){
-                    doRunGameMenu = false;
-                }
-                else{
-                    try{Thread.sleep(1000);}
-                    catch (InterruptedException error){
-                        System.out.println("InterruptedException Caught");
-                    }
-                }
+                try{Thread.sleep(1500);}
+                catch (InterruptedException error){
+                    System.out.println("InterruptedException Caught");
+                 }
         }
 
         public static void clearConsole(){
@@ -1456,7 +1493,7 @@ public class MiniLifeMain {
             }
         }
 
-        public static void displayPlayerInfo(MiniLifePlayer playerCharacter, MiniLifeDialog dialogModule, Boolean isDebug, List<Boolean>DebugEnabledFlags, int menu_width){
+        public static void displayPlayerInfo(MiniLifePlayer playerCharacter, MiniLifeDialog dialogModule, Boolean isDebug, List<Boolean>DebugEnabledFlags, int menu_width, Terminal sysTerm) throws Exception{
 
                     Boolean jobFieldEnabled = false;
                     Boolean schoolFieldEnabled = false;
@@ -1478,7 +1515,7 @@ public class MiniLifeMain {
                 
                 //create the menu
                 MiniLifeMenu playerInfoScreen = new MiniLifeMenu();
-                playerInfoScreen.createMenu("\u25CF", "\u25CF", "\u25AC", "\u258B", menu_width);
+                playerInfoScreen.createMenu("\u25CF", "\u25CF", "\u25AC", "\u258B", menu_width, false, sysTerm);
 
 
                 //begin player info screen
@@ -1554,10 +1591,13 @@ public class MiniLifeMain {
 
         }
 
-        public static void exitGame (Scanner input){
+        public static void exitGame (Scanner input, Terminal sysTerm) throws Exception{
             //close the scanner
             input.close();
             logger.info("##DEBUG## - Scanner successfully closed, exiting program...");
+
+            sysTerm.flush();
+            sysTerm.close();
             
             //exit the game
             System.exit(0);

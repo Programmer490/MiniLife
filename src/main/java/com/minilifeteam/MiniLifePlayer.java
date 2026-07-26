@@ -7,9 +7,6 @@
 
 package com.minilifeteam;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
 import java.util.List;
 
 public class MiniLifePlayer {
@@ -48,6 +45,8 @@ public class MiniLifePlayer {
 	private Boolean playerHasRomanticInterest = false;
 	private Boolean playerIsMarried = false;
 	private Boolean playerFamilyDidWinLottery = false;
+	private Boolean playerDoesHavePersonalityAssigned = false;
+	private Boolean playerHasSpecialPersonality = false;
 
 	
 
@@ -79,6 +78,8 @@ public class MiniLifePlayer {
 	 * @param boolID_10 - playerHasRomanticInterest
 	 * @param boolID_11 - playerIsMarried
 	 * @param boolID_12 - playerFamilyDidWinLottery
+	 * @param boolID_13 - playerDoesHavePersonalityAssigned
+	 * @param boolID_14 - playerHasSpecialPersonality
 	 * @param boolID - pass one of the above numbers as the argument for this function to get the status of the named boolean.
 	 * @return Boolean status of the specified boolID
 	 */
@@ -109,6 +110,10 @@ public class MiniLifePlayer {
 				return playerIsMarried;
 			case 12:
 				return playerFamilyDidWinLottery;
+			case 13:
+				return playerDoesHavePersonalityAssigned;
+			case 14:
+				return playerHasSpecialPersonality;
 			default:
 				System.out.println("###Error! Logic Error occured in getPlayerBooleanInfo. Result returned false as failsafe.###");
 				return false;
@@ -130,6 +135,8 @@ public class MiniLifePlayer {
 	 * @param boolID_10 - playerHasRomanticInterest
 	 * @param boolID_11 - playerIsMarried
 	 * @param boolID_12 - playerFamilyDidWinLottery
+	 * @param boolID_13 - playerDoesHavePersonalityAssigned
+	 * @param boolID_14 - playerHasSpecialPersonality
 	 * @param newStatus - Boolean to set as the new status for the specified boolID
 	 */
 
@@ -170,6 +177,12 @@ public class MiniLifePlayer {
 				break;
 			case 12:
 				this.playerFamilyDidWinLottery = newStatus;
+				break;
+			case 13:
+				this.playerDoesHavePersonalityAssigned = newStatus;
+				break;
+			case 14:
+				this.playerHasSpecialPersonality = newStatus;
 				break;
 			default:
 				System.out.println("###Error! Logic Error occured in setPlayerBooleanInfo. Unable to set specified boolID.###");
@@ -218,30 +231,41 @@ public class MiniLifePlayer {
 		switch(personalityCode){
 			case 1:
 				playerPersonalityType = "Friendly-Cheerful";
+				this.playerDoesHavePersonalityAssigned = true;
 				break;
 			case 2:
 				playerPersonalityType = "Friendly-Shy";
+				this.playerDoesHavePersonalityAssigned = true;
 				break;
 			case 3:
 				playerPersonalityType = "Emotional-Shy";
+				this.playerDoesHavePersonalityAssigned = true;
 				break;
 			case 4:
 				playerPersonalityType = "Emotional-Withdrawn";
+				this.playerDoesHavePersonalityAssigned = true;
 				break;
 			case 5:
 				playerPersonalityType = "Angry-Withdrawn";
+				this.playerDoesHavePersonalityAssigned = true;
 				break;
 			case 6:
 				playerPersonalityType = "Angry-Outward";
+				this.playerDoesHavePersonalityAssigned = true;
 				break;
 			case 7:
 				playerPersonalityType = "Depressed";
+				this.playerDoesHavePersonalityAssigned = true;
 				break;
 			case 8:
 				playerPersonalityType = "Delinquent";
+				this.playerDoesHavePersonalityAssigned = true;
+				this.playerHasSpecialPersonality = true;
 				break;
 			case 9:
 				playerPersonalityType = "Criminal";
+				this.playerDoesHavePersonalityAssigned = true;
+				this.playerHasSpecialPersonality = true;
 				break;
 		}
 	}
@@ -272,10 +296,20 @@ public class MiniLifePlayer {
 		return playerFriends;
 	}
 
-	public void updateFriendsList(List<MiniLifeFriend> newFriendsList){
+	public void setFriendsList(List<MiniLifeFriend> newFriendsList){
 		this.playerFriends = newFriendsList;
 		playerHasFriends = true;
 	}
+
+	public List<MiniLifeFriend> getRomanceList(){
+		return playerRomanticInterests;
+	}
+
+	public void setRomanceList(List<MiniLifeFriend> newRomanceList){
+		this.playerRomanticInterests = newRomanceList;
+		setPlayerBooleanInfo(10, true);
+	}
+
 
 	// public Boolean doesPlayerHaveSiblings(){
 	// 	return playerHasSiblings;

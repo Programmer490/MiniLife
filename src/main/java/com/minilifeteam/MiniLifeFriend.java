@@ -49,9 +49,15 @@ public class MiniLifeFriend  {
 		}
 		public void friendRelationshipImprove(int amount) {
 			relationship += amount;
+			if (relationship > 100){
+				relationship = 100;
+			}
 		}
 		public void friendRelationshipDecline(int amount) {
 			relationship -= amount;
+			if (relationship < 0){
+				relationship = 0;
+			}
 		}
 
 		public void advanceYear(){

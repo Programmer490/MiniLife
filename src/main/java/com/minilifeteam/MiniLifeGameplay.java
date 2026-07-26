@@ -1,7 +1,8 @@
 //MiniLife gameplay program file
 //version 0.1-InDev3 (Jul 20, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
-//this project uses some code licensed under the Apache License version 2.0. This code includes the Apache Commons Lang library. This license is compatible with GPLv3.
+//this project uses some code licensed under the Apache License version 2.0. This code includes the Apache Commons Lang library. see the "apache-LICENSE.txt" file for license terms.
+//This project uses some code licensed under the BSD 3-clause license. This code includes the Jline3 library. see "jline-license.txt" for license terms.
 //No Artificial Intelligence tools were used in the creation of this source code file.
 //Primary Developer(s) on this file: Celeste Manguso
 //Secondary Developer(s) on this file: 
@@ -14,13 +15,17 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.Date;
 import java.util.InputMismatchException;
+import java.io.IOException;
 import java.lang.UnsupportedOperationException;
 import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.lang3.StringUtils;
+import org.jline.terminal.*;
+import org.jline.utils.*;
+import org.jline.style.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class MiniLifeGameplay {
+public class MiniLifeGameplay{
 
     private MiniLifePlayer playerCharacter;
     private MiniLifeDialog dialogModule;
@@ -78,28 +83,28 @@ public class MiniLifeGameplay {
      * @param gameID_2 - gameplayLoop7: senior
      * @param resetGame - Boolean - set to true to reset the specified game being called
      */
-    public void callGameWithID(int gameID, Boolean resetGame){
+    public void callGameWithID(int gameID, Boolean resetGame, Terminal sysTerm) throws Exception{
         switch(gameID){
             case 1:
-                gameplayLoop1(resetGame);
+                gameplayLoop1(resetGame, sysTerm);
                 break;
             case 2:
-                gameplayLoop2(resetGame);
+                gameplayLoop2(resetGame, sysTerm);
                 break;
             case 3:
-                gameplayLoop3(resetGame);
+                gameplayLoop3(resetGame, sysTerm);
                 break;
             case 4:
-                gameplayLoop4(resetGame);
+                gameplayLoop4(resetGame, sysTerm);
                 break; 
             case 5:
-                gameplayLoop5(resetGame);
+                gameplayLoop5(resetGame, sysTerm);
                 break;
             case 6:
-                gameplayLoop6(resetGame);
+                gameplayLoop6(resetGame, sysTerm);
                 break;
             case 7:
-                gameplayLoop7(resetGame);
+                gameplayLoop7(resetGame, sysTerm);
                 break;
             default:
                 logger.info("##DEBUG## - Error - logic error in callGameWithID, unable to load game.");
@@ -117,7 +122,7 @@ public class MiniLifeGameplay {
      * @apiNote there is a very small chance that the character's family wins the lottery, and the character is gifted a ton of money.
      * @apiNote the character may lose some health due to an injury, and there is a very small chance that the character develops cancer during this time.
      */
-    private void gameplayLoop1(Boolean doReset){
+    private void gameplayLoop1(Boolean doReset, Terminal sysTerm) throws Exception{
         if (doReset){
             gameplayLoop1_reset();
         }
@@ -135,13 +140,15 @@ public class MiniLifeGameplay {
         //setup menu stuff
         int menu_width = 120;
         MiniLifeMenu gameMenuHeader = new MiniLifeMenu();
-        gameMenuHeader.createMenu("*", "*", "~", "!", menu_width);
+        gameMenuHeader.createMenu("*", "*", "~", "!", menu_width, false, sysTerm);
 
         MiniLifeMenu gameMenu = new MiniLifeMenu();
-        gameMenu.createMenu("\u25CF", "\u25CF", "\u25AC", "\u258B", menu_width);
+        gameMenu.createMenu("\u25CF", "\u25CF", "\u25AC", "\u258B", menu_width, false, sysTerm);
 
         MiniLifeMenu errorMenu = new MiniLifeMenu();
-        errorMenu.createMenu("\u2613", "\u2613", "-", "\u258B", menu_width);
+
+        errorMenu.createMenu("\u2613", "\u2613", "-", "\u258B", menu_width, false, sysTerm);
+        
 
         
         
@@ -187,10 +194,9 @@ public class MiniLifeGameplay {
             gameMenu.menuElement("Minigame Name: ", minigameName, 2);
             gameMenu.displaySeperator(1);
 
-            System.out.println("Play the minigame?: ");
+            System.out.print("Play the minigame?: ");
             String userInput = input.next().trim().toLowerCase();
             char[] inputChar = userInput.toCharArray();
-
             if (inputChar[0] == 'y' || inputChar [0] == 'Y'){
                 minigameShouldBeRunConclusive = true;
             }else{
@@ -372,7 +378,7 @@ public class MiniLifeGameplay {
      * @apiNote they may face penalties due to slacking (if the player loses the minigame, or doesn't play it at all). this will force a minigame to save the character's school career (exitable turned off)
      */
 
-    private void gameplayLoop2(Boolean doReset){
+    private void gameplayLoop2(Boolean doReset, Terminal sysTerm) throws Exception{
         if (doReset){
             gameplayLoop2_reset();
         }
@@ -389,22 +395,22 @@ public class MiniLifeGameplay {
         //setup menu stuff
         int menu_width = 120;
         MiniLifeMenu gameMenuHeader = new MiniLifeMenu();
-        gameMenuHeader.createMenu("*", "*", "~", "!", menu_width);
+        gameMenuHeader.createMenu("*", "*", "~", "!", menu_width, false, sysTerm);
 
         MiniLifeMenu gameMenu = new MiniLifeMenu();
-        gameMenu.createMenu("\u25CF", "\u25CF", "\u25AC", "\u258B", menu_width);
+        gameMenu.createMenu("\u25CF", "\u25CF", "\u25AC", "\u258B", menu_width, false, sysTerm);
 
         MiniLifeMenu errorMenu = new MiniLifeMenu();
-        errorMenu.createMenu("\u26CC", "\u26CC", "-", "\u258B", menu_width);
+        errorMenu.createMenu("\u26CC", "\u26CC", "-", "\u258B", menu_width, false, sysTerm);
 
         MiniLifeMenu loveMenu = new MiniLifeMenu();
-        loveMenu.createMenu("\u2665", "\u2665", "~", "\u258B", menu_width);
+        loveMenu.createMenu("\u2765", "\u2765", "~", "\u258B", menu_width, false, sysTerm);
 
         MiniLifeMenu friendMenu = new MiniLifeMenu();
-        friendMenu.createMenu("\u1F90D", "\u1F90D", "\u25AC", "\u258B", menu_width);
+        friendMenu.createMenu(":3", ":3", "\u25AC", "\u258B", menu_width, false, sysTerm);
 
         MiniLifeMenu transMenu = new MiniLifeMenu();
-        transMenu.createMenu("\u26A7", "\u26A7", "\u25AC", "\u258B", menu_width);
+        transMenu.createMenu("\u26A7", "\u26A7", "\u25AC", "\u258B", menu_width, false, sysTerm);
 
         
         
@@ -646,12 +652,12 @@ public class MiniLifeGameplay {
                
                friendCandidate.createFriend(fcFirstName, fcLastName, fcAge);
 
-               friendMenu.displaySeperator(1);
+               friendMenu.displaySeperator(2);
                friendMenu.menuElement("You met someone new, and you hit it off!", "", 2);
                friendMenu.menuElement("Would you like to be friends?", "", 2);
                friendMenu.menuElement("Name: ", (friendCandidate.getFriendName() + " " + friendCandidate.getLastName()), 2);
                friendMenu.menuElement("Age: ", friendCandidate.getAge(), 2);
-               friendMenu.displaySeperator(1);
+               friendMenu.displaySeperator(2);
 
                 System.out.print("Make a new friend?: ");
                 String userInput = input.next().trim().toLowerCase();
@@ -795,6 +801,12 @@ public class MiniLifeGameplay {
                         gameMenu.menuElement("Congrats! your GPA went up!", "", 2);
                         gameMenu.displaySeperator(1);
                     }
+                    else {
+                        playerCharacter.getSchool().gpaDown();
+                        gameMenu.displaySeperator(1);
+                        gameMenu.menuElement("Oh No! you failed! your GPA went down.", "", 2);
+                        gameMenu.displaySeperator(1);
+                    }
                 }
             }
 
@@ -818,22 +830,22 @@ public class MiniLifeGameplay {
             String q2AnsFour = "4: 1998";
 
             String questionThree =  "When did Chappell Roan's \"Pink Pony Club\" release?";
-            String q3AnsOne = "August 13, 2022";
-            String q3AnsTwo = "May 12, 2019";
-            String q3AnsThree = "April 3, 2020"; //correct
-            String q3AnsFour = "December 13, 2021";
+            String q3AnsOne = "1: August 13, 2022";
+            String q3AnsTwo = "2: May 12, 2019";
+            String q3AnsThree = "3: April 3, 2020"; //correct
+            String q3AnsFour = "4: December 13, 2021";
 
             String questionFour =  "What is the name of Vylet Pony's 21'st Album?";
-            String q4AnsOne = "I Am the Drifter of Sunshine Valley";
-            String q4AnsTwo = "Carousel";
-            String q4AnsThree = "Monarch of Monsters";
-            String q4AnsFour = "I Was the Loner of Paradise Valley"; //correct
+            String q4AnsOne = "1: I Am the Drifter of Sunshine Valley";
+            String q4AnsTwo = "3: Carousel";
+            String q4AnsThree = "4: Monarch of Monsters";
+            String q4AnsFour = "4: I Was the Loner of Paradise Valley"; //correct
 
             String questionFive =  "What is the name of the third song on Jane Remover's \"Census Designated\"";
-            String q5AnsOne = "Holding a Leech";
-            String q5AnsTwo = "Fling"; //correct
-            String q5AnsThree = "Backseat Girl";
-            String q5AnsFour = "Census Designated";
+            String q5AnsOne = "1: Holding a Leech";
+            String q5AnsTwo = "2: Fling"; //correct
+            String q5AnsThree = "3: Backseat Girl";
+            String q5AnsFour = "4: Census Designated";
 
             int triviaGameOffered = ThreadLocalRandom.current().nextInt(0, 10);
             Boolean runTriviaGame = false;
@@ -870,7 +882,7 @@ public class MiniLifeGameplay {
                             gameMenu.menuElement(q1AnsFour, "", 2);
                             gameMenu.displaySeperator(1);
 
-                            System.out.print("Answer ");
+                            System.out.print("Answer: ");
                             triviaInput = input.next().trim().toLowerCase();
                             triviaChar = triviaInput.toCharArray();
 
@@ -898,7 +910,7 @@ public class MiniLifeGameplay {
                             gameMenu.menuElement(q2AnsFour, "", 2);
                             gameMenu.displaySeperator(1);
 
-                            System.out.print("Answer ");
+                            System.out.print("Answer: ");
                             triviaInput = input.next().trim().toLowerCase();
                             triviaChar = triviaInput.toCharArray();
 
@@ -926,7 +938,7 @@ public class MiniLifeGameplay {
                             gameMenu.menuElement(q3AnsFour, "", 2);
                             gameMenu.displaySeperator(1);
 
-                            System.out.print("Answer ");
+                            System.out.print("Answer: ");
                             triviaInput = input.next().trim().toLowerCase();
                             triviaChar = triviaInput.toCharArray();
 
@@ -954,7 +966,7 @@ public class MiniLifeGameplay {
                             gameMenu.menuElement(q4AnsFour, "", 2);
                             gameMenu.displaySeperator(1);
 
-                            System.out.print("Answer ");
+                            System.out.print("Answer: ");
                             triviaInput = input.next().trim().toLowerCase();
                             triviaChar = triviaInput.toCharArray();
 
@@ -982,7 +994,7 @@ public class MiniLifeGameplay {
                             gameMenu.menuElement(q5AnsFour, "", 2);
                             gameMenu.displaySeperator(1);
 
-                            System.out.print("Answer ");
+                            System.out.print("Answer: ");
                             triviaInput = input.next().trim().toLowerCase();
                             triviaChar = triviaInput.toCharArray();
 
@@ -1081,12 +1093,817 @@ public class MiniLifeGameplay {
      * greatly increasing the odds of injury, arrest, and criminal... opportunities in the future.
      */
 
-    private void gameplayLoop3(Boolean doReset){
+    private void gameplayLoop3(Boolean doReset, Terminal sysTerm) throws Exception{
         if (doReset){
             gameplayLoop3_reset();
         }
         logger.info("##DEBUG## - gameplayLoop3");
+
+        //ask to clear the console (if in debug mode)
+        if (isDebug){
+            logger.info("##DEBUG## - Clear the console?: ");
+            String doClearConsole = input.next().trim().toLowerCase();
+            if (doClearConsole.charAt(0) == '1' || doClearConsole.charAt(0) == 'y' || doClearConsole.charAt(0) == 't'){
+                MiniLifeMain.clearConsole();
+            }
+        }
+
+        //setup menu stuff
+        int menu_width = 120;
+        MiniLifeMenu gameMenuHeader = new MiniLifeMenu();
+        gameMenuHeader.createMenu("*", "*", "~", "!", menu_width, false, sysTerm);
+
+        MiniLifeMenu gameMenu = new MiniLifeMenu();
+        gameMenu.createMenu("\u25CF", "\u25CF", "\u25AC", "\u258B", menu_width, false, sysTerm);
+
+        MiniLifeMenu errorMenu = new MiniLifeMenu();
+        errorMenu.createMenu("\u26CC", "\u26CC", "-", "\u258B", menu_width, false, sysTerm);
+
+        MiniLifeMenu loveMenu = new MiniLifeMenu();
+        loveMenu.createMenu("\u2765", "\u2765", "~", "\u258B", menu_width, false, sysTerm);
+
+        MiniLifeMenu friendMenu = new MiniLifeMenu();
+        friendMenu.createMenu(":3", ":3", "\u25AC", "\u258B", menu_width, false, sysTerm);
+
+        MiniLifeMenu transMenu = new MiniLifeMenu();
+        transMenu.createMenu("\u26A7", "\u26A7", "\u25AC", "\u258B", menu_width, false, sysTerm);
+
+        MiniLifeMenu moneyMenu = new MiniLifeMenu();
+        moneyMenu.createMenu("$", "$", "\u25AC", "\u258B", menu_width, false, sysTerm);
+        
+        
+        //-------MINIGAME--------
+
+        //check if a minigame should be run, also selects which minigame to run
+        int minigame1RunPotential = ThreadLocalRandom.current().nextInt(0, 100);
+        Boolean minigame1ShouldBeRun = false;
+        Boolean minigame1ShouldBeRunConclusive = false;
+        Boolean minigame1WasWon = false;
+        int minigameToRun = ThreadLocalRandom.current().nextInt(0, 3);
+        String minigameName;
+
+        //odds: 35/100
+        if (minigame1RunPotential <= 35 || minigameForceEnable){
+            minigame1ShouldBeRun = true;
+        }else {
+            minigame1ShouldBeRun = false;
+        }
+
+        //ask the player if they would like to play a minigame to recieve a prize
+        if (minigame1ShouldBeRun){
+            gameMenuHeader.displaySeperator(1);
+            gameMenuHeader.menuElement("---Minigame---", "", 2);
+            gameMenuHeader.displaySeperator(1);
+
+            gameMenu.menuElement("Would you like to play a minigame to recieve an award?", "", 2);
+            if (minigameToRun == 0){
+                 minigameName = "Word Game";
+            }else if (minigameToRun == 1){
+                 minigameName = "Unknown";
+            }else if (minigameToRun == 2){
+                 minigameName = "Unknown";
+            }else{
+                 minigameName = "Error! Unknown Minigame";
+            }
+
+            gameMenu.menuElement("Minigame Name: ", minigameName, 2);
+            gameMenu.displaySeperator(1);
+
+            System.out.println("Play the minigame?: ");
+            String userInput = input.next().trim().toLowerCase();
+            char[] inputChar = userInput.toCharArray();
+
+            if (inputChar[0] == 'y' || inputChar [0] == 'Y'){
+                minigame1ShouldBeRunConclusive = true;
+            }else{
+                logger.info("##DEBUG## - user chose not to run minigame.");
+                minigame1ShouldBeRunConclusive = false;
+            }
+
+            //actually run the minigame, if the result of asking the user was a yes.
+            if (minigame1ShouldBeRunConclusive){
+                if (minigameToRun == 0){
+                    minigame1WasWon = MiniLife_WordGame.launchWordGame(input, dialogModule, logger, true, isDebug);
+                }
+            }else{
+                //do nothing
+            }
+
+            int randomPrize = ThreadLocalRandom.current().nextInt(0, 5);
+            if(minigame1WasWon){
+                switch(randomPrize){
+                    case 1:
+                        //give the character a lintendo dualscreen (value: $200) if the player wins the minigame
+                        playerCharacter.getInventory().appendToHeirloomsList("Lintendo DualScreen", 200.0);
+                        playerCharacter.getInventory().appendToAwardsList("wonMinigame");
+                        gameMenu.displaySeperator(1);
+                        gameMenu.menuElement("Congrats! you won! you got: ", "Lintendo DualScreen ($150 Value)", 2);
+                        gameMenu.displaySeperator(1);
+                        break;
+                    case 2:
+                        //give the character a game child super (value: $200) if the player wins the minigame
+                        playerCharacter.getInventory().appendToHeirloomsList("Game Child Super", 200.0);
+                        playerCharacter.getInventory().appendToAwardsList("wonMinigame");
+                        gameMenu.displaySeperator(1);
+                        gameMenu.menuElement("Congrats! you won! you got: ", "Game Child Super ($200 Value)", 2);
+                        gameMenu.displaySeperator(1);
+                        break;
+                    case 3:
+                        //give the character a Saga Neptune (value: $300) if the player wins the minigame
+                        playerCharacter.getInventory().appendToHeirloomsList("Saga Neptune", 300.0);
+                        playerCharacter.getInventory().appendToAwardsList("wonMinigame");
+                        gameMenu.displaySeperator(1);
+                        gameMenu.menuElement("Congrats! you won! you got: ", "Saga Neptune ($300 Value)", 2);
+                        gameMenu.displaySeperator(1);
+                        break;
+                    case 4:
+                        //give the character an old boot (value: $0.50) if the player wins the minigame
+                        playerCharacter.getInventory().appendToHeirloomsList("Old Boot", 0.50);
+                        playerCharacter.getInventory().appendToAwardsList("wonMinigame");
+                        gameMenu.displaySeperator(1);
+                        gameMenu.menuElement("Congrats! you won! you got: ", "Old Boot ($0.50 Value)", 2);
+                        gameMenu.displaySeperator(1);
+                        break;
+                    default:
+                        //an error has occured. the player should be given an ErrorItem (value: $0).
+                        logger.info("##DEBUG## - error in gameplayLoop1_minigame: irrational response from RNG. adding the \"error\" item to the player inventory");
+                        playerCharacter.getInventory().appendToHeirloomsList("ErrorItem", 0.0);
+                        playerCharacter.getInventory().appendToAwardsList("wonMinigame");
+                        break;
+                }
+            }
+        }
+
+            //----LOTTERY AND POCKET MONEY----
+
+            //now, run some checks to determine if the character gets pocket money from family
+            int characterGetsPocketMoneyOdds = ThreadLocalRandom.current().nextInt(0, 500);
+            Boolean characterGetsPocketMoney = false;
+
+            //odds: 50/500 (5/100)
+            if (characterGetsPocketMoneyOdds >= 250 && characterGetsPocketMoneyOdds <= 300){
+                characterGetsPocketMoney = true;
+            }else {
+                characterGetsPocketMoney = false;
+            }
+
+            //award $50 if the character got lucky
+            if (characterGetsPocketMoney){
+                playerCharacter.addMoney(50);
+                gameMenu.displaySeperator(1);
+                gameMenu.menuElement("You got some pocket money!", "", 2);
+                gameMenu.menuElement("$50 added to wallet.", "", 2);
+                gameMenu.displaySeperator(1);
+
+            }else{
+                //do nothing
+            }
+
+            //determine if the character's family wins the lottery
+            int playerWinsLotteryOdds = ThreadLocalRandom.current().nextInt(0, 100000);
+            Boolean playerDoesWinLottery = false;
+
+            //odds: 1 in 100,000
+            if (playerWinsLotteryOdds == 15){
+                playerDoesWinLottery = true;
+                playerCharacter.getInventory().appendToAwardsList("wonLottery");
+            }
+
+            //player has won the lottery!!! add $5,000,000 to their balance and display a nice message
+            if (!playerCharacter.getPlayerBooleanInfo(12) && playerDoesWinLottery || playerLotteryForce){
+                playerCharacter.setPlayerBooleanInfo(12, true);
+                playerCharacter.addMoney(5000000);
+
+                moneyMenu.displaySeperator(1);
+                moneyMenu.menuElement("Congratulations!!! your family won the lottery!!!", "", 2);
+                moneyMenu.menuElement("$5,000,000 has been gifted to you by your parents!", "", 2);
+                moneyMenu.displaySeperator(1);
+            }
+
+
+            //---HEIRLOOMS----
+            //give the character an heirloom if they pass an RNG check. the heirloom is based on the current age of the character. heirlooms are worth a lot of money.
+
+            int heirloomRNGCheck = ThreadLocalRandom.current().nextInt(0, 10000);
+            int heirloomToPick = ThreadLocalRandom.current().nextInt(0, 6);
+
+            //odds: 1000/10000
+            if (heirloomRNGCheck <= 5000 && heirloomRNGCheck >= 4000 || forceHeirloom){
+                switch (heirloomToPick){
+                    case 0:
+                        //item - Moldy Bread (Penicillin) - value: $5
+                        playerCharacter.getInventory().appendToHeirloomsList("Moldy Bread (Penicillin)", 5.0);
+                        gameMenu.displaySeperator(2);
+                        gameMenu.menuElement("Congrats! You got an heirloom: ", "Moldy Bread (Penicillin)", 2);
+                        gameMenu.menuElement("Value: ", "$5", 2);
+                        gameMenu.displaySeperator(2);
+                        break;
+                    case 1:
+                        //item - Golden Tweezers - value: $300
+                        playerCharacter.getInventory().appendToHeirloomsList("Golden Tweezers", 300.0);
+                        gameMenu.displaySeperator(2);
+                        gameMenu.menuElement("Congrats! You got an heirloom: ", "Golden Tweezers", 2);
+                        gameMenu.menuElement("Value: ", "$300", 2);
+                        gameMenu.displaySeperator(2);
+                        break;
+                    case 2:
+                        //item - American Father Season 5 Red-Ray Box Set - value: $50
+                        playerCharacter.getInventory().appendToHeirloomsList("American Father Season 5 Red-Ray Box Set", 50.0);
+                        gameMenu.displaySeperator(2);
+                        gameMenu.menuElement("Congrats! You got an heirloom: ", "American Father Season 5 Red-Ray Box Set", 2);
+                        gameMenu.menuElement("Value: ", "$50", 2);
+                        gameMenu.displaySeperator(2);
+                        break;
+                    case 3:
+                        //item - Emerald & Ruby Ring - value: $750
+                        playerCharacter.getInventory().appendToHeirloomsList("Emerald & Ruby Ring", 750.0);
+                        gameMenu.displaySeperator(2);
+                        gameMenu.menuElement("Congrats! You got an heirloom: ", "Emerald & Ruby Ring", 2);
+                        gameMenu.menuElement("Value: ", "$750", 2);
+                        gameMenu.displaySeperator(2);
+                        break;
+                    case 4:
+                        //item - PearBook Oxygen - value: $1,500
+                        playerCharacter.getInventory().appendToHeirloomsList("PearBook Oxygen", 1500.0);
+                        gameMenu.displaySeperator(2);
+                        gameMenu.menuElement("Congrats! You got an heirloom: ", "PearBook Oxygen", 2);
+                        gameMenu.menuElement("Value: ", "$1,500", 2);
+                        gameMenu.displaySeperator(2);
+                        break;
+                    case 5:
+                        //item - Lintendo Witch Game Console - value: $350.0
+                        playerCharacter.getInventory().appendToHeirloomsList("Lintendo Witch Game Console", 350.0);
+                        gameMenu.displaySeperator(2);
+                        gameMenu.menuElement("Congrats! You got an heirloom: ", "Lintendo Witch Game Console", 2);
+                        gameMenu.menuElement("Value: ", "$350.0", 2);
+                        gameMenu.displaySeperator(2);
+                        break;
+                }
+
+            }
+
+            //----FRIENDS----
+            //first, we run an RNG check to see if the player will be offered a new friendship (50/50 chance). if they are, we generate a new friend and offer it up to the player. 
+            //if they accept, we append the new friend to the friend's index, set playerDoesHaveFriends to true, and move along.
+
+            int playerGainsFriendRNG = ThreadLocalRandom.current().nextInt(0, 100);
+
+            if (playerGainsFriendRNG <= 50 || forcePlayerFriend){
+               //generate a friend
+               MiniLifeFriend friendCandidate = new MiniLifeFriend();
+               int friendGender = ThreadLocalRandom.current().nextInt(0, 3);
+               String fcFirstName = "";
+               String fcLastName = dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1));
+               int fcAge = (ThreadLocalRandom.current().nextInt((playerCharacter.getAge() - 3), (playerCharacter.getAge() + 3)));
+               switch(friendGender){
+                    case 0:
+                        fcFirstName = dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1));
+                    case 1:
+                        fcFirstName = dialogModule.getMaleNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1));
+                    case 2:
+                        fcFirstName = dialogModule.getNBNameWithID(ThreadLocalRandom.current().nextInt(0, 78 + 1));    
+               }
+               
+               friendCandidate.createFriend(fcFirstName, fcLastName, fcAge);
+
+               friendMenu.displaySeperator(2);
+               friendMenu.menuElement("You met someone new, and you hit it off!", "", 2);
+               friendMenu.menuElement("Would you like to be friends?", "", 2);
+               friendMenu.menuElement("Name: ", (friendCandidate.getFriendName() + " " + friendCandidate.getLastName()), 2);
+               friendMenu.menuElement("Age: ", friendCandidate.getAge(), 2);
+               friendMenu.displaySeperator(2);
+
+                System.out.print("Make a new friend?: ");
+                String userInput = input.next().trim().toLowerCase();
+                char[] inputChar = userInput.toCharArray();
+
+                if (inputChar[0] == 'y' || inputChar [0] == 'Y'){
+                    playerCharacter.getFriendsList().add(friendCandidate);
+                    playerCharacter.setPlayerBooleanInfo(4, true);
+                }else{
+                    logger.info("##DEBUG## - user chose to not make friend.");
+                    errorMenu.displaySeperator(1);
+                    errorMenu.menuElement("You did not become friends.", "", 2);
+                    errorMenu.displaySeperator(1);
+            }
+
+
+            }
+
+            //now, check if there are any friendships with low relationship scores which should be ended.
+            for (int n = 0;n < playerCharacter.getFriendsList().size(); n++){
+                if (playerCharacter.getFriendsList().get(n).getRelationship() < 15){
+                    errorMenu.displaySeperator(1);
+                    errorMenu.menuElement("Oh No :( you had a falling out with one of your friends.", "", 2);
+                    errorMenu.menuElement("Name: ", (playerCharacter.getFriendsList().get(n).getFriendName() + " " + playerCharacter.getFriendsList().get(n).getLastName()), 2);
+                    errorMenu.menuElement("You are no longer friends.", "", 2);
+                    errorMenu.displaySeperator(1);
+                    playerCharacter.getFriendsList().remove(n);
+                }
+            }
+
+            //check if there are any high-friendship friends who the character may fall in love with. only runs if it wins an RNG check, player has a valid high-level friendship, 
+            //and player does not already have a romantic interest or spouse.
+            int playerFallsInLoveRNG = ThreadLocalRandom.current().nextInt(0, 10);
+            int playerLoveSuccess = ThreadLocalRandom.current().nextInt(0, 100);
+            for (int n = 0;n < playerCharacter.getFriendsList().size();n++){
+                if (playerCharacter.getFriendsList().get(n).getRelationship() > 90 && playerFallsInLoveRNG <= 4 && !(playerCharacter.getPlayerBooleanInfo(10) || playerCharacter.getPlayerBooleanInfo(11)) || forcePlayerFriend){
+                    loveMenu.displaySeperator(1);
+                    loveMenu.menuElement("You gaze deep into your friend's eyes... and notice that you suddenly feel nervous.", "", 2);
+                    loveMenu.menuElement("Name: ", (playerCharacter.getFriendsList().get(n).getFriendName() + " " + playerCharacter.getFriendsList().get(n).getLastName()), 2);
+                    loveMenu.menuElement("Would you like to ask this friend out?","",2);
+                    loveMenu.displaySeperator(1);
+                    System.out.print("Make a new friend?: ");
+                    String userInput = input.next().trim().toLowerCase();
+                    char[] inputChar = userInput.toCharArray();
+
+                    if (inputChar[0] == 'y' || inputChar [0] == 'Y'){
+                        if (playerLoveSuccess <= 65){
+                            List<MiniLifeFriend> playerRomanceList = new ArrayList<MiniLifeFriend>();
+                            playerCharacter.setRomanceList(playerRomanceList);
+                            //todo: finish this section by removing the new romance from the friends list, and then go add romantic interests as a new section in the displayPlayerInfo pane
+
+                        }else{
+                            errorMenu.displaySeperator(1);
+                            errorMenu.menuElement(":( You were rejected.", "", 2);
+                            errorMenu.displaySeperator(1);
+                            playerCharacter.getFriendsList().get(n).friendRelationshipDecline(15);
+                        }
+                    }else{
+                        logger.info("##DEBUG## - user chose to not ask out crush.");
+                        errorMenu.displaySeperator(1);
+                        errorMenu.menuElement("You let the flame die out...", "", 2);
+                        errorMenu.displaySeperator(1);
+
+                }
+            }
+        }
+
+            //----INJURY CHECK----
+            int playerDoesGetInjuredOdds = ThreadLocalRandom.current().nextInt(0, 1000);
+            Boolean playerDoesGetInjured = false;
+
+            //odds 100/1000
+            if (playerDoesGetInjuredOdds <= 100 || forcePlayerInjury){
+                playerDoesGetInjured = true;
+            }
+
+            if (playerDoesGetInjured){
+                playerCharacter.takeHealth(10);
+                playerCharacter.getInventory().appendToAwardsList("gotInjured");
+
+                errorMenu.displaySeperator(1);
+                errorMenu.menuElement("You have been injured! You broke a leg.", "", 2);
+                errorMenu.menuElement("You lost 10 health.", "", 2);
+                errorMenu.displaySeperator(1);
+            }
+
+
+            //----CANCER CHECK----
+            int playerDoesGetCancerOdds = ThreadLocalRandom.current().nextInt(0, 500000);
+            Boolean playerDoesGetCancer = false;
+
+            //odds: 100/500,000
+            if (playerDoesGetCancerOdds <= 100 || playerCharacter.getPlayerBooleanInfo(7) || forcePlayerCancer){
+                playerDoesGetCancer = true;
+            }
+
+            if (playerDoesGetCancer){
+                playerCharacter.setPlayerBooleanInfo(7, true);
+                playerCharacter.takeHealth(20);
+                playerCharacter.getInventory().appendToAwardsList("gotCancer");
+
+                errorMenu.displaySeperator(1);
+                errorMenu.menuElement("Oh No! You have cancer :(", "", 2);
+                errorMenu.menuElement("You lost 20 health. You will lose 20 health each year unless healed.", "", 2);
+                errorMenu.displaySeperator(1);
+            }
+
+
+            //----SCHOOL----
+
+            Boolean minigame2WasWon = false;
+            Boolean minigame2ShouldBeRunConclusive = true;
+            //enable school
+            if (!playerCharacter.getPlayerBooleanInfo(2)){
+                playerCharacter.setPlayerBooleanInfo(2, true);
+            }
+
+            //do another minigame check to offer the player to try and increase their GPA, only offered if the previous check failed/was rejected, and the player has a GPA below 3.0
+            if (!minigame1ShouldBeRunConclusive && playerCharacter.getSchool().gpaGet() < 3.0 || minigameForceEnable){
+                //check if a minigame should be run, also selects which minigame to run
+                Boolean minigame2ShouldBeRun = true;
+                minigame2ShouldBeRunConclusive = true;
+                int minigameToRun_2 = ThreadLocalRandom.current().nextInt(0, 3);
+                String minigameName_2;
+
+                //tie minigame logic to the only currently working minigame (for debug)
+                if (isDebug){
+                    minigameToRun_2 = 0;
+                }
+
+                //ask the player if they would like to play a minigame to recieve a prize
+                if (minigame2ShouldBeRun){
+                    gameMenuHeader.displaySeperator(1);
+                    gameMenuHeader.menuElement("---Minigame---", "", 2);
+                    gameMenuHeader.displaySeperator(1);
+
+                    gameMenu.menuElement("Would you like to play a minigame to try harder at school?", "", 2);
+                    if (minigameToRun_2 == 0){
+                        minigameName_2 = "Word Game";
+                    }else if (minigameToRun_2 == 1){
+                        minigameName_2 = "Unknown";
+                        minigame2WasWon = false;
+                    }else if (minigameToRun_2 == 2){
+                        minigameName_2 = "Unknown";
+                        minigame2WasWon = false;
+                    }else{
+                        minigameName_2 = "Error! Unknown Minigame";
+                        minigame2WasWon = false;
+                    }
+
+                    gameMenu.menuElement("Minigame Name: ", minigameName_2, 2);
+                    gameMenu.displaySeperator(1);
+
+                    System.out.println("Play the minigame?: ");
+                    String userInput = input.next().trim().toLowerCase();
+                    char[] inputChar = userInput.toCharArray();
+
+                    if (inputChar[0] == 'y' || inputChar [0] == 'Y'){
+                        minigame2ShouldBeRunConclusive = true;
+                    }else{
+                        logger.info("##DEBUG## - user chose not to run minigame.");
+                        minigame2ShouldBeRunConclusive = false;
+                    }
+
+                    //actually run the minigame, if the result of asking the user was a yes.
+                    if (minigame2ShouldBeRunConclusive){
+                        if (minigameToRun_2 == 0){
+                            minigame2WasWon = MiniLife_WordGame.launchWordGame(input, dialogModule, logger, true, isDebug);
+                        }
+                    }else{
+                        //do nothing
+                    }
+
+                    if(minigame2WasWon){
+                        //increase school GPA
+                        playerCharacter.getSchool().gpaUp();
+                        gameMenu.displaySeperator(1);
+                        gameMenu.menuElement("Congrats! your GPA went up!", "", 2);
+                        gameMenu.displaySeperator(1);
+                    }
+                    else {
+                        playerCharacter.getSchool().gpaDown();
+                        gameMenu.displaySeperator(1);
+                        gameMenu.menuElement("Oh No! you failed! your GPA went down.", "", 2);
+                        gameMenu.displaySeperator(1);
+                    }
+                }
+            }
+
+            //force a minigame to save the school career if the character has a GPA below 1.5
+            if (playerCharacter.getSchool().gpaGet() < 1.5 || minigameForceEnable){
+                Boolean minigame3WasWon = false;
+
+                //do another minigame check to offer the player to try and increase their GPA, only offered if the previous check failed/was rejected, and the player has a GPA below 3.0
+                if (!minigame1ShouldBeRunConclusive && !minigame2ShouldBeRunConclusive|| minigameForceEnable){
+                    //check if a minigame should be run, also selects which minigame to run
+                    Boolean minigame3ShouldBeRun = true;
+                    Boolean minigame3ShouldBeRunConclusive = true;
+                    int minigameToRun_3 = ThreadLocalRandom.current().nextInt(0, 3);
+                    String minigameName_3;
+
+                    //ask the player if they would like to play a minigame to recieve a prize
+                    if (minigame3ShouldBeRun){
+                        gameMenuHeader.displaySeperator(1);
+                        gameMenuHeader.menuElement("---Minigame---", "", 2);
+                        gameMenuHeader.displaySeperator(1);
+
+                        gameMenu.menuElement("You are failing at school. You must play a minigame.", "", 2);
+                        if (minigameToRun_3 == 0){
+                            minigameName_3 = "Word Game";
+                        }else if (minigameToRun_3 == 1){
+                            minigameName_3 = "Unknown";
+                            minigame2WasWon = true;
+                        }else if (minigameToRun_3 == 2){
+                            minigameName_3 = "Unknown";
+                            minigame2WasWon = true;
+                        }else{
+                            minigameName_3 = "Error! Unknown Minigame";
+                            minigame2WasWon = false;
+                        }
+
+                        gameMenu.menuElement("Minigame Name: ", minigameName_3, 2);
+                        gameMenu.displaySeperator(1);
+
+                        minigame3ShouldBeRunConclusive = true;
+
+
+                        //actually run the minigame, if the result of asking the user was a yes.
+                        if (minigame3ShouldBeRunConclusive){
+                            if (minigameToRun_3 == 0){
+                                minigame3WasWon = MiniLife_WordGame.launchWordGame(input, dialogModule, logger, false, isDebug);
+                            }
+                        }else{
+                            //do nothing
+                            if (isDebug){
+                                minigame3WasWon = false;
+                            }
+                        }
+
+                        if(minigame3WasWon){
+                            //increase school GPA
+                            playerCharacter.getSchool().gpaSet(playerCharacter.getSchool().gpaGet() + 1.5);
+                            gameMenu.displaySeperator(1);
+                            gameMenu.menuElement("Congrats! You saved your school career!", "", 2);
+                            gameMenu.displaySeperator(1);
+                        }
+                        else {
+                            playerCharacter.getSchool().gpaDown();
+                            gameMenu.displaySeperator(1);
+                            gameMenu.menuElement("Oh No! you failed! You are being sent to a remedial school.", "", 2);
+                            gameMenu.displaySeperator(1);
+
+                            playerCharacter.getInventory().appendToAwardsList("remedialSchool");
+                            playerCharacter.getSchool().setSchoolName(playerCharacter.getPlayerCity() + " Remedial Middle School");
+                            playerCharacter.getSchool().gpaSet(2.0);
+                        }
+                    }
+                }
+            }
+
+            //pick a new name for the school, reset GPA, etc. if the school is still an elementary school
+            if (playerCharacter.getSchool().getSchoolName().contains("Elementary")){
+                gameMenu.displaySeperator(1);
+                gameMenu.menuElement("Congratulations!", "", 2);
+                gameMenu.menuElement("You graduated from ", playerCharacter.getSchool().getSchoolName(), 2);
+                gameMenu.displaySeperator(1);
+
+                String newSchoolName = (dialogModule.getMaleNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1)) + " " +
+                dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1))+
+                " Middle School");
+                playerCharacter.getSchool().setSchoolName(newSchoolName);
+                playerCharacter.getSchool().gpaSet(playerCharacter.getSchool().gpaGet() + 1.0);
+            }
+
+            
+
+            //--RELATIONSHIP--
+            //this section is about offering a chance to improve the relationship with your friends through a minigame, this section offers a chance to improve your relationships with all of
+            //your friends by playing a small micro-game embedded within this module itself. this time around, it's a tech-focused quiz.
+
+            int questionPicked = ThreadLocalRandom.current().nextInt(0, 5);
+
+            String questionOne =  "When did Apple release the iPhone 6s?";
+            String q1AnsOne = "1: September 25, 2015"; //correct
+            String q1AnsTwo = "2: August 10, 2014";
+            String q1AnsThree = "3: January 10, 2015";
+            String q1AnsFour = "4: December 13, 2016";
+
+            String questionTwo =  "What year did Windows XP come out?";
+            String q2AnsOne = "1: 2001"; //correct
+            String q2AnsTwo = "2: 2000";
+            String q2AnsThree = "3: 2003";
+            String q2AnsFour = "4: 2002";
+
+            String questionThree =  "What is the kernel which runs under Windows 11?";
+            String q3AnsOne = "1: BSD";
+            String q3AnsTwo = "2: Linux";
+            String q3AnsThree = "3: Windows NT"; //correct
+            String q3AnsFour = "4: Windows Zulu";
+
+            String questionFour =  "What year did the original iPod release?";
+            String q4AnsOne = "1: 2000";
+            String q4AnsTwo = "3: 2004";
+            String q4AnsThree = "4: 1999";
+            String q4AnsFour = "4: 2001"; //correct
+
+            String questionFive =  "What processor company invented the x86-64 processor architecture?";
+            String q5AnsOne = "1: Intel";
+            String q5AnsTwo = "2: AMD"; //correct
+            String q5AnsThree = "3: Cyrix";
+            String q5AnsFour = "4: IBM";
+
+            int triviaGameOffered = ThreadLocalRandom.current().nextInt(0, 10);
+            Boolean runTriviaGame = false;
+            Boolean playerWonTriviaGame = false;
+            String triviaInput = "";
+            char[] triviaChar;
+
+            if (playerCharacter.getPlayerBooleanInfo(4) && triviaGameOffered <= 5){
+                //ask the user if they would like to play the trivia game
+                gameMenuHeader.displaySeperator(1);
+                gameMenu.menuElement("~~~Friendship Game~~~", "", 2);
+                gameMenu.menuElement("Would you like to play a trivia game to improve your friendships?", "", 2);
+                gameMenuHeader.displaySeperator(1);
+
+                System.out.print("Play the trivia game?: ");
+                String userInput = input.next().trim().toLowerCase();
+                char[] inputChar = userInput.toCharArray();
+
+                if (inputChar[0] == 'y' || inputChar [0] == 'Y'){
+                     runTriviaGame = true;
+                }else{
+                    logger.info("##DEBUG## - user chose not to run trivia game.");
+                    runTriviaGame = false;
+                 }
+
+                 if (runTriviaGame || forceTriviaGame){
+                    switch(questionPicked){
+                        case 0:
+                            gameMenu.displaySeperator(1);
+                            gameMenu.menuElement(questionOne, "", 2);
+                            gameMenu.menuElement(q1AnsOne, "", 2);
+                            gameMenu.menuElement(q1AnsTwo, "", 2);
+                            gameMenu.menuElement(q1AnsThree, "", 2);
+                            gameMenu.menuElement(q1AnsFour, "", 2);
+                            gameMenu.displaySeperator(1);
+
+                            System.out.print("Answer: ");
+                            triviaInput = input.next().trim().toLowerCase();
+                            triviaChar = triviaInput.toCharArray();
+
+                            if (triviaChar[0] == '1' || triviaChar [0] == 'A' || triviaChar [0] == 'a'){
+                                gameMenuHeader.displaySeperator(1);
+                                gameMenuHeader.menuElement("Congrats! You got it right!", "", 2);
+                                gameMenuHeader.displaySeperator(1);
+                                for (int n = 0;n < playerCharacter.getFriendsList().size();n++){
+                                    playerCharacter.getFriendsList().get(n).friendRelationshipImprove(10);
+                                }
+                            }else{
+                                errorMenu.displaySeperator(1);
+                                errorMenu.menuElement("That's not correct.", "", 2);
+                                errorMenu.menuElement("Correct Answer: ", q1AnsOne, 2);
+                                errorMenu.displaySeperator(1);
+                            }
+                            break;
+                        case 1:
+                            //question 2
+                            gameMenu.displaySeperator(1);
+                            gameMenu.menuElement(questionTwo, "", 2);
+                            gameMenu.menuElement(q2AnsOne, "", 2);
+                            gameMenu.menuElement(q2AnsTwo, "", 2);
+                            gameMenu.menuElement(q2AnsThree, "", 2);
+                            gameMenu.menuElement(q2AnsFour, "", 2);
+                            gameMenu.displaySeperator(1);
+
+                            System.out.print("Answer: ");
+                            triviaInput = input.next().trim().toLowerCase();
+                            triviaChar = triviaInput.toCharArray();
+
+                            if (triviaChar[0] == '1' || triviaChar [0] == 'A' || triviaChar [0] == 'a'){
+                                gameMenuHeader.displaySeperator(1);
+                                gameMenuHeader.menuElement("Congrats! You got it right!", "", 2);
+                                gameMenuHeader.displaySeperator(1);
+                                for (int n = 0;n < playerCharacter.getFriendsList().size();n++){
+                                    playerCharacter.getFriendsList().get(n).friendRelationshipImprove(10);
+                                }
+                            }else{
+                                errorMenu.displaySeperator(1);
+                                errorMenu.menuElement("That's not correct.", "", 2);
+                                errorMenu.menuElement("Correct Answer: ", q2AnsOne, 2);
+                                errorMenu.displaySeperator(1);
+                            }
+                            break;
+                        case 2:
+                            //question 3
+                            gameMenu.displaySeperator(1);
+                            gameMenu.menuElement(questionThree, "", 2);
+                            gameMenu.menuElement(q3AnsOne, "", 2);
+                            gameMenu.menuElement(q3AnsTwo, "", 2);
+                            gameMenu.menuElement(q3AnsThree, "", 2);
+                            gameMenu.menuElement(q3AnsFour, "", 2);
+                            gameMenu.displaySeperator(1);
+
+                            System.out.print("Answer: ");
+                            triviaInput = input.next().trim().toLowerCase();
+                            triviaChar = triviaInput.toCharArray();
+
+                            if (triviaChar[0] == '3' || triviaChar [0] == 'C' || triviaChar [0] == 'C'){
+                                gameMenuHeader.displaySeperator(1);
+                                gameMenuHeader.menuElement("Congrats! You got it right!", "", 2);
+                                gameMenuHeader.displaySeperator(1);
+                                for (int n = 0;n < playerCharacter.getFriendsList().size();n++){
+                                    playerCharacter.getFriendsList().get(n).friendRelationshipImprove(10);
+                                }
+                            }else{
+                                errorMenu.displaySeperator(1);
+                                errorMenu.menuElement("That's not correct.", "", 2);
+                                errorMenu.menuElement("Correct Answer: ", q3AnsThree, 2);
+                                errorMenu.displaySeperator(1);
+                            }
+                            break;
+                        case 3:
+                            //question 4
+                            gameMenu.displaySeperator(1);
+                            gameMenu.menuElement(questionFour, "", 2);
+                            gameMenu.menuElement(q4AnsOne, "", 2);
+                            gameMenu.menuElement(q4AnsTwo, "", 2);
+                            gameMenu.menuElement(q4AnsThree, "", 2);
+                            gameMenu.menuElement(q4AnsFour, "", 2);
+                            gameMenu.displaySeperator(1);
+
+                            System.out.print("Answer: ");
+                            triviaInput = input.next().trim().toLowerCase();
+                            triviaChar = triviaInput.toCharArray();
+
+                            if (triviaChar[0] == '4' || triviaChar [0] == 'D' || triviaChar [0] == 'd'){
+                                gameMenuHeader.displaySeperator(1);
+                                gameMenuHeader.menuElement("Congrats! You got it right!", "", 2);
+                                gameMenuHeader.displaySeperator(1);
+                                for (int n = 0;n < playerCharacter.getFriendsList().size();n++){
+                                    playerCharacter.getFriendsList().get(n).friendRelationshipImprove(10);
+                                }
+                            }else{
+                                errorMenu.displaySeperator(1);
+                                errorMenu.menuElement("That's not correct.", "", 2);
+                                errorMenu.menuElement("Correct Answer: ", q4AnsFour, 2);
+                                errorMenu.displaySeperator(1);
+                            }
+                            break;
+                        case 4:
+                            //question 5
+                            gameMenu.displaySeperator(1);
+                            gameMenu.menuElement(questionFive, "", 2);
+                            gameMenu.menuElement(q5AnsOne, "", 2);
+                            gameMenu.menuElement(q5AnsTwo, "", 2);
+                            gameMenu.menuElement(q5AnsThree, "", 2);
+                            gameMenu.menuElement(q5AnsFour, "", 2);
+                            gameMenu.displaySeperator(1);
+
+                            System.out.print("Answer: ");
+                            triviaInput = input.next().trim().toLowerCase();
+                            triviaChar = triviaInput.toCharArray();
+
+                            if (triviaChar[0] == '2' || triviaChar [0] == 'B' || triviaChar [0] == 'b'){
+                                gameMenuHeader.displaySeperator(1);
+                                gameMenuHeader.menuElement("Congrats! You got it right!", "", 2);
+                                gameMenuHeader.displaySeperator(1);
+                                for (int n = 0;n < playerCharacter.getFriendsList().size();n++){
+                                    playerCharacter.getFriendsList().get(n).friendRelationshipImprove(10);
+                                }
+                            }else{
+                                errorMenu.displaySeperator(1);
+                                errorMenu.menuElement("That's not correct.", "", 2);
+                                errorMenu.menuElement("Correct Answer: ", q5AnsTwo, 2);
+                                errorMenu.displaySeperator(1);
+                            }
+                            break;
+                        default:
+                            errorMenu.displaySeperator(1);
+                            errorMenu.menuElement("###-ERROR-###: ", "switch statement overflow in trivia game (gpl2)", 2);
+                            errorMenu.displaySeperator(1);
+                            break;
+                    }
+                }
+            }
+
+
+            //---AGE UP---
+
+            //assign the player a personality type at random, if they don't already have one.
+            if (!playerCharacter.getPlayerBooleanInfo(13)){
+                int randomPersonalityType = ThreadLocalRandom.current().nextInt(1, 9);
+                playerCharacter.setPersonalityType(randomPersonalityType);
+
+                gameMenu.displaySeperator(2);
+                gameMenu.menuElement("You picked up the ", (playerCharacter.getPlayerPersonality() + " personality type!"), 2);
+                gameMenu.displaySeperator(2);
+
+            }
+
+            //run advanceYear functions in the various modules
+            playerCharacter.advanceYear(); //age up player
+            playerCharacter.getSchool().advanceYear(); //advance school year
+
+            //lower friendship by 5 on odd years
+            for (int n=0;n < playerCharacter.getFriendsList().size();n++){
+                if ((playerCharacter.getAge() & 1) == 0){
+                    playerCharacter.getFriendsList().get(n).friendRelationshipDecline(5);
+                }
+            }
+
+            //lower GPA by 0.5 on even years
+            if (!((playerCharacter.getAge() & 1) == 0)){
+                if (!minigame2WasWon && playerCharacter.getSchool().gpaGet() > 1.0){
+                     playerCharacter.getSchool().gpaDown();
+                }
+              }
+
+            //age up player's friends, if they exist
+            if (playerCharacter.getPlayerBooleanInfo(4)){
+                for (int n = 0;n < playerCharacter.getFriendsList().size();n++){
+                    playerCharacter.getFriendsList().get(n).advanceYear();
+                }
+            }
+
+            gameMenu.displaySeperator(1);
+            gameMenu.menuElement("The year has been advanced.", "", 2);
+            gameMenu.menuElement("Years played: ", playerCharacter.getYearsPlayed(), 2);
+            gameMenu.menuElement("Current school year: ", playerCharacter.getSchool().gradeGet(), 2);
+            gameMenu.displaySeperator(1);
     }
+    
 
     private void gameplayLoop3_reset(){
     
@@ -1118,7 +1935,7 @@ public class MiniLifeGameplay {
      * @apiNote the character can get a part time job now.
      */
 
-    private void gameplayLoop4(Boolean doReset){
+    private void gameplayLoop4(Boolean doReset, Terminal sysTerm){
         if (doReset){
             gameplayLoop4_reset();
         }
@@ -1159,7 +1976,7 @@ public class MiniLifeGameplay {
      * @apiNote the character may finally get a full-time job in a degreeless field. once they graduate, they can finally get a degree-required job and enter the workforce.
      */
 
-    private void gameplayLoop5(Boolean doReset){
+    private void gameplayLoop5(Boolean doReset, Terminal sysTerm){
         if (doReset){
             gameplayLoop5_reset();
         }
@@ -1202,7 +2019,7 @@ public class MiniLifeGameplay {
      * @apiNote if the player is a professional furry, they will be making insane money, but it is incredibly rare that this job comes up. secretely, this is the career path to becoming the ruler of the world...
      */
 
-    private void gameplayLoop6(Boolean doReset){
+    private void gameplayLoop6(Boolean doReset, Terminal sysTerm){
         if (doReset){
             gameplayLoop6_reset();
         }
@@ -1245,7 +2062,7 @@ public class MiniLifeGameplay {
      * @apiNote if the player is a professional furry, they will be making insane money, but it is incredibly rare that this job comes up. secretely, this is the career path to becoming the ruler of the world...
      */
 
-    private void gameplayLoop7(Boolean doReset){
+    private void gameplayLoop7(Boolean doReset, Terminal sysTerm){
         if (doReset){
             gameplayLoop7_reset();
         }

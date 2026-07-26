@@ -1,7 +1,8 @@
 //MiniLife main program file
 //version 0.1-InDev3 (Jul 19, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
-//this project uses some code licensed under the Apache License version 2.0. This code includes the Apache Commons Lang library. This license is compatible with GPLv3.
+//this project uses some code licensed under the Apache License version 2.0. This code includes the Apache Commons Lang library. see the "apache-LICENSE.txt" file for license terms.
+//This project uses some code licensed under the BSD 3-clause license. This code includes the Jline3 library. see "jline-license.txt" for license terms.
 //No Artificial Intelligence tools were used in the creation of this source code file.
 //Primary Developer(s) on this file: Celeste Manguso
 //Secondary Developer(s) on this file: 
@@ -14,6 +15,8 @@ import java.util.logging.Level;
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.lang3.StringUtils;
+import org.jline.terminal.*;
+import org.jline.style.*;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -25,6 +28,7 @@ public class MiniLifeMenu {
     private String elementPad;
     private int menuWidth;
 
+
     /**
      * this function creates a menu object, and assigns the shared design elements for the menu system to use later.
      * @param sepPadLeft - String - the padding character for the left end of the seperator - recommended: u25CF
@@ -33,19 +37,27 @@ public class MiniLifeMenu {
      * @param elementPad - String - the padding character for both ends of the elements - recommended: 
      * @param menuWidth - Int - the width of the menu
      */
-    public void createMenu(String sepPadLeft, String sepPadRight, String sepLine, String elementPad, int menuWidth){
+    public void createMenu(String sepPadLeft, String sepPadRight, String sepLine, String elementPad, int menuWidth, Boolean menuWidthOverride, Terminal sysTerminal) throws Exception{
         this.sepPadLeft = sepPadLeft;
         this.sepPadRight = sepPadRight;
         this.sepLine = sepLine;
         this.elementPad = elementPad;
-        this.menuWidth = menuWidth;
+        if (menuWidthOverride){
+            this.menuWidth = menuWidth;
+        }else{
+            this.menuWidth = (sysTerminal.getWidth() - 5);
+        }
     }
+
+
 
     /**
      * this function displays the sepeator with the designated menu's settings.
      * @param menuWidthMinus - this is the amount to remove from the menuWidth for this specific menu element. set to 0 if you wish to have it to the full length (as initialized).
      */
     public void displaySeperator(int menuWidthMinus){
+        String testString =  "";
+        
         System.out.println(StringUtils.rightPad(sepPadLeft, menuWidth - menuWidthMinus, sepLine) + sepPadRight);
     }
 

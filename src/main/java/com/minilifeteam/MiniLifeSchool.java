@@ -47,6 +47,10 @@ public class MiniLifeSchool {
 		return gpa;
 	}
 
+	public void gpaSet(double gpa){
+		this.gpa = gpa;
+	}
+
 	public int gradeGet() {
 		return grade;
 	}

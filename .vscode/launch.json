@@ -9,34 +9,40 @@
             "name": "MiniLifeMain",
             "request": "launch",
             "mainClass": "com.minilifeteam.MiniLifeMain",
-            "projectName": "minilife"
+            "projectName": "minilife",
+            "vmArgs" : "--enable-native-access=ALL-UNNAMED"
         },
         {
             "type": "java",
             "name": "MiniLifeMain",
             "request": "launch",
             "mainClass": "com.minilifeteam.minilife.MiniLifeMain",
-            "projectName": "MiniLife_a4b3a660"
+            "projectName": "MiniLife_a4b3a660",
+            "vmArgs" : "--enable-native-access=ALL-UNNAMED"
         },
         {
             "type": "java",
             "name": "MiniLifeMain",
             "request": "launch",
             "mainClass": "com.minilifeteam.minilife.MiniLifeMain",
-            "projectName": "MiniLife_efe96e5d"
+            "projectName": "MiniLife_efe96e5d",
+            "vmArgs" : "--enable-native-access=ALL-UNNAMED"
         },
         {
             "type": "java",
             "name": "Current File",
             "request": "launch",
-            "mainClass": "${file}"
+            "mainClass": "${file}",
+            "vmArgs" : "--enable-native-access=ALL-UNNAMED",
+            "args" : ""
         },
         {
             "type": "java",
             "name": "Current File (In Debug Mode)",
             "request": "launch",
             "mainClass": "${file}",
-            "args": "true"
+            "args": "true",
+            "vmArgs" : "--enable-native-access=ALL-UNNAMED"
         }
     ]
 }
