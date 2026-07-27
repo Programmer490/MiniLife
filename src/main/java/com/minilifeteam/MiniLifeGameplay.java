@@ -1399,6 +1399,7 @@ public class MiniLifeGameplay{
                     errorMenu.menuElement("You are no longer friends.", "", 2);
                     errorMenu.displaySeperator(1);
                     playerCharacter.getFriendsList().remove(n);
+                    playerCharacter.getInventory().appendToAwardsList("lostFriend");
                 }
             }
 
@@ -1413,7 +1414,7 @@ public class MiniLifeGameplay{
                     loveMenu.menuElement("Name: ", (playerCharacter.getFriendsList().get(n).getFriendName() + " " + playerCharacter.getFriendsList().get(n).getLastName()), 2);
                     loveMenu.menuElement("Would you like to ask this friend out?","",2);
                     loveMenu.displaySeperator(1);
-                    System.out.print("Make a new friend?: ");
+                    System.out.print("Ask them out?: ");
                     String userInput = input.next().trim().toLowerCase();
                     char[] inputChar = userInput.toCharArray();
 
@@ -1421,7 +1422,8 @@ public class MiniLifeGameplay{
                         if (playerLoveSuccess <= 65){
                             List<MiniLifeFriend> playerRomanceList = new ArrayList<MiniLifeFriend>();
                             playerCharacter.setRomanceList(playerRomanceList);
-                            //todo: finish this section by removing the new romance from the friends list, and then go add romantic interests as a new section in the displayPlayerInfo pane
+                            playerCharacter.getRomanceList().add(playerCharacter.getFriendsList().get(n));
+                            playerCharacter.getFriendsList().remove(n);
 
                         }else{
                             errorMenu.displaySeperator(1);
@@ -1859,18 +1861,39 @@ public class MiniLifeGameplay{
             }
 
 
+            //----LOVE----
+            //ask the player to answer a single, difficult question to save the relationship with their lover if it is doing poorly. if they fail, they will be dumped
+
+            
+
+
+            //ask the player at random to pick from a couple options for a gift to give to their lover, if they lose the RNG check then their lover will not like it and they will lose some
+            //relationship value.
+            int checkToRunDateRNG = ThreadLocalRandom.current().nextInt(0, 1000);
+            int correctAnswer1 = ThreadLocalRandom.current().nextInt(0, 4);
+            int correctAnswer2 = ThreadLocalRandom.current().nextInt(0, 4);
+            int correctAnswer3 = ThreadLocalRandom.current().nextInt(0, 4);
+            Boolean dateDidSucceed = false;
+            String[] questionBank1 = {"Pick a flower: ", "Rose", "Daisy", "Azalea", "Sunflower"};
+            String[] questionBank2 = {"Pick a gift: ", "Box of Chocolate", "Bottle of Soda", "Old Sock", "Super Mary Brothers Plushie"};
+            String[] questionBank3 = {"Pick a location: ", "Cheese Factory", "McRonald's", ""};
+
+
+
             //---AGE UP---
 
             //assign the player a personality type at random, if they don't already have one.
             if (!playerCharacter.getPlayerBooleanInfo(13)){
                 int randomPersonalityType = ThreadLocalRandom.current().nextInt(1, 9);
                 playerCharacter.setPersonalityType(randomPersonalityType);
-
                 gameMenu.displaySeperator(2);
                 gameMenu.menuElement("You picked up the ", (playerCharacter.getPlayerPersonality() + " personality type!"), 2);
                 gameMenu.displaySeperator(2);
-
             }
+
+            //if the character has lost friends before, broken up, or fails an an rng check, make them have the "Depressed" personality type
+            if (playerCharacter.getInventory().getAwardsList().contains("lostFriend") || playerCharacter.getInventory().getAwardsList().contains("brokeUp"))
+            
 
             //run advanceYear functions in the various modules
             playerCharacter.advanceYear(); //age up player
@@ -1880,6 +1903,15 @@ public class MiniLifeGameplay{
             for (int n=0;n < playerCharacter.getFriendsList().size();n++){
                 if ((playerCharacter.getAge() & 1) == 0){
                     playerCharacter.getFriendsList().get(n).friendRelationshipDecline(5);
+                }
+            }
+
+            //lower relationship by 1 on odd years
+            if (playerCharacter.getPlayerBooleanInfo(10)){
+                for (int n=0;n < playerCharacter.getRomanceList().size();n++){
+                    if ((playerCharacter.getAge() & 1) == 0){
+                        playerCharacter.getRomanceList().get(n).friendRelationshipDecline(1);
+                    }
                 }
             }
 

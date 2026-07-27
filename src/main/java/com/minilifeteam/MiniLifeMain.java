@@ -1560,6 +1560,20 @@ public class MiniLifeMain {
                     }
                 }
                 playerInfoScreen.displaySeperator(1);
+                if (playerCharacter.getPlayerBooleanInfo(10) || friendsFieldEnabled){
+                    for (int n = 0; n < playerCharacter.getRomanceList().size(); n++){
+                        //displays friend names for each friend in the friendslist.
+                        playerInfoScreen.menuElement(
+                            "Lover's Name: ", 
+                            (playerCharacter.getRomanceList().get(n).getFriendName() + 
+                            " " + playerCharacter.getRomanceList().get(n).getLastName() + 
+                            " - Age: " + playerCharacter.getRomanceList().get(n).getAge() + 
+                            " - Relationship: " + playerCharacter.getRomanceList().get(n).getRelationship()), 
+                            2
+                        );
+                    }
+                }
+                playerInfoScreen.displaySeperator(1);
                 //school info
                 if (playerCharacter.isPlayerInSchool() || schoolFieldEnabled){
                     playerInfoScreen.menuElement("----School Info----", "", 2);
