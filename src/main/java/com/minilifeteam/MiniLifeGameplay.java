@@ -24,6 +24,7 @@ import org.jline.utils.*;
 import org.jline.style.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MiniLifeGameplay{
 
@@ -1870,13 +1871,95 @@ public class MiniLifeGameplay{
             //ask the player at random to pick from a couple options for a gift to give to their lover, if they lose the RNG check then their lover will not like it and they will lose some
             //relationship value.
             int checkToRunDateRNG = ThreadLocalRandom.current().nextInt(0, 1000);
-            int correctAnswer1 = ThreadLocalRandom.current().nextInt(0, 4);
-            int correctAnswer2 = ThreadLocalRandom.current().nextInt(0, 4);
-            int correctAnswer3 = ThreadLocalRandom.current().nextInt(0, 4);
-            Boolean dateDidSucceed = false;
+            int correctAnswer1 = ThreadLocalRandom.current().nextInt(1, 5);
+            int correctAnswer2 = ThreadLocalRandom.current().nextInt(1, 5);
+            int correctAnswer3 = ThreadLocalRandom.current().nextInt(1, 5);
+            int correctAnswer4 = ThreadLocalRandom.current().nextInt(1, 5);
+            String dateInput = "";
+            int numAnsweredCorrectly = 0;
             String[] questionBank1 = {"Pick a flower: ", "Rose", "Daisy", "Azalea", "Sunflower"};
             String[] questionBank2 = {"Pick a gift: ", "Box of Chocolate", "Bottle of Soda", "Old Sock", "Super Mary Brothers Plushie"};
-            String[] questionBank3 = {"Pick a location: ", "Cheese Factory", "McRonald's", ""};
+            String[] questionBank3 = {"Pick a location: ", "Cheese Factory", "McRonald's", "InFront Steakhouse", "Wall-Mart"};
+            String[] questionBank4 = {"Pick a season: ", "Spring", "Summer", "Winter", "Fall"};
+            if (checkToRunDateRNG < 350 && playerCharacter.getPlayerBooleanInfo(10) || forcePlayerFriend){
+                loveMenu.displaySeperator(1);
+                loveMenu.menuElement("Date Night!", "", 2);
+                loveMenu.menuElement("Take your special someone out for a date, but pick wisely...", "", 2);
+                loveMenu.displaySeperator(1);
+
+                System.out.print(questionBank2[0]);
+                dateInput = input.next().trim();
+                if (Arrays.asList(questionBank1).get(correctAnswer1) == dateInput){
+                    dateInput = "";
+                    numAnsweredCorrectly++;
+                }
+
+                System.out.print(questionBank2[0]);
+                dateInput = input.next().trim();
+                if (Arrays.asList(questionBank2).get(correctAnswer2) == dateInput){
+                    dateInput = "";
+                    numAnsweredCorrectly++;
+                }
+
+                System.out.print(questionBank3[0]);
+                dateInput = input.next().trim();
+                if (Arrays.asList(questionBank3).get(correctAnswer3) == dateInput){
+                    dateInput = "";
+                    numAnsweredCorrectly++;
+                }
+
+                System.out.print(questionBank4[0]);
+                dateInput = input.next().trim();
+                if (Arrays.asList(questionBank4).get(correctAnswer4) == dateInput){
+                    dateInput = "";
+                    numAnsweredCorrectly++;
+                }
+
+                switch(numAnsweredCorrectly){
+                    case 0:
+                        loveMenu.displaySeperator(1);
+                        loveMenu.menuElement("You Failed :(", "", 2);
+                        loveMenu.menuElement("Your date hated all of your choices!", "", 2);
+                        loveMenu.menuElement("You lost -10 relationship points", "", 2);
+                        loveMenu.displaySeperator(1);
+                        playerCharacter.getRomanceList().get(0).friendRelationshipDecline(10);
+                        playerCharacter.getInventory().appendToAwardsList("badDate");
+                        break;
+                    case 1:
+                        loveMenu.displaySeperator(1);
+                        loveMenu.menuElement("You did horribly!", "", 2);
+                        loveMenu.menuElement("Your date hated all but one of your choices!", "", 2);
+                        loveMenu.menuElement("You lost -5 relationship points", "", 2);
+                        loveMenu.displaySeperator(1);
+                        playerCharacter.getRomanceList().get(0).friendRelationshipDecline(5);
+                        break;
+                    case 2:
+                        loveMenu.displaySeperator(1);
+                        loveMenu.menuElement("You did ok.", "", 2);
+                        loveMenu.menuElement("Your date was mildly entertained.", "", 2);
+                        loveMenu.menuElement("You did not gain any relationship points.", "", 2);
+                        loveMenu.displaySeperator(1);
+                        break;
+                    case 3:
+                        loveMenu.displaySeperator(1);
+                        loveMenu.menuElement("You did good!", "", 2);
+                        loveMenu.menuElement("Your date had a good time!", "", 2);
+                        loveMenu.menuElement("You gained +5 relationship points!", "", 2);
+                        loveMenu.displaySeperator(1);
+                        playerCharacter.getRomanceList().get(0).friendRelationshipImprove(5);
+                        break;
+                    case 4:
+                        loveMenu.displaySeperator(1);
+                        loveMenu.menuElement("You did amazingly!", "", 2);
+                        loveMenu.menuElement("Your date had an amazing time!", "", 2);
+                        loveMenu.menuElement("You gained +10 relationship points!", "", 2);
+                        loveMenu.displaySeperator(1);
+                        playerCharacter.getRomanceList().get(0).friendRelationshipImprove(10);
+                        playerCharacter.getInventory().appendToAwardsList("greatDate");
+                        break;
+                }
+                
+            }
 
 
 
