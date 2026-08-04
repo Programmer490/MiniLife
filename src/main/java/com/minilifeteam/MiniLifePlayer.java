@@ -1,5 +1,5 @@
 //MiniLife Player Module
-//Version 2.0-InDev3
+//Version 2.5-InDev3
 //Primary Developer(s) on this file: Chelsea Dal Parsons
 //Secondary Developer(s) on this file: Celeste Manguso
 //This code licensed under the GNU GPL Version 3.0 license. See LICENSE file for more information.
@@ -47,6 +47,10 @@ public class MiniLifePlayer {
 	private Boolean playerFamilyDidWinLottery = false;
 	private Boolean playerDoesHavePersonalityAssigned = false;
 	private Boolean playerHasSpecialPersonality = false;
+	private Boolean playerOwnsHouse = false;
+	private Boolean playerOwnsCar = false;
+	private Boolean playerHasHeirloom = false;
+	private Boolean playerHasAchievement = false;
 
 	
 
@@ -80,6 +84,10 @@ public class MiniLifePlayer {
 	 * @param boolID_12 - playerFamilyDidWinLottery
 	 * @param boolID_13 - playerDoesHavePersonalityAssigned
 	 * @param boolID_14 - playerHasSpecialPersonality
+	 * @param boolID_15 - playerOwnsHouse
+	 * @param boolID_16 - playerOwnsCar	 
+	 * @param boolID_17 - playerHasHeirloom
+	 * @param boolID_18 - playerHasAchievement
 	 * @param boolID - pass one of the above numbers as the argument for this function to get the status of the named boolean.
 	 * @return Boolean status of the specified boolID
 	 */
@@ -114,6 +122,14 @@ public class MiniLifePlayer {
 				return playerDoesHavePersonalityAssigned;
 			case 14:
 				return playerHasSpecialPersonality;
+			case 15:
+				return playerOwnsHouse;
+			case 16:
+				return playerOwnsCar;
+			case 17:
+				return playerHasHeirloom;
+			case 18:
+				return playerHasAchievement;
 			default:
 				System.out.println("###Error! Logic Error occured in getPlayerBooleanInfo. Result returned false as failsafe.###");
 				return false;
@@ -137,6 +153,10 @@ public class MiniLifePlayer {
 	 * @param boolID_12 - playerFamilyDidWinLottery
 	 * @param boolID_13 - playerDoesHavePersonalityAssigned
 	 * @param boolID_14 - playerHasSpecialPersonality
+	 * @param boolID_15 - playerOwnsHouse
+	 * @param boolID_16 - playerOwnsCar
+	 * @param boolID_17 - playerHasHeirloom	 
+	 * @param boolID_18 - playerHasAchievement
 	 * @param newStatus - Boolean to set as the new status for the specified boolID
 	 */
 
@@ -183,6 +203,18 @@ public class MiniLifePlayer {
 				break;
 			case 14:
 				this.playerHasSpecialPersonality = newStatus;
+				break;
+			case 15:
+				this.playerOwnsHouse = newStatus;
+				break;
+			case 16:
+				this.playerOwnsCar = newStatus;
+				break;
+			case 17:
+				this.playerHasHeirloom = newStatus;
+				break;
+			case 18:
+				this.playerHasAchievement = newStatus;
 				break;
 			default:
 				System.out.println("###Error! Logic Error occured in setPlayerBooleanInfo. Unable to set specified boolID.###");

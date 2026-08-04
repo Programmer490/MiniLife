@@ -13,8 +13,7 @@ import java.util.Scanner;
 public class coinflip {
 	
 		// Create scanner and random object
-		public static boolean play() {
-		Scanner input = new Scanner(System.in);
+		public static boolean play(Scanner input) {
 		Random random = new Random();
 		
 		String choice;
@@ -23,7 +22,7 @@ public class coinflip {
 		//get players choice
 		System.out.println(" Heads or Tails ");
 		System.out.print("Enter Heads or Tails: ");
-		choice = input.nextLine();
+		choice = input.next();
 		choice = choice.toLowerCase();
 		
 		//Coin flip
@@ -55,8 +54,5 @@ public class coinflip {
 		}
 		
 	}
-		public static void main(String[] args) {
-			play();
-		}
 
 }

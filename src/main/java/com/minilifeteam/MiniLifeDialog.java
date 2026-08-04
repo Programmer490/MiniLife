@@ -293,12 +293,12 @@ public class MiniLifeDialog {
     }
 
         public String getVersionString(){
-            String currentVersion = "Version 0.20-indev3-demo";
+            String currentVersion = "Version 0.45-indev4-demo";
             return currentVersion;
     }      
     
         public String getDevelopmentMilestoneString(){
-            String devMilestone = "Milestone 3";
+            String devMilestone = "Milestone 4";
             return devMilestone;
     }   
     

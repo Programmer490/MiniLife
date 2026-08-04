@@ -15,19 +15,26 @@ import java.util.ArrayList;
 public class MiniLifeInventory {
 
     private List<String> houseList = new ArrayList<String>();
+    private List<Double> houseValue = new ArrayList<Double>();
     private List<String> carsList = new ArrayList<String>();
+    private List<Double> carValue = new ArrayList<Double>();
     private List<String> heirlooms = new ArrayList<String>();
     private List<Double> heirloomValue = new ArrayList<Double>();
     private List<String> awardsList = new ArrayList<String>();
     private List<String> criminalRecord = new ArrayList<String>();
 
     //HOUSE
-	public List<String> getHouseList() {
+        public List<String> getHouseList() {
         return houseList;
 	}
 
-	public void appendToHouseList(String house) {
+        public List<Double> getHomeValueList() {
+        return houseValue;
+        }
+
+	public void appendToHouseList(String house, Double value) {
         houseList.add(house);
+        houseValue.add(value);
 	}
 
     //awards
@@ -45,14 +52,23 @@ public class MiniLifeInventory {
         return carsList;
 	}
 
-	public void appendToCarsList(String car) {
+        public List<Double> getCarValueList() {
+        return carValue;
+        }
+
+	public void appendToCarsList(String car, Double value) {
         carsList.add(car);
+        carValue.add(value);
 	}
 
     //heirlooms
 	public List<String> getHeirloomsList() {
         return heirlooms;
 	}
+
+        public List<Double> getHeirloomValueList() {
+        return heirloomValue;
+        }
 
 	public void appendToHeirloomsList(String heirloom, Double value) {
         heirlooms.add(heirloom);

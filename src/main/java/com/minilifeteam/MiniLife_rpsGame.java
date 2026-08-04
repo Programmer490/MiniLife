@@ -11,13 +11,9 @@ import java.util.Scanner;
 
 public class MiniLife_rpsGame {
 
-	boolean win = false;
-
-	public void playGame () {
+	public static Boolean playGame (Scanner input) {
 		//range for computer
 		int computer = (int)(Math.random() * 3);
-		//get input
-		Scanner input = new Scanner(System.in);
 	
 		System.out.println("Input 0 for Rock, 1 for Paper, or 2 for Scissors:");
 		int user = input.nextInt();
@@ -30,13 +26,13 @@ public class MiniLife_rpsGame {
 		//declare winner
 		if (user == computer) {
 			System.out.println("Draw");
-			win = false;
+			return false;
 		} else if ((user == 0 && computer == 2) || (user == 1 && computer == 0) || (user == 2 && computer == 1)) {
 			System.out.println("You win!");
-			win = true;
+			return true;
 		} else {
 			System.out.println("You lose!");
-			win = false;
+			return false;
 		}
 	}
 }

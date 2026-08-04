@@ -1,5 +1,5 @@
 //MiniLife main program file
-//version 0.20-InDev3 (Jul 22, 2026)
+//version 0.45-InDev4 (Jul 22, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
 //this project uses some code licensed under the Apache License version 2.0. This code includes the Apache Commons Lang library. see the "apache-LICENSE.txt" file for license terms.
 //This project uses some code licensed under the BSD 3-clause license. This code includes the Jline3 library. see "jline-license.txt" for license terms.
@@ -12,33 +12,33 @@
 //define package
 package com.minilifeteam;
 
-//import scanner, stuff for debugging
-import java.util.Scanner;
-import java.util.logging.Logger;
-import java.util.logging.Level;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.InputMismatchException;
-import java.lang.UnsupportedOperationException;
-import java.util.concurrent.ThreadLocalRandom;
-import org.apache.commons.lang3.StringUtils;
-import org.jline.terminal.*;
-import org.jline.utils.*;
-import org.jline.style.*;
 import java.util.List;
-import java.util.ArrayList;
+//import scanner, stuff for debugging
+import java.util.Scanner;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 
 public class MiniLifeMain {
     //create debug logger
     private static final Logger logger = Logger.getLogger(MiniLifeMain.class.getName());
 
     public static Boolean gameIsDemo = true;
-
     public static Boolean doRunMainMenu = true;
-
     public static Boolean doRunGameMenu = true;
+    public static Boolean doRunShopMenu = true;
+    public static Boolean doRunBuyMenu = true;
+    public static Boolean doRunInvMenu = true;
+    public static Boolean doRunSellMenu = true;
+    public static Boolean doRunSettingsMenu = true;
     
-
-
         public static void main(String[] args) throws Exception{
         //enable debug messages if they were enabled on the command line (for debugging builds, comment this out for production builds before compiling)
         int argsLength = args.length;
@@ -103,11 +103,6 @@ public class MiniLifeMain {
             MiniLifeMain.doRunMainMenu = true;
             continue;
         }
-        else if (getMenuChoice.contentEquals("SettingsMenu")){
-            logger.info("##DEBUG## - user chose to load the settings menu.");
-            MiniLifeMain.doRunMainMenu = false;
-            displaySettingsMenu(input, dialogModule);
-        }
         else if (getMenuChoice.contentEquals("ExitProgram")){
             logger.info("##DEBUG## - user chose to exit program. exiting...");
             MiniLifeMain.doRunMainMenu = false;
@@ -125,13 +120,11 @@ public class MiniLifeMain {
         logger.info("##DEBUG## - Scanner Closed");
         }
 
-
         public static String displayMainMenu (Scanner input, MiniLifeDialog dialogModule){
             String mainMenuChoice = "-1";
             System.out.println(dialogModule.getDialogWithID(0) + "!");
             System.out.println("Main Menu: ");
             System.out.println("1: New Game");
-            System.out.println("2: Settings Menu");
             System.out.println("0: Exit Game");
             while (MiniLifeMain.doRunMainMenu == true){
                 try{
@@ -147,11 +140,6 @@ public class MiniLifeMain {
                         //returns "NewGame", indicating a new game should be started.
                         MiniLifeMain.doRunMainMenu = false;
                         return "NewGame";
-                    }
-                    else if (mainMenuChoice.charAt(0) == '2'){
-                        //returns "SettingsMenu", indicating the settings menu should be displayed.
-                        MiniLifeMain.doRunMainMenu = false;
-                        return "SettingsMenu";
                     }
                     else if (mainMenuChoice.charAt(0) == '3'){
                         //returns "loadSaveGame", indicating a saved game should be loaded. not currently available.
@@ -174,8 +162,55 @@ public class MiniLifeMain {
             return "ExitedLoop";
         }
 
-        public static void displaySettingsMenu(Scanner input, MiniLifeDialog dialogModule){
-            System.out.println("SettingsMenu");
+        public static void displaySettingsMenu(Scanner input, MiniLifeDialog dialogModule, Boolean isDebug, MiniLifePlayer playerCharacter, MiniLifeMenu gameMenu, MiniLifeMenu gameMenuHeader, int menu_width, Terminal sysTerm) throws Exception{
+            while (doRunSettingsMenu){
+                //header
+                gameMenuHeader.displaySeperator(1);
+                gameMenuHeader.menuElement("---Settings Menu---", "", 2);
+                gameMenuHeader.displaySeperator(1);
+
+                //game menu
+                gameMenu.menuElement("What would you like to do?", "", 2);
+                gameMenu.menuElement("1: View Credits", "", 2);
+                gameMenu.menuElement("2: Change Character Gender", "", 2);
+                gameMenu.menuElement("3: Change Character name", "", 2);
+                gameMenu.menuElement("0: Exit menu", "", 2);
+
+                gameMenu.displaySeperator(1);
+
+                String settingsMenuChoice;
+                char[] menuChoiceChar = {};
+                Boolean doRunSettingsMenuChooser = true;
+                //begin input section
+
+                while (doRunSettingsMenuChooser){
+                    //menu input
+                    try{
+                        System.out.println("Please make a selection: ");
+                        settingsMenuChoice = input.next().trim().toLowerCase();
+
+                        //make sure the input is valid, loop if not
+                       if (Character.isDigit(settingsMenuChoice.charAt(0))){
+                            menuChoiceChar = settingsMenuChoice.toCharArray();
+                            doRunSettingsMenuChooser = false;
+                            break;
+                       }
+                        else {
+                            logger.info("##DEBUG## - settings menu input - invalid input recieved. clearing variable and looping input.");
+                            settingsMenuChoice = "";
+                            doRunSettingsMenuChooser = true;
+                            continue;
+                        }
+
+
+                    }catch (InputMismatchException error){
+                        settingsMenuChoice = "";
+                        input.next();
+                        doRunSettingsMenuChooser = true;
+                        continue;
+                    }
+                }
+            }
         }
 
         public static void playNewGame(Scanner input, MiniLifeDialog dialogModule, Boolean isDebug, Terminal sysTerm /*MiniLifeCharacter characterModule, MiniLifeMinigame, minigame1, etc... */) throws Exception{
@@ -304,6 +339,10 @@ public class MiniLifeMain {
                 DebugFlags.add(false); //siblings field
                 DebugFlags.add(false); //friends field
                 DebugFlags.add(gameIsDemo);
+                DebugFlags.add(false); //personality field
+                DebugFlags.add(false); //house field
+                DebugFlags.add(false); //car field
+                DebugFlags.add(false); //heirloom field
             }
             displayPlayerInfo(playerCharacter, dialogModule, isDebug, DebugFlags, menu_width, sysTerm);
 
@@ -470,7 +509,7 @@ public class MiniLifeMain {
                     debug_father.createNPC(dialogModule.getMaleNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1)), debug_playerLastName, 53);
                     debug_friend.createFriend(
                         dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)),
-                        dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1)),
+                        dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1)),
                         2
                     );
                     debug_sister.createNPC(dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)), debug_playerLastName, 12);
@@ -798,7 +837,7 @@ public class MiniLifeMain {
                     debug_father.createNPC(dialogModule.getMaleNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1)), debug_playerLastName, 53);
                     debug_friend.createFriend(
                         dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)),
-                        dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1)),
+                        dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1)),
                         2
                     );
                     debug_sister.createNPC(dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)), debug_playerLastName, 12);
@@ -885,7 +924,7 @@ public class MiniLifeMain {
                     debug_father.createNPC(dialogModule.getMaleNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1)), debug_playerLastName, 53);
                     debug_friend.createFriend(
                         dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)),
-                        dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1)),
+                        dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1)),
                         2
                     );
                     debug_sister.createNPC(dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1)), debug_playerLastName, 12);
@@ -1305,6 +1344,21 @@ public class MiniLifeMain {
                     playerInfoDebugFlags.add(false); //siblings field
                     playerInfoDebugFlags.add(false); //friends field
                     playerInfoDebugFlags.add(gameIsDemo);
+                    playerInfoDebugFlags.add(false); //personality field
+                    playerInfoDebugFlags.add(false); //house field
+                    playerInfoDebugFlags.add(false); //car field
+                    playerInfoDebugFlags.add(false); //heirloom field
+
+                    playerCharacter.setPlayerBooleanInfo(18, true);
+                    playerCharacter.getInventory().appendToAwardsList("debugAchievement");
+                }
+
+                List<Boolean> inventoryDebugFlags = new ArrayList<Boolean>();
+                if (isDebug){
+                    inventoryDebugFlags.add(gameIsDemo);
+                    inventoryDebugFlags.add(false); //house field
+                    inventoryDebugFlags.add(false); //car field
+                    inventoryDebugFlags.add(false); //heirloom field
                 }
 
                 gameMenu.displaySeperator(1);
@@ -1353,10 +1407,13 @@ public class MiniLifeMain {
                     case '2':
                         //choice 2 code here
                         logger.info("##DEBUG## - game menu - choice 2 selected - inv check");
+                        displayInventory(playerCharacter, dialogModule, isDebug, inventoryDebugFlags, menu_width, sysTerm);
                         break;
                     case '3':
                         //choice 3 code here
                         logger.info("##DEBUG## - game menu - choice 3 selected - purchase");
+                        doRunShopMenu = true;
+                        displayShopMenu(input, playerCharacter, dialogModule, isDebug, DebugEnabledFlags, menu_width, sysTerm);
                         break;
                     case '4':
                         //choice 4 code here
@@ -1428,11 +1485,6 @@ public class MiniLifeMain {
                                 break;
 
                         }
-
-
-
-
-
                         break;
                     case '5':
                         //choice 5 code here
@@ -1444,7 +1496,8 @@ public class MiniLifeMain {
                         break;
                     case '7':
                         logger.info("##DEBUG## - game menu - choice 7 selected - settings menu");
-                        displaySettingsMenu(input, dialogModule);
+                        doRunSettingsMenu = true;
+                        displaySettingsMenu(input, dialogModule, isDebug, playerCharacter, gameMenu, gameMenuHeader, menu_width, sysTerm);
                         break;
                     case '0':
                         //choice 0 code here
@@ -1467,7 +1520,7 @@ public class MiniLifeMain {
 
 
                 //temporary code until input mechanism is implemented so the menu doesn't repeat itself 500 times with no way to end it
-                try{Thread.sleep(1500);}
+                try{Thread.sleep(500);}
                 catch (InterruptedException error){
                     System.out.println("InterruptedException Caught");
                  }
@@ -1501,6 +1554,10 @@ public class MiniLifeMain {
                     Boolean siblingsFieldEnabled = false;
                     Boolean friendsFieldEnabled = false;
                     Boolean gameIsDemo = true;
+                    Boolean personalityFieldEnabled = false;
+                    Boolean houseFieldEnabled = false;
+                    Boolean carFieldEnabled = false;
+                    Boolean heirloomFieldEnabled = false;
 
                 if (isDebug){
                     jobFieldEnabled = DebugEnabledFlags.get(0);
@@ -1509,6 +1566,10 @@ public class MiniLifeMain {
                     siblingsFieldEnabled = DebugEnabledFlags.get(3);
                     friendsFieldEnabled = DebugEnabledFlags.get(4);
                     gameIsDemo = DebugEnabledFlags.get(5);
+                    personalityFieldEnabled = DebugEnabledFlags.get(6);
+                    houseFieldEnabled = DebugEnabledFlags.get(7);
+                    carFieldEnabled = DebugEnabledFlags.get(8);
+                    heirloomFieldEnabled = DebugEnabledFlags.get(9);
                     logger.info("##DEBUG## - Special DisplayPlayerInfo Debug Flags: " + "jobFieldEnabled - " + jobFieldEnabled + ", schoolFieldEnabled - " + schoolFieldEnabled + ", collegeFieldEnabled - " + collegeFieldEnabled +
                     ", siblingsFieldEnabled - " + siblingsFieldEnabled + ", friendsFieldEnabled - " + friendsFieldEnabled + ", gameIsDemo - " + gameIsDemo);
                 }
@@ -1525,10 +1586,13 @@ public class MiniLifeMain {
                 playerInfoScreen.menuElement("First Name: ", playerCharacter.getFirstName(), 2);
                 playerInfoScreen.menuElement("Last Name: ", playerCharacter.getLastName(), 2);
                 playerInfoScreen.menuElement("Age: ", playerCharacter.getAge(), 2);
-                playerInfoScreen.menuElement("Money: ", playerCharacter.getMoney(), 2);
+                playerInfoScreen.menuElement("Money: ", (String.format("%.2f", playerCharacter.getMoney())), 2);
                 playerInfoScreen.menuElement("Health: : ", playerCharacter.getHealth(), 2);
                 playerInfoScreen.menuElement("Gender: : ", playerCharacter.getPlayerGender(), 2);
                 playerInfoScreen.menuElement("City: : ", playerCharacter.getPlayerCity(), 2);
+                if ((isDebug && personalityFieldEnabled) || playerCharacter.getPlayerBooleanInfo(13)){
+                    playerInfoScreen.menuElement("Personality Type: ", playerCharacter.getPlayerPersonality(), 2);
+                }
                 playerInfoScreen.displaySeperator(1);
                 //job
                 if (playerCharacter.doesPlayerHaveJob() || jobFieldEnabled){
@@ -1537,6 +1601,31 @@ public class MiniLifeMain {
                     playerInfoScreen.menuElement("Employer: ", playerCharacter.getJob().getEmployerName(), 2);
                     playerInfoScreen.displaySeperator(1);
                 }
+                //assets
+                if ((playerCharacter.getPlayerBooleanInfo(15) || playerCharacter.getPlayerBooleanInfo(16) || playerCharacter.getPlayerBooleanInfo(17)) || houseFieldEnabled || carFieldEnabled || heirloomFieldEnabled){
+                    playerInfoScreen.menuElement("----Assets----", "", 2);
+                }
+                if (playerCharacter.getPlayerBooleanInfo(15) || houseFieldEnabled){
+                    for (int n = 0;n < playerCharacter.getInventory().getHouseList().size();n++){
+                        playerInfoScreen.menuElement(("House: " + playerCharacter.getInventory().getHouseList().get(n)), ", Value: " + (String.format("%.2f", playerCharacter.getInventory().getHomeValueList().get(n))), 2);
+                    }
+                }
+                if (playerCharacter.getPlayerBooleanInfo(16) || carFieldEnabled){
+                    for (int n = 0;n < playerCharacter.getInventory().getCarsList().size();n++){
+                        playerInfoScreen.menuElement(("Car: " + playerCharacter.getInventory().getCarsList().get(n)), ", Value: " + (String.format("%.2f", playerCharacter.getInventory().getCarValueList().get(n))), 2);
+                    }
+                }
+                if (playerCharacter.getPlayerBooleanInfo(17) || heirloomFieldEnabled){
+                    for (int n = 0; n < playerCharacter.getInventory().getHeirloomsList().size();n++){
+                        playerInfoScreen.menuElement(("Heirloom: " + playerCharacter.getInventory().getHeirloomsList().get(n)),(", Value: " + (String.format("%.2f", playerCharacter.getInventory().getHeirloomValueList().get(n)))), n);
+                    }
+                }
+
+                if ((playerCharacter.getPlayerBooleanInfo(15) || playerCharacter.getPlayerBooleanInfo(16) || playerCharacter.getPlayerBooleanInfo(17)) || houseFieldEnabled || carFieldEnabled || heirloomFieldEnabled){
+                    playerInfoScreen.displaySeperator(1);
+                }
+                
+                
                 //friends and family
                 playerInfoScreen.menuElement("----Friends and Family Info----", "", 2);
                 //displays mother's and father's first and last names
@@ -1601,6 +1690,878 @@ public class MiniLifeMain {
                     playerInfoScreen.menuElement("Development Milestone: ", dialogModule.getDevelopmentMilestoneString(), 2);
                     playerInfoScreen.menuElement("Current Operating System: ", System.getProperty("os.name"), 2);
                     playerInfoScreen.displaySeperator(1);
+                }
+
+        }
+
+        public static void displayShopMenu(Scanner input, MiniLifePlayer playerCharacter, MiniLifeDialog dialogModule, Boolean isDebug, List<Boolean>DebugEnabledFlags, int menu_width, Terminal sysTerm) throws Exception{
+                while (doRunShopMenu){
+                    //debug stuff
+                    Boolean showDebugSettings = false;
+                    Boolean gameIsDemo = true;
+
+                    if (isDebug){
+                        showDebugSettings = DebugEnabledFlags.get(0);
+                        gameIsDemo = DebugEnabledFlags.get(1);
+                        logger.info("##DEBUG## - Special displayGameMenu Debug Flags: " + "showDebugSettings - " + showDebugSettings + ", gameIsDemo - " + gameIsDemo);
+                    }
+
+                    //create the menus
+                    MiniLifeMenu shopMenuHeader = new MiniLifeMenu();
+                    shopMenuHeader.createMenu("$$", "$$", "~", "\u258B", menu_width, false, sysTerm);
+
+                    MiniLifeMenu shopMenu = new MiniLifeMenu();
+                    shopMenu.createMenu("\u25CF", "\u25CF", "\u25AC", "\u258B", menu_width, false, sysTerm);
+
+                    //header
+                    shopMenuHeader.displaySeperator(2);
+                    shopMenuHeader.menuElement("---Shop Menu---", "", 2);
+                    shopMenuHeader.displaySeperator(2);
+
+                    List<Boolean> inventoryDebugFlags = new ArrayList<Boolean>();
+                    if (isDebug){
+                        inventoryDebugFlags.add(gameIsDemo);
+                        inventoryDebugFlags.add(false); //house field
+                        inventoryDebugFlags.add(false); //car field
+                        inventoryDebugFlags.add(false); //heirloom field
+                    }
+
+                    //shop menu
+                    shopMenu.menuElement("What would you like to do?", "", 2);
+                    shopMenu.menuElement("1: Buy Items", "", 2);
+                    shopMenu.menuElement("2: Check Inventory", "", 2);
+                    shopMenu.menuElement("3: Sell Items", "", 2);
+                    shopMenu.menuElement("0: Exit menu", "", 2);
+                    
+                    if (isDebug && showDebugSettings){
+                        shopMenu.displaySeperator(1);
+                        shopMenu.menuElement("##DEBUG## - 99: Debug Menu", "", 2);
+                    }
+
+                    shopMenu.displaySeperator(1);
+
+                    String menuChoice;
+                    char[] menuChoiceChar = {};
+                    Boolean doRunMenuChooser = true;
+                    //begin input section
+
+                    while (doRunMenuChooser){
+                        //menu input
+                        try{
+                            System.out.println("Please make a selection: ");
+                            menuChoice = input.next().trim().toLowerCase();
+
+                            //make sure the input is valid, loop if not
+                        if (Character.isDigit(menuChoice.charAt(0))){
+                                menuChoiceChar = menuChoice.toCharArray();
+                                doRunMenuChooser = false;
+                                break;
+                        }
+                            else {
+                                logger.info("##DEBUG## - game menu input - invalid input recieved. clearing variable and looping input.");
+                                menuChoice = "";
+                                doRunMenuChooser = true;
+                                continue;
+                            }
+
+
+                        }catch (InputMismatchException error){
+                            menuChoice = "";
+                            input.next();
+                            doRunMenuChooser = true;
+                            continue;
+                        }
+                    }
+
+
+
+                    switch(menuChoiceChar[0]) {
+                        case '1':
+                            //choice 1 code here
+                            logger.info("##DEBUG## - shop menu - choice 1 selected - buy items");
+                            //load buy menu
+                            doRunBuyMenu = true;
+                            displayBuyMenu(input, playerCharacter, dialogModule, isDebug, DebugEnabledFlags, menu_width, sysTerm);
+                            break;
+                        case '2':
+                            //choice 2 code here
+                            logger.info("##DEBUG## - shop menu - choice 2 selected - inv check");
+                            //load inventory menu
+                            displayInventory(playerCharacter, dialogModule, isDebug, inventoryDebugFlags, menu_width, sysTerm);
+                            break;
+                        case '3':
+                            //choice 3 code here
+                            logger.info("##DEBUG## - shop menu - choice 3 selected - sell items");
+                            //load sell menu
+                            doRunSellMenu = true;
+                            displaySellMenu(input, playerCharacter, dialogModule, isDebug, DebugEnabledFlags, menu_width, sysTerm);
+                            break;
+                        case '0':
+                            //choice 0 code here
+                            logger.info("##DEBUG## - shop menu - choice 0 selected - exit menu");
+                            doRunShopMenu = false;
+                            break;
+                        case '9':
+                            if (isDebug){
+                                if (menuChoiceChar[1] == '9'){
+                                    //debug choice code here
+                                    logger.info("##DEBUG## - game menu - choice 99 selected - debug");
+                                    System.out.println("Meow!!!");
+                                    break;
+                                }
+                            }
+                        default:
+                            logger.info("##DEBUG## - exception - unknown program state. switch block in shop menu resulted in unhandled choice. closing program with error to prevent unintended behavior");
+                            throw new UnsupportedOperationException("Invalid Program State in Game Menu. Switch-Block reported impossible result.");
+                    }
+                }        
+        }
+
+        public static void displayBuyMenu(Scanner input, MiniLifePlayer playerCharacter, MiniLifeDialog dialogModule, Boolean isDebug, List<Boolean>DebugEnabledFlags, int menu_width, Terminal sysTerm) throws Exception{
+                while (doRunBuyMenu){
+                    //debug stuff
+                    Boolean showDebugSettings = false;
+                    Boolean gameIsDemo = true;
+
+                    if (isDebug){
+                        showDebugSettings = DebugEnabledFlags.get(0);
+                        gameIsDemo = DebugEnabledFlags.get(1);
+                        logger.info("##DEBUG## - Special displayBuyMenu Debug Flags: " + "showDebugSettings - " + showDebugSettings + ", gameIsDemo - " + gameIsDemo);
+                    }
+
+                    //create the menus
+                    MiniLifeMenu shopMenuHeader = new MiniLifeMenu();
+                    shopMenuHeader.createMenu("$$", "$$", "~", "\u258B", menu_width, false, sysTerm);
+
+                    MiniLifeMenu shopMenu = new MiniLifeMenu();
+                    shopMenu.createMenu("\u25CF", "\u25CF", "\u25AC", "\u258B", menu_width, false, sysTerm);
+
+                    //header
+                    shopMenuHeader.displaySeperator(2);
+                    shopMenuHeader.menuElement("---Buy Menu---", "", 2);
+                    shopMenuHeader.displaySeperator(2);
+
+                    //shop menu
+                    shopMenu.menuElement("What would you like to do?", "", 2);
+                    shopMenu.menuElement("1: Buy Houses", "", 2);
+                    shopMenu.menuElement("2: Buy Cars", "", 2);
+                    shopMenu.menuElement("0: Exit menu", "", 2);
+
+                    //error menu
+                    MiniLifeMenu errorMenu = new MiniLifeMenu();
+                    errorMenu.createMenu("\u2613", "\u2613", "-", "\u258B", menu_width, false, sysTerm);
+                    
+                    if (isDebug && showDebugSettings){
+                        shopMenu.displaySeperator(1);
+                        shopMenu.menuElement("##DEBUG## - 99: Debug Menu", "", 2);
+                    }
+
+                    //stuff to setup displayPlayerInfo
+                    // List<Boolean> playerInfoDebugFlags = new ArrayList<Boolean>();
+                    // if (isDebug){
+                    //     playerInfoDebugFlags.add(false); //job field
+                    //     playerInfoDebugFlags.add(true); //school field
+                    //     playerInfoDebugFlags.add(true); //college field
+                    //     playerInfoDebugFlags.add(false); //siblings field
+                    //     playerInfoDebugFlags.add(false); //friends field
+                    //     playerInfoDebugFlags.add(gameIsDemo);
+                    //     playerInfoDebugFlags.add(false); //personality field
+                    // }
+
+                    shopMenu.displaySeperator(1);
+
+                    String menuChoice;
+                    char[] menuChoiceChar = {};
+                    Boolean doRunMenuChooser = true;
+                    //begin input section
+
+                    while (doRunMenuChooser){
+                        //menu input
+                        try{
+                            System.out.println("Please make a selection: ");
+                            menuChoice = input.next().trim().toLowerCase();
+
+                            //make sure the input is valid, loop if not
+                        if (Character.isDigit(menuChoice.charAt(0))){
+                                menuChoiceChar = menuChoice.toCharArray();
+                                doRunMenuChooser = false;
+                                break;
+                        }
+                            else {
+                                logger.info("##DEBUG## - buy menu input - invalid input recieved. clearing variable and looping input.");
+                                menuChoice = "";
+                                doRunMenuChooser = true;
+                                continue;
+                            }
+
+
+                        }catch (InputMismatchException error){
+                            menuChoice = "";
+                            input.next();
+                            doRunMenuChooser = true;
+                            continue;
+                        }
+                    }
+
+
+
+                    switch(menuChoiceChar[0]) {
+                        case '1':
+                            //choice 1 code here
+                            logger.info("##DEBUG## - buy menu - choice 1 selected - buy houses");
+
+                            String housePicked = "";
+
+                            //list 3 houses at random
+                            int houseID1 = ThreadLocalRandom.current().nextInt(0, 16 + 1);
+                            int houseID2 = ThreadLocalRandom.current().nextInt(0, 16 + 1);
+                            int houseID3 = ThreadLocalRandom.current().nextInt(0, 16 + 1);
+
+                            //make sure none of them are the same house
+                            if (houseID1 == houseID2 || houseID1 == houseID3){
+                                houseID1 = ThreadLocalRandom.current().nextInt(0, 16 + 1);
+                            }
+                            if (houseID2 == houseID3){
+                                houseID2 = ThreadLocalRandom.current().nextInt(0, 16 + 1);
+                            }
+
+                            //generate 3 sets of prices
+                            double housePrice1 = ThreadLocalRandom.current().nextDouble(86000.0, 500000.0);
+                            double housePrice2 = ThreadLocalRandom.current().nextDouble(86000.0, 500000.0);
+                            double housePrice3 = ThreadLocalRandom.current().nextDouble(86000.0, 500000.0);
+
+                            //display houses
+                            shopMenuHeader.displaySeperator(2);
+                            shopMenuHeader.menuElement("House 1 - ", (dialogModule.getHouseWithID(houseID1) + ", Price: $" + (String.format("%.2f", housePrice1))), 2);
+                            shopMenuHeader.menuElement("House 2 - ", (dialogModule.getHouseWithID(houseID2) + ", Price: $" + (String.format("%.2f", housePrice2))), 2);
+                            shopMenuHeader.menuElement("House 3 - ", (dialogModule.getHouseWithID(houseID3) + ", Price: $" + (String.format("%.2f", housePrice3))), 2);
+                            shopMenuHeader.displaySeperator(2);
+
+                            System.out.println("Please make a selection (enter 0 to exit): ");
+                            housePicked = input.next().trim().toLowerCase();
+                            char housePickedChar = housePicked.charAt(0);
+
+                            switch(housePickedChar){
+                                case '0':
+                                    break;
+                                case '1':
+                                    if (playerCharacter.getMoney() >= housePrice1 && !(playerCharacter.getAge() < 18)){
+                                        playerCharacter.removeMoney(housePrice1);
+                                        playerCharacter.getInventory().appendToHouseList(dialogModule.getHouseWithID(houseID1), housePrice1);
+                                        playerCharacter.setPlayerBooleanInfo(15, true);
+                                        shopMenu.displaySeperator(1);
+                                        shopMenu.menuElement("House Purchased Successfully!", "", 2);
+                                        shopMenu.displaySeperator(1);
+                                    }else if (playerCharacter.getMoney() < housePrice1){
+                                         errorMenu.displaySeperator(1);
+                                         errorMenu.menuElement("You do not have enough money to purchase that house.", "", 2);
+                                         errorMenu.displaySeperator(1);
+                                    }else if (playerCharacter.getAge() < 18){
+                                         errorMenu.displaySeperator(1);
+                                         errorMenu.menuElement("You are not old enough to purchase a house!", "", 2);
+                                         errorMenu.displaySeperator(1);
+                                         if (gameIsDemo && playerCharacter.getMoney() >= housePrice1){
+                                            playerCharacter.removeMoney(housePrice1);
+                                            playerCharacter.getInventory().appendToHouseList(dialogModule.getHouseWithID(houseID1), housePrice1);
+                                            playerCharacter.setPlayerBooleanInfo(15, true);
+                                            shopMenu.displaySeperator(1);
+                                            shopMenu.menuElement("Congratulations! In the demo version, you may purchase this house at any age!", "", 2);
+                                            shopMenu.menuElement("House Purchased Successfully.", "", 2);
+                                            shopMenu.displaySeperator(1);
+                                         }
+                                    }
+                                    break;
+                                case '2':
+                                    if (playerCharacter.getMoney() >= housePrice2 && !(playerCharacter.getAge() < 18)){
+                                        playerCharacter.removeMoney(housePrice2);
+                                        playerCharacter.getInventory().appendToHouseList(dialogModule.getHouseWithID(houseID2), housePrice2);
+                                        playerCharacter.setPlayerBooleanInfo(15, true);
+                                        shopMenu.displaySeperator(1);
+                                        shopMenu.menuElement("House Purchased Successfully!", "", 2);
+                                        shopMenu.displaySeperator(1);
+                                    }else if (playerCharacter.getMoney() < housePrice2){
+                                         errorMenu.displaySeperator(1);
+                                         errorMenu.menuElement("You do not have enough money to purchase that house.", "", 2);
+                                         errorMenu.displaySeperator(1);
+                                    }else if (playerCharacter.getAge() < 18){
+                                         errorMenu.displaySeperator(1);
+                                         errorMenu.menuElement("You are not old enough to purchase a house!", "", 2);
+                                         errorMenu.displaySeperator(1);
+                                         if (gameIsDemo && playerCharacter.getMoney() >= housePrice2){
+                                            playerCharacter.removeMoney(housePrice2);
+                                            playerCharacter.getInventory().appendToHouseList(dialogModule.getHouseWithID(houseID2), housePrice2);
+                                            playerCharacter.setPlayerBooleanInfo(15, true);
+                                            shopMenu.displaySeperator(1);
+                                            shopMenu.menuElement("Congratulations! In the demo version, you may purchase this house at any age!", "", 2);
+                                            shopMenu.menuElement("House Purchased Successfully.", "", 2);
+                                            shopMenu.displaySeperator(1);
+                                        }
+                                    }
+                                    break;
+                                case '3':
+                                    if (playerCharacter.getMoney() >= housePrice3 && !(playerCharacter.getAge() < 18)){
+                                        playerCharacter.removeMoney(housePrice3);
+                                        playerCharacter.getInventory().appendToHouseList(dialogModule.getHouseWithID(houseID3), housePrice3);
+                                        playerCharacter.setPlayerBooleanInfo(15, true);
+                                        shopMenu.displaySeperator(1);
+                                        shopMenu.menuElement("House Purchased Successfully!", "", 2);
+                                        shopMenu.displaySeperator(1);
+                                    }else if (playerCharacter.getMoney() < housePrice3){
+                                         errorMenu.displaySeperator(1);
+                                         errorMenu.menuElement("You do not have enough money to purchase that house.", "", 2);
+                                         errorMenu.displaySeperator(1);
+                                    }else if (playerCharacter.getAge() < 18){
+                                         errorMenu.displaySeperator(1);
+                                         errorMenu.menuElement("You are not old enough to purchase a house!", "", 2);
+                                         errorMenu.displaySeperator(1);
+                                         if (gameIsDemo && playerCharacter.getMoney() >= housePrice3){
+                                            playerCharacter.removeMoney(menu_width);
+                                            playerCharacter.getInventory().appendToHouseList(dialogModule.getHouseWithID(houseID3), housePrice3);
+                                            playerCharacter.setPlayerBooleanInfo(15, true);
+                                            shopMenu.displaySeperator(1);
+                                            shopMenu.menuElement("Congratulations! In the demo version, you may purchase this house at any age!", "", 2);
+                                            shopMenu.menuElement("House Purchased Successfully.", "", 2);
+                                            shopMenu.displaySeperator(1);
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    logger.info("##DEBUG## - Non-Fatal Error in Buy House Menu. Switch block reached irrational conclusion.");
+                                    break;
+                            }
+                            break;
+                        case '2':
+                            //choice 2 code here
+                            logger.info("##DEBUG## - shop menu - choice 2 selected - cars");
+                            //load car menu
+                            String carPicked = "";
+
+                            //list 3 cars at random
+                            int carID1 = ThreadLocalRandom.current().nextInt(0, 82 + 1);
+                            int carID2 = ThreadLocalRandom.current().nextInt(0, 82 + 1);
+                            int carID3 = ThreadLocalRandom.current().nextInt(0, 82 + 1);
+
+                            //make sure none of them are the same car
+                            if (carID1 == carID2 || carID1 == carID3){
+                                carID1 = ThreadLocalRandom.current().nextInt(0, 82 + 1);
+                            }
+                            if (carID2 == carID3){
+                                carID2 = ThreadLocalRandom.current().nextInt(0, 82 + 1);
+                            }
+
+                            //generate 3 sets of prices
+                            double carPrice1 = ThreadLocalRandom.current().nextDouble(86000.0, 156000.0);
+                            double carPrice2 = ThreadLocalRandom.current().nextDouble(86000.0, 156000.0);
+                            double carPrice3 = ThreadLocalRandom.current().nextDouble(86000.0, 156000.0);
+
+                            //increase the car prices if any luxury cars are picked
+                            if (dialogModule.getCarsWithID(carID1).contains("Luxury")){
+                                carPrice1 = carPrice1 + 175000.0;
+                            }
+                            if (dialogModule.getCarsWithID(carID2).contains("Luxury")){
+                                carPrice2 = carPrice2 + 175000.0;
+                            }
+                            if (dialogModule.getCarsWithID(carID3).contains("Luxury")){
+                                carPrice3 = carPrice3 + 175000.0;
+                            }
+
+                            //display cars
+                            shopMenuHeader.displaySeperator(2);
+                            shopMenuHeader.menuElement("Car 1 - ", (dialogModule.getCarsWithID(carID1) + ", Price: $" + (String.format("%.2f", carPrice1))), 2);
+                            shopMenuHeader.menuElement("Car 2 - ", (dialogModule.getCarsWithID(carID2) + ", Price: $" + (String.format("%.2f", carPrice2))), 2);
+                            shopMenuHeader.menuElement("Car 3 - ", (dialogModule.getCarsWithID(carID2) + ", Price: $" + (String.format("%.2f", carPrice3))), 2);
+                            shopMenuHeader.displaySeperator(2);
+
+                            System.out.println("Please make a selection (enter 0 to exit): ");
+                            carPicked = input.next().trim().toLowerCase();
+                            char carPickedChar = carPicked.charAt(0);
+
+                            switch(carPickedChar){
+                                case '0':
+                                    break;
+                                case '1':
+                                    if (playerCharacter.getMoney() >= carPrice1 && !(playerCharacter.getAge() < 18)){
+                                        playerCharacter.removeMoney(carPrice1);
+                                        playerCharacter.getInventory().appendToCarsList(dialogModule.getCarsWithID(carID1), carPrice1);
+                                        playerCharacter.setPlayerBooleanInfo(15, true);
+                                        shopMenu.displaySeperator(1);
+                                        shopMenu.menuElement("Car Purchased Successfully!", "", 2);
+                                        shopMenu.displaySeperator(1);
+                                    }else if (playerCharacter.getMoney() < carPrice1){
+                                         errorMenu.displaySeperator(1);
+                                         errorMenu.menuElement("You do not have enough money to purchase that car.", "", 2);
+                                         errorMenu.displaySeperator(1);
+                                    }else if (playerCharacter.getAge() < 18){
+                                         errorMenu.displaySeperator(1);
+                                         errorMenu.menuElement("You are not old enough to purchase a car!", "", 2);
+                                         errorMenu.displaySeperator(1);
+                                         if (gameIsDemo && playerCharacter.getMoney() >= carPrice1){
+                                            playerCharacter.removeMoney(carPrice1);
+                                            playerCharacter.getInventory().appendToCarsList(dialogModule.getCarsWithID(carID1), carPrice1);
+                                            playerCharacter.setPlayerBooleanInfo(15, true);
+                                            shopMenu.displaySeperator(1);
+                                            shopMenu.menuElement("Congratulations! In the demo version, you may purchase this car at any age!", "", 2);
+                                            shopMenu.menuElement("Car Purchased Successfully.", "", 2);
+                                            shopMenu.displaySeperator(1);
+                                         }
+                                    }
+                                    break;
+                                case '2':
+                                    if (playerCharacter.getMoney() >= carPrice2 && !(playerCharacter.getAge() < 18)){
+                                        playerCharacter.removeMoney(carPrice2);
+                                        playerCharacter.getInventory().appendToCarsList(dialogModule.getCarsWithID(carID2), carPrice2);
+                                        playerCharacter.setPlayerBooleanInfo(15, true);
+                                        shopMenu.displaySeperator(1);
+                                        shopMenu.menuElement("Car Purchased Successfully!", "", 2);
+                                        shopMenu.displaySeperator(1);
+                                    }else if (playerCharacter.getMoney() < carPrice2){
+                                         errorMenu.displaySeperator(1);
+                                         errorMenu.menuElement("You do not have enough money to purchase that car.", "", 2);
+                                         errorMenu.displaySeperator(1);
+                                    }else if (playerCharacter.getAge() < 18){
+                                         errorMenu.displaySeperator(1);
+                                         errorMenu.menuElement("You are not old enough to purchase a car!", "", 2);
+                                         errorMenu.displaySeperator(1);
+                                         if (gameIsDemo && playerCharacter.getMoney() >= carPrice2){
+                                            playerCharacter.removeMoney(carPrice2);
+                                            playerCharacter.getInventory().appendToCarsList(dialogModule.getCarsWithID(carID2), carPrice2);
+                                            playerCharacter.setPlayerBooleanInfo(15, true);
+                                            shopMenu.displaySeperator(1);
+                                            shopMenu.menuElement("Congratulations! In the demo version, you may purchase this car at any age!", "", 2);
+                                            shopMenu.menuElement("Car Purchased Successfully.", "", 2);
+                                            shopMenu.displaySeperator(1);
+                                        }
+                                    }
+                                    break;
+                                case '3':
+                                    if (playerCharacter.getMoney() >= carPrice3 && !(playerCharacter.getAge() < 18)){
+                                        playerCharacter.removeMoney(carPrice3);
+                                        playerCharacter.getInventory().appendToCarsList(dialogModule.getCarsWithID(carID3), carPrice3);
+                                        playerCharacter.setPlayerBooleanInfo(15, true);
+                                        shopMenu.displaySeperator(1);
+                                        shopMenu.menuElement("Car Purchased Successfully!", "", 2);
+                                        shopMenu.displaySeperator(1);
+                                    }else if (playerCharacter.getMoney() < carPrice3){
+                                         errorMenu.displaySeperator(1);
+                                         errorMenu.menuElement("You do not have enough money to purchase that car.", "", 2);
+                                         errorMenu.displaySeperator(1);
+                                    }else if (playerCharacter.getAge() < 18){
+                                         errorMenu.displaySeperator(1);
+                                         errorMenu.menuElement("You are not old enough to purchase a car!", "", 2);
+                                         errorMenu.displaySeperator(1);
+                                         if (gameIsDemo && playerCharacter.getMoney() >= carPrice3){
+                                            playerCharacter.removeMoney(menu_width);
+                                            playerCharacter.getInventory().appendToCarsList(dialogModule.getCarsWithID(carID3), carPrice3);
+                                            playerCharacter.setPlayerBooleanInfo(15, true);
+                                            shopMenu.displaySeperator(1);
+                                            shopMenu.menuElement("Congratulations! In the demo version, you may purchase this car at any age!", "", 2);
+                                            shopMenu.menuElement("Car Purchased Successfully.", "", 2);
+                                            shopMenu.displaySeperator(1);
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    logger.info("##DEBUG## - Non-Fatal Error in Buy House Menu. Switch block reached irrational conclusion.");
+                                    break;
+                            }
+                            break;
+                        case '0':
+                            //choice 0 code here
+                            logger.info("##DEBUG## - buy menu - choice 0 selected - exit menu");
+                            doRunBuyMenu = false;
+                            break;
+                        case '9':
+                            if (isDebug){
+                                if (menuChoiceChar[1] == '9'){
+                                    //debug choice code here
+                                    logger.info("##DEBUG## - game menu - choice 99 selected - debug");
+                                    System.out.println("Meow!!!");
+                                    String debugSelection = "";
+
+                                    errorMenu.displaySeperator(1);
+                                    errorMenu.menuElement("1: Add $500,000 to wallet", "", 2);
+                                    errorMenu.menuElement("2: Give player a random house", "", 2);
+                                    errorMenu.menuElement("3: Give player random car", "", 2);
+                                    errorMenu.menuElement("4: Give player an heirloom (old boot - 0.50)", "", 2);
+                                    errorMenu.displaySeperator(1);
+                                    
+                                    System.out.println("Please make a selection (enter 0 to exit): ");
+                                    debugSelection = input.next().trim().toLowerCase();
+                                    char debugSelectionChar = debugSelection.charAt(0);
+
+                                    if (debugSelectionChar == '0'){
+                                        //do nothing
+                                    }else if (debugSelectionChar == '1'){
+                                            playerCharacter.addMoney(500000.0);
+                                    }else if (debugSelectionChar == '2'){
+                                        int houseIDDebug = ThreadLocalRandom.current().nextInt(0, 16 + 1);
+                                        String houseNameDebug = dialogModule.getHouseWithID(houseIDDebug) + " (Debug)";
+                                        double housePriceDebug = 150.0;
+                                        playerCharacter.setPlayerBooleanInfo(15, true);
+                                        playerCharacter.getInventory().appendToHouseList(houseNameDebug, housePriceDebug);
+                                        errorMenu.menuElement("##DEBUG## - added random house to player inventory.", "", 2); 
+                                    }else if (debugSelectionChar == '3'){
+                                            int carIDDebug = ThreadLocalRandom.current().nextInt(0, 82 + 1);
+                                            String carNameDebug = dialogModule.getCarsWithID(carIDDebug) + " (Debug)";
+                                            double carPriceDebug = 150.0;
+                                            playerCharacter.setPlayerBooleanInfo(16, true);
+                                            playerCharacter.getInventory().appendToCarsList(carNameDebug, carPriceDebug);
+                                            errorMenu.menuElement("##DEBUG## - added random car to player inventory.", "", 2);
+                                    }else if (debugSelectionChar == '4'){
+                                        playerCharacter.getInventory().appendToHeirloomsList("Old Boot (Debug)",0.50);
+                                        playerCharacter.setPlayerBooleanInfo(17, true);
+                                        errorMenu.menuElement("##DEBUG## - added old boot to player inventory.", "", 2);
+                                    }
+                                    }
+                                }
+                                break;
+                        default:
+                            logger.info("##DEBUG## - exception - unknown program state. switch block in shop menu resulted in unhandled choice. closing program with error to prevent unintended behavior");
+                            throw new UnsupportedOperationException("Invalid Program State in Game Menu. Switch-Block reported impossible result.");
+                        }
+                    }
+                }
+
+       public static void displaySellMenu(Scanner input, MiniLifePlayer playerCharacter, MiniLifeDialog dialogModule, Boolean isDebug, List<Boolean>DebugEnabledFlags, int menu_width, Terminal sysTerm) throws Exception{
+                while (doRunSellMenu){
+                    //debug stuff
+                    Boolean showDebugSettings = false;
+                    Boolean gameIsDemo = true;
+
+                    if (isDebug){
+                        showDebugSettings = DebugEnabledFlags.get(0);
+                        gameIsDemo = DebugEnabledFlags.get(1);
+                        logger.info("##DEBUG## - Special displaySellMenu Debug Flags: " + "showDebugSettings - " + showDebugSettings + ", gameIsDemo - " + gameIsDemo);
+                    }
+
+
+                    //create the menus
+                    MiniLifeMenu shopMenuHeader = new MiniLifeMenu();
+                    shopMenuHeader.createMenu("$$", "$$", "~", "\u258B", menu_width, false, sysTerm);
+
+                    MiniLifeMenu shopMenu = new MiniLifeMenu();
+                    shopMenu.createMenu("\u25CF", "\u25CF", "\u25AC", "\u258B", menu_width, false, sysTerm);
+
+                    //header
+                    shopMenuHeader.displaySeperator(2);
+                    shopMenuHeader.menuElement("---Sell Menu---", "", 2);
+                    shopMenuHeader.displaySeperator(2);
+
+                    //shop menu
+                    shopMenu.menuElement("What would you like to do?", "", 2);
+                    shopMenu.menuElement("1: Sell Houses", "", 2);
+                    shopMenu.menuElement("2: Sell Cars", "", 2);
+                    shopMenu.menuElement("3: Sell Heirlooms", "", 2);
+                    shopMenu.menuElement("0: Exit menu", "", 2);
+
+                    //error menu
+                    MiniLifeMenu errorMenu = new MiniLifeMenu();
+                    errorMenu.createMenu("\u2613", "\u2613", "-", "\u258B", menu_width, false, sysTerm);
+                    
+                    if (isDebug && showDebugSettings){
+                        shopMenu.displaySeperator(1);
+                        shopMenu.menuElement("##DEBUG## - 99: Debug Menu", "", 2);
+                    }
+
+                    shopMenu.displaySeperator(1);
+
+                    String menuChoice;
+                    char[] menuChoiceChar = {};
+                    Boolean doRunMenuChooser = true;
+                    //begin input section
+
+                    while (doRunMenuChooser){
+                        //menu input
+                        try{
+                            System.out.println("Please make a selection: ");
+                            menuChoice = input.next().trim().toLowerCase();
+
+                            //make sure the input is valid, loop if not
+                        if (Character.isDigit(menuChoice.charAt(0))){
+                                menuChoiceChar = menuChoice.toCharArray();
+                                doRunMenuChooser = false;
+                                break;
+                        }
+                            else {
+                                logger.info("##DEBUG## - sell menu input - invalid input recieved. clearing variable and looping input.");
+                                menuChoice = "";
+                                doRunMenuChooser = true;
+                                continue;
+                            }
+
+
+                        }catch (InputMismatchException error){
+                            menuChoice = "";
+                            input.next();
+                            doRunMenuChooser = true;
+                            continue;
+                        }
+                    }
+
+
+
+                    switch(menuChoiceChar[0]) {
+                        case '0':
+                            //exit sell menu
+                            doRunSellMenu = false;
+                            break;
+                        case '1':
+                            //sell houses
+                            String homeMenuChoice = "";
+                            char[] homeMenuChoiceChar;
+
+                            if (!playerCharacter.getPlayerBooleanInfo(15)){
+                              errorMenu.displaySeperator(1);
+                              errorMenu.menuElement("You do not own any houses!", "", 2);
+                              errorMenu.displaySeperator(1);  
+                            }else if (playerCharacter.getPlayerBooleanInfo(15)){
+                                shopMenu.displaySeperator(1);
+                                for (int n = 0; n < playerCharacter.getInventory().getHouseList().size();n++){
+                                    shopMenu.menuElement(("House " + n + ": "), (playerCharacter.getInventory().getHouseList().get(n) + ", Value: " + playerCharacter.getInventory().getHomeValueList().get(n)), 2);
+                                }
+                                shopMenu.displaySeperator(1);
+
+                                //get the player's input for the home to sell. 99 is the exit code.
+                                System.out.println("Please choose a home to sell (enter 99 to exit): ");
+                                homeMenuChoice = input.next().trim().toLowerCase();
+                                homeMenuChoiceChar = homeMenuChoice.toCharArray();
+                                int homeMenuChoiceInt = 999;
+                                
+                                if (Character.isDigit(homeMenuChoiceChar[0])){
+                                    homeMenuChoiceInt = Integer.parseInt(homeMenuChoice);
+                                }
+
+                                logger.info("" + homeMenuChoice.length());
+                                if (homeMenuChoice.length() == 1){
+                                    if (Character.isDigit(homeMenuChoiceChar[0])){
+                                        if (homeMenuChoiceInt <= playerCharacter.getInventory().getHouseList().size()){
+                                            //sell the home, adding it's value to the player's money and then removing it from both lists
+                                            if (homeMenuChoiceInt == 99){
+                                                break;
+                                            }
+                                            playerCharacter.addMoney(playerCharacter.getInventory().getHomeValueList().get(homeMenuChoiceInt));
+                                            playerCharacter.getInventory().getHouseList().remove(homeMenuChoiceInt);
+                                            playerCharacter.getInventory().getHomeValueList().remove(homeMenuChoiceInt);
+                                            shopMenu.displaySeperator(1);
+                                            shopMenu.menuElement("You sold one home.", "", 2);
+                                            shopMenu.displaySeperator(1);
+                                        }
+                                    }
+                                 }
+                                }
+                            break;
+                        case '2':
+                            //sell cars
+                            String carMenuChoice = "";
+                            char[] carMenuChoiceChar;
+
+                            if (!playerCharacter.getPlayerBooleanInfo(16)){
+                              errorMenu.displaySeperator(1);
+                              errorMenu.menuElement("You do not own any cars!", "", 2);
+                              errorMenu.displaySeperator(1);  
+                            }else if (playerCharacter.getPlayerBooleanInfo(16)){
+                                shopMenu.displaySeperator(1);
+                                for (int n = 0; n < playerCharacter.getInventory().getCarsList().size();n++){
+                                    shopMenu.menuElement(("Car " + n + ": "), (playerCharacter.getInventory().getCarsList().get(n) + ", Value: " + playerCharacter.getInventory().getCarValueList().get(n)), 2);
+                                }
+                                shopMenu.displaySeperator(1);
+
+                                //get the player's input for the car to sell. 99 is the exit code.
+                                System.out.println("Please choose a car to sell (enter 99 to exit): ");
+                                carMenuChoice = input.next().trim().toLowerCase();
+                                carMenuChoiceChar = carMenuChoice.toCharArray();
+                                int carMenuChoiceInt = 999;
+                                
+                                if (Character.isDigit(carMenuChoiceChar[0])){
+                                    carMenuChoiceInt = Integer.parseInt(carMenuChoice);
+                                }
+                                if (carMenuChoice.length() == 1){
+                                    if (Character.isDigit(carMenuChoiceChar[0])){
+                                        if (carMenuChoiceInt <= playerCharacter.getInventory().getCarsList().size()){
+                                            //sell the home, adding it's value to the player's money and then removing it from both lists
+                                            if (carMenuChoiceInt == 99){
+                                                break;
+                                            }
+                                            playerCharacter.addMoney(playerCharacter.getInventory().getCarValueList().get(carMenuChoiceInt));
+                                            playerCharacter.getInventory().getCarsList().remove(carMenuChoiceInt);
+                                            playerCharacter.getInventory().getCarValueList().remove(carMenuChoiceInt);
+                                            shopMenu.displaySeperator(1);
+                                            shopMenu.menuElement("You sold one car.", "", 2);
+                                            shopMenu.displaySeperator(1);
+                                        }
+                                    }
+                                 }
+                            }
+                            break;
+                        case '3':
+                            //sell heirlooms
+                            String heirloomMenuChoice = "";
+                            char[] heirloomMenuChoiceChar;
+
+                            if (!playerCharacter.getPlayerBooleanInfo(17)){
+                              errorMenu.displaySeperator(1);
+                              errorMenu.menuElement("You do not have any heirlooms!", "", 2);
+                              errorMenu.displaySeperator(1);  
+                            }else if (playerCharacter.getPlayerBooleanInfo(17)){
+                                shopMenu.displaySeperator(1);
+                                for (int n = 0; n < playerCharacter.getInventory().getHeirloomsList().size();n++){
+                                    shopMenu.menuElement(("Heirloom " + n + ": "), (playerCharacter.getInventory().getHeirloomsList().get(n) + ", Value: " + playerCharacter.getInventory().getHeirloomValueList().get(n)), 2);
+                                }
+                                shopMenu.displaySeperator(1);
+
+                                //get the player's input for the home to sell. 99 is the exit code.
+                               System.out.println("Please choose a heirloom to sell (enter 99 to exit): ");
+                                heirloomMenuChoice = input.next().trim().toLowerCase();
+                                heirloomMenuChoiceChar = heirloomMenuChoice.toCharArray();
+                                int heirloomMenuChoiceInt = 999;
+                                
+                                if (Character.isDigit(heirloomMenuChoiceChar[0])){
+                                    heirloomMenuChoiceInt = Integer.parseInt(heirloomMenuChoice);
+                                }
+                                if (heirloomMenuChoice.length() == 1){
+                                    if (Character.isDigit(heirloomMenuChoiceChar[0])){
+                                        if (heirloomMenuChoiceInt <= playerCharacter.getInventory().getHeirloomsList().size()){
+                                            //sell the home, adding it's value to the player's money and then removing it from both lists
+                                            if (heirloomMenuChoiceInt == 99){
+                                                break;
+                                            }
+                                            playerCharacter.addMoney(playerCharacter.getInventory().getHeirloomValueList().get(heirloomMenuChoiceInt));
+                                            playerCharacter.getInventory().getHeirloomsList().remove(heirloomMenuChoiceInt);
+                                            playerCharacter.getInventory().getHeirloomValueList().remove(heirloomMenuChoiceInt);
+                                            shopMenu.displaySeperator(1);
+                                            shopMenu.menuElement("You sold one heirloom.", "", 2);
+                                            shopMenu.displaySeperator(1);
+                                        }
+                                    }
+                                 }
+                            }
+                            break;
+                        case '9':
+                            if (isDebug && menuChoiceChar.toString().length() == 2){
+                                //show debug menu
+                                errorMenu.displaySeperator(1);
+                                errorMenu.menuElement("##DEBUG## - There is no debug settings for this menu in current build", "", 2);
+                                errorMenu.menuElement("Meow!!! :3", "", 2);
+                                errorMenu.displaySeperator(1);
+                            }
+                            break;
+                        default:
+                            errorMenu.displaySeperator(1);
+                            errorMenu.menuElement("Error! invalid or unknown choice entered.", "", 2);
+                            errorMenu.displaySeperator(1);
+                            break;
+
+
+                        
+                    }
+                }
+       }
+
+       public static void displayInventory(MiniLifePlayer playerCharacter, MiniLifeDialog dialogModule, Boolean isDebug, List<Boolean>DebugEnabledFlags, int menu_width, Terminal sysTerm) throws Exception{
+
+                    Boolean gameIsDemo = true;
+                    Boolean houseFieldEnabled = false;
+                    Boolean carFieldEnabled = false;
+                    Boolean heirloomFieldEnabled = false;
+
+                if (isDebug){
+                    gameIsDemo = DebugEnabledFlags.get(0);
+                    houseFieldEnabled = DebugEnabledFlags.get(1);
+                    carFieldEnabled = DebugEnabledFlags.get(2);
+                    heirloomFieldEnabled = DebugEnabledFlags.get(3);
+                }
+                
+                //create the menu
+                MiniLifeMenu inventoryScreen = new MiniLifeMenu();
+                inventoryScreen.createMenu("\u25CF", "\u25CF", "\u25AC", "\u258B", menu_width, false, sysTerm);
+
+                if ((!playerCharacter.getPlayerBooleanInfo(15) && !playerCharacter.getPlayerBooleanInfo(16) && !playerCharacter.getPlayerBooleanInfo(17)) && (!houseFieldEnabled && !carFieldEnabled && !heirloomFieldEnabled) ){
+                    inventoryScreen.displaySeperator(1);
+                    inventoryScreen.menuElement("You do not have any assets!", "", 2);
+                    inventoryScreen.displaySeperator(1);
+                }
+
+                //assets
+                if ((playerCharacter.getPlayerBooleanInfo(15) || playerCharacter.getPlayerBooleanInfo(16) || playerCharacter.getPlayerBooleanInfo(17)) || houseFieldEnabled || carFieldEnabled || heirloomFieldEnabled){
+                    inventoryScreen.displaySeperator(1);
+                    inventoryScreen.menuElement("----Assets----", "", 2);
+                }
+                if (playerCharacter.getPlayerBooleanInfo(15) || houseFieldEnabled){
+                    for (int n = 0;n < playerCharacter.getInventory().getHouseList().size();n++){
+                        inventoryScreen.menuElement(("House: " + playerCharacter.getInventory().getHouseList().get(n)), ", Value: " + (String.format("%.2f", playerCharacter.getInventory().getHomeValueList().get(n))), 2);
+                    }
+                }
+                if (playerCharacter.getPlayerBooleanInfo(16) || carFieldEnabled){
+                    for (int n = 0;n < playerCharacter.getInventory().getCarsList().size();n++){
+                        inventoryScreen.menuElement(("Car: " + playerCharacter.getInventory().getCarsList().get(n)), ", Value: " + (String.format("%.2f", playerCharacter.getInventory().getCarValueList().get(n))), 2);
+                    }
+                }
+                if (playerCharacter.getPlayerBooleanInfo(17) || heirloomFieldEnabled){
+                    for (int n = 0; n < playerCharacter.getInventory().getHeirloomsList().size();n++){
+                        inventoryScreen.menuElement(("Heirloom: " + playerCharacter.getInventory().getHeirloomsList().get(n)),(", Value: " + (String.format("%.2f", playerCharacter.getInventory().getHeirloomValueList().get(n)))), n);
+                    }
+                }
+
+                if ((playerCharacter.getPlayerBooleanInfo(15) || playerCharacter.getPlayerBooleanInfo(16) || playerCharacter.getPlayerBooleanInfo(17)) || houseFieldEnabled || carFieldEnabled || heirloomFieldEnabled){
+                    inventoryScreen.displaySeperator(1);
+                }
+
+                //achievements
+                if (playerCharacter.getPlayerBooleanInfo(18)){
+                    inventoryScreen.menuElement("----Achievements----", "", 2);
+                    for (int n = 0;n < playerCharacter.getInventory().getAwardsList().size();n++){
+                        String achievementString = playerCharacter.getInventory().getAwardsList().get(n);
+                        switch(achievementString){
+                            case "lostFriend":
+                                inventoryScreen.menuElement("You lost a friend.", "", 2);
+                                break;
+                            case "gotInjured":
+                                inventoryScreen.menuElement("You got an injury.", "", 2);
+                                break;
+                            case "gotCancer":
+                                inventoryScreen.menuElement("You got cancer.", "", 2);
+                                break;
+                            case "remedialSchool":
+                                inventoryScreen.menuElement("You had to go to remedial school.", "", 2);
+                                break;
+                            case "badDate":
+                                inventoryScreen.menuElement("You had a bad date.", "", 2);
+                                break;
+                            case "greatDate":
+                                inventoryScreen.menuElement("You had a great date.", "", 2);
+                                break;
+                            case "wasDepressed":
+                                inventoryScreen.menuElement("You became depressed", "", 2);
+                                break;
+                            case "wonMinigame":
+                                inventoryScreen.menuElement("You won a minigame.", "", 2);
+                                break;
+                            case "wonLottery":
+                                inventoryScreen.menuElement("You won the lottery!!!", "", 2);
+                                break;
+                            case "finishedDemo":
+                                inventoryScreen.menuElement("You reached the end of the demo.", "", 2);
+                                break;
+                            case "debugAchievement":
+                                inventoryScreen.menuElement("You ran the game in debug mode.", "", 2);
+                                break;
+                            default:
+                                inventoryScreen.menuElement("You got an unknown achievement.", "", 2);
+                                break;
+                        }
+                    }
+                    inventoryScreen.displaySeperator(1);
+                }
+                
+
+                if (isDebug){
+                    //debugging stuff
+                    inventoryScreen.menuElement("####DEBUG Info####", "", 2);
+                    inventoryScreen.menuElement("Demo Version: ", gameIsDemo, 2);
+                    inventoryScreen.menuElement("Version: ", dialogModule.getVersionString(), 2);
+                    inventoryScreen.menuElement("Development Milestone: ", dialogModule.getDevelopmentMilestoneString(), 2);
+                    inventoryScreen.menuElement("Current Operating System: ", System.getProperty("os.name"), 2);
+                    inventoryScreen.displaySeperator(1);
                 }
 
         }
