@@ -1,5 +1,5 @@
 //MiniLife gameplay program file
-//version 1.1-rc2 (aug 4, 2026)
+//version 1.2-rc3 (aug 4, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
 //this project uses some code licensed under the Apache License version 2.0. This code includes the Apache Commons Lang library. see the "apache-LICENSE.txt" file for license terms.
 //This project uses some code licensed under the BSD 3-clause license. This code includes the Jline3 library. see "jline-license.txt" for license terms.
@@ -226,7 +226,7 @@ public class MiniLifeGameplay{
                 //do nothing
             }
 
-            int randomPrize = ThreadLocalRandom.current().nextInt(0, 5);
+            int randomPrize = ThreadLocalRandom.current().nextInt(1, 5);
             if(minigameWasWon){
                 switch(randomPrize){
                     case 1:
@@ -510,7 +510,7 @@ public class MiniLifeGameplay{
                 //do nothing
             }
 
-            int randomPrize = ThreadLocalRandom.current().nextInt(0, 5);
+            int randomPrize = ThreadLocalRandom.current().nextInt(1, 5);
             if(minigame1WasWon){
                 switch(randomPrize){
                     case 1:
@@ -1255,7 +1255,7 @@ public class MiniLifeGameplay{
                 //do nothing
             }
 
-            int randomPrize = ThreadLocalRandom.current().nextInt(0, 5);
+            int randomPrize = ThreadLocalRandom.current().nextInt(1, 5);
             if(minigame1WasWon){
                 switch(randomPrize){
                     case 1:
@@ -2510,7 +2510,7 @@ public class MiniLifeGameplay{
                 //do nothing
             }
 
-            int randomPrize = ThreadLocalRandom.current().nextInt(0, 5);
+            int randomPrize = ThreadLocalRandom.current().nextInt(1, 5);
             if(minigame1WasWon){
                 switch(randomPrize){
                     case 1:
