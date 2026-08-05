@@ -7,6 +7,7 @@
 
 package com.minilifeteam;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class MiniLife_rpsGame {
@@ -16,7 +17,19 @@ public class MiniLife_rpsGame {
 		int computer = (int)(Math.random() * 3);
 	
 		System.out.println("Input 0 for Rock, 1 for Paper, or 2 for Scissors:");
-		int user = input.nextInt();
+		int user = 0;
+		Boolean runAnswer = true;
+		while (runAnswer){
+			try {
+				user = input.nextInt();
+				runAnswer = false;
+			} catch(InputMismatchException e){
+				System.out.println("Error! Unknown input!");
+				input.next();
+				user = 0;
+				runAnswer = true;
+			}
+		}
 
 		String[] choices = { "Rock", "Paper", "Scissors"};
 		

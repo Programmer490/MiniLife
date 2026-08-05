@@ -1,5 +1,5 @@
 //MiniLife inventory program file
-//version 0.1-InDev3 (Jul 20, 2026)
+//version 1.0-indev4 (Aug 4, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
 //this project uses some code licensed under the Apache License version 2.0. This code includes the Apache Commons Lang library. This license is compatible with GPLv3.
 //No Artificial Intelligence tools were used in the creation of this source code file.

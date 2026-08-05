@@ -8,6 +8,7 @@
 package com.minilifeteam;
 
 import java.util.Scanner; 
+import java.util.InputMismatchException;
 
 public class mathgame {
 	
@@ -25,7 +26,19 @@ public class mathgame {
 		System.out.print("What is " + num1 + " + " + num2 + " ? ");
 		
 		//Gets players answer
-		int playerAnswer = input.nextInt();
+		int playerAnswer = 0;
+		Boolean runAnswer = true;
+		while (runAnswer){
+			try {
+				playerAnswer = input.nextInt();
+				runAnswer = false;
+			} catch(InputMismatchException e){
+				System.out.println("Error! Unknown input!");
+				input.next();
+				playerAnswer = 0;
+				runAnswer = true;
+			}
+		}
 		
 		if (playerAnswer == answer) {
 			System.out.println("You are correct!");

@@ -2186,6 +2186,19 @@ public class MiniLifeGameplay{
             gameMenu.menuElement("Years played: ", playerCharacter.getYearsPlayed(), 2);
             gameMenu.menuElement("Current school year: ", playerCharacter.getSchool().gradeGet(), 2);
             gameMenu.displaySeperator(1);
+
+            if (playerCharacter.getPlayerBooleanInfo(18)){
+                if (playerCharacter.getInventory().getAwardsList().contains("finishedDemo")){
+                    playerCharacter.addMoney(playerCharacter.getJob().getSalary());
+                    playerCharacter.getJob().advanceYear();
+
+                    errorMenu.displaySeperator(1);
+                    errorMenu.menuElement("You have finished the demo. You may continue playing.", "", 2);
+                    errorMenu.menuElement("Your salary has been awarded.", "", 2);
+                    errorMenu.menuElement("Years worked at job: ", playerCharacter.getJob().yearsworkedGet(), 2);
+                    errorMenu.displaySeperator(1);
+                }
+            }
     }
     
 
@@ -2408,6 +2421,7 @@ public class MiniLifeGameplay{
         errorMenu.displaySeperator(1);
 
 
+        //assign the player a random job, set all the flags for having a job (and for finishing the demo)
         MiniLifeJob demoJob = new MiniLifeJob();
         String demoJobName = dialogModule.getLowJobNameWithID(ThreadLocalRandom.current().nextInt(0, 73 + 1));
         String demoCompanyName = dialogModule.getCompanyNameWithID(ThreadLocalRandom.current().nextInt(0, 55 + 1));
@@ -2415,8 +2429,11 @@ public class MiniLifeGameplay{
         demoJob.createJob(demoJobName, demoCompanyName, demoSalary, 0);
 
         playerCharacter.setPlayerBooleanInfo(18, true);
+        playerCharacter.setPlayerBooleanInfo(1, true);
         playerCharacter.getInventory().appendToAwardsList("gotJob");
         playerCharacter.getInventory().appendToAwardsList("finishedDemo");
+
+        playerCharacter.setJob(demoJob);
 
 
 

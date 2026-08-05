@@ -51,6 +51,7 @@ public class MiniLifePlayer {
 	private Boolean playerOwnsCar = false;
 	private Boolean playerHasHeirloom = false;
 	private Boolean playerHasAchievement = false;
+	private Boolean playerIsDead = false;
 
 	
 
@@ -88,6 +89,7 @@ public class MiniLifePlayer {
 	 * @param boolID_16 - playerOwnsCar	 
 	 * @param boolID_17 - playerHasHeirloom
 	 * @param boolID_18 - playerHasAchievement
+	 * @param boolID_19 - playerIsDead
 	 * @param boolID - pass one of the above numbers as the argument for this function to get the status of the named boolean.
 	 * @return Boolean status of the specified boolID
 	 */
@@ -130,6 +132,8 @@ public class MiniLifePlayer {
 				return playerHasHeirloom;
 			case 18:
 				return playerHasAchievement;
+			case 19:
+				return playerIsDead;
 			default:
 				System.out.println("###Error! Logic Error occured in getPlayerBooleanInfo. Result returned false as failsafe.###");
 				return false;
@@ -157,6 +161,7 @@ public class MiniLifePlayer {
 	 * @param boolID_16 - playerOwnsCar
 	 * @param boolID_17 - playerHasHeirloom	 
 	 * @param boolID_18 - playerHasAchievement
+	 * @param boolID_19 - playerIsDead
 	 * @param newStatus - Boolean to set as the new status for the specified boolID
 	 */
 
@@ -215,6 +220,9 @@ public class MiniLifePlayer {
 				break;
 			case 18:
 				this.playerHasAchievement = newStatus;
+				break;
+			case 19:
+				this.playerIsDead = newStatus;
 				break;
 			default:
 				System.out.println("###Error! Logic Error occured in setPlayerBooleanInfo. Unable to set specified boolID.###");

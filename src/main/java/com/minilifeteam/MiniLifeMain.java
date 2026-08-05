@@ -1,5 +1,5 @@
 //MiniLife main program file
-//version 0.45-InDev4 (Jul 22, 2026)
+//version 0.50-rc1 (Aug 4, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
 //this project uses some code licensed under the Apache License version 2.0. This code includes the Apache Commons Lang library. see the "apache-LICENSE.txt" file for license terms.
 //This project uses some code licensed under the BSD 3-clause license. This code includes the Jline3 library. see "jline-license.txt" for license terms.
@@ -164,6 +164,13 @@ public class MiniLifeMain {
 
         public static void displaySettingsMenu(Scanner input, MiniLifeDialog dialogModule, Boolean isDebug, MiniLifePlayer playerCharacter, MiniLifeMenu gameMenu, MiniLifeMenu gameMenuHeader, int menu_width, Terminal sysTerm) throws Exception{
             while (doRunSettingsMenu){
+                //setup new menus
+                MiniLifeMenu transMenu = new MiniLifeMenu();
+                transMenu.createMenu("\u26A7", "\u26A7", "\u25AC", "\u258B", menu_width, false, sysTerm);
+                
+                MiniLifeMenu loveMenu = new MiniLifeMenu();
+                loveMenu.createMenu("\u2765", "\u2765", "~", "\u258B", menu_width, false, sysTerm);
+
                 //header
                 gameMenuHeader.displaySeperator(1);
                 gameMenuHeader.menuElement("---Settings Menu---", "", 2);
@@ -201,8 +208,6 @@ public class MiniLifeMain {
                             doRunSettingsMenuChooser = true;
                             continue;
                         }
-
-
                     }catch (InputMismatchException error){
                         settingsMenuChoice = "";
                         input.next();
@@ -210,6 +215,228 @@ public class MiniLifeMain {
                         continue;
                     }
                 }
+
+                switch (menuChoiceChar[0]){
+                    case '1':
+                        //view credits
+                        loveMenu.displaySeperator(1);
+                        loveMenu.menuElement("---CREDITS---", "", 2);
+                        loveMenu.menuElement("Primary Developer (Main, Dialog, Gameplay, Menu, Inventory, Debugging): ", "Celeste Manguso", 2);
+                        loveMenu.menuElement("Secondary Developer (Player, NPC, Friend, School, Job): ", "Celeste Manguso", 2);
+                        loveMenu.menuElement("Primary Developer (Player, NPC, Friend, School, Job, RPS Minigame): ", "Chelsea Dal Parsons", 2);
+                        loveMenu.menuElement("Primary Developer (CoinFlip Minigame, Math Game Minigame): ", "Monse Olvera", 2);
+                        loveMenu.menuElement("Planning: ", "Celeste Manguso, Chelsea Dal Parsons", 2);
+                        loveMenu.menuElement("Communication: ", "Chelsea Dal Parsons, Celeste Manguso", 2);
+                        loveMenu.menuElement("---LICENSES---", "", 2);
+                        loveMenu.menuElement("This software is licensed under the GNU GPL v3 Open Source license.", "", 2);
+                        loveMenu.menuElement("--Please see the LICENSE file on the GitHub repository for more information.", "", 2);
+                        loveMenu.menuElement("Some components within this program are licensed under the Apache License v2.0", "", 2);
+                        loveMenu.menuElement("--Please see the apache-LICENSE file on the GitHub repository for more information.", "", 2);
+                        loveMenu.menuElement("Some components within this program are licensed under the BSD 3-clause license.", "", 2);
+                        loveMenu.menuElement("--Please see the jline-LICENSE file on the GitHub repository for more information.", "", 2);
+                        loveMenu.menuElement("---The End---", "", 2);
+                        loveMenu.menuElement("Thank you for playing our game!", "", 2);
+                        loveMenu.menuElement("Made with <3 in Florida by The MiniLife Team.", "", 2);
+                        break;
+                    case '2':
+                        //change gender
+                        String newGender;
+                        char[] newGenderChar;
+
+                        //ask the player to pick a new gender
+                        transMenu.displaySeperator(1);
+                        transMenu.menuElement("Current Gender: ", playerCharacter.getPlayerGender(), 2);
+                        transMenu.menuElement("--Pick a new gender--", "", 2);
+                        transMenu.menuElement("1: Female", "", 2);
+                        transMenu.menuElement("2: Male", "", 2);
+                        transMenu.menuElement("3: Non-Binary", "", 2);
+                        transMenu.displaySeperator(1);
+
+                        newGender = input.next().trim().toLowerCase();
+                        newGenderChar = newGender.toCharArray();
+
+                        switch (newGenderChar[0]){
+                            case '1':
+                                if (playerCharacter.getPlayerGender() == "Female"){
+                                    transMenu.displaySeperator(1);
+                                    transMenu.menuElement("You chose to remain female.", "", 2);
+                                    transMenu.displaySeperator(1);
+                                }else{
+                                    //reroll the player's name
+                                    String newPlayerFirstName = dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1));
+
+                                    //update the player's gender, name, give them the transgender achievement, etc.
+                                    playerCharacter.setGender(0);
+                                    playerCharacter.changeFirstName(newPlayerFirstName);
+                                    playerCharacter.getInventory().appendToAwardsList("playerTransitioned");
+                                    playerCharacter.setPlayerBooleanInfo(18, true);
+
+                                    transMenu.displaySeperator(1);
+                                    transMenu.menuElement("You successfully transitioned!", "", 2);
+                                    transMenu.menuElement("Your name is now: ", (playerCharacter.getFirstName() + " " + playerCharacter.getLastName()), 2);
+                                    transMenu.displaySeperator(1);
+                                }
+                                break;
+
+                            case '2':
+                                if (playerCharacter.getPlayerGender() == "Male"){
+                                    transMenu.displaySeperator(1);
+                                    transMenu.menuElement("You chose to remain male.", "", 2);
+                                    transMenu.displaySeperator(1);
+                                }else{
+                                    //reroll the player's name
+                                    String newPlayerFirstName = dialogModule.getMaleNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1));
+
+                                    //update the player's gender, name, give them the transgender achievement, etc.
+                                    playerCharacter.setGender(1);
+                                    playerCharacter.changeFirstName(newPlayerFirstName);
+                                    playerCharacter.getInventory().appendToAwardsList("playerTransitioned");
+                                    playerCharacter.setPlayerBooleanInfo(18, true);
+
+                                    transMenu.displaySeperator(1);
+                                    transMenu.menuElement("You successfully transitioned!", "", 2);
+                                    transMenu.menuElement("Your name is now: ", (playerCharacter.getFirstName() + " " + playerCharacter.getLastName()), 2);
+                                    transMenu.displaySeperator(1);
+                                }
+                                break;
+
+                            case '3':
+                                if (playerCharacter.getPlayerGender() == "Non-Binary"){
+                                    transMenu.displaySeperator(1);
+                                    transMenu.menuElement("You chose to remain non-binary.", "", 2);
+                                    transMenu.displaySeperator(1);
+                                }else{
+                                    //reroll the player's name
+                                    String newPlayerFirstName = dialogModule.getNBNameWithID(ThreadLocalRandom.current().nextInt(0, 78 + 1));
+
+                                    //update the player's gender, name, give them the transgender achievement, etc.
+                                    playerCharacter.setGender(2);
+                                    playerCharacter.changeFirstName(newPlayerFirstName);
+                                    playerCharacter.getInventory().appendToAwardsList("playerTransitioned");
+                                    playerCharacter.setPlayerBooleanInfo(18, true);
+
+                                    transMenu.displaySeperator(1);
+                                    transMenu.menuElement("You successfully transitioned!", "", 2);
+                                    transMenu.menuElement("Your name is now: ", (playerCharacter.getFirstName() + " " + playerCharacter.getLastName()), 2);
+                                    transMenu.displaySeperator(1);
+                                }
+                                break;
+                        }
+                        break;
+                    case '3':
+                        //change name
+                        gameMenu.displaySeperator(1);
+                        gameMenu.menuElement("Would you like to change your name?", "", 2);
+                        gameMenu.menuElement("1: Change both first and last", "", 2);
+                        gameMenu.menuElement("2: Change only first", "", 2);
+                        gameMenu.menuElement("3: Change only last", "", 2);
+                        gameMenu.menuElement("0: Exit this menu", "", 2);
+                        gameMenu.displaySeperator(1);
+
+                        String doChangeNameInput;
+                        char[] doChangeNameChar;
+
+                        doChangeNameInput = input.next().trim().toLowerCase();
+                        doChangeNameChar = doChangeNameInput.toCharArray();
+
+                        switch (doChangeNameChar[0]){
+                            case '1':
+                                //reroll player name
+                                if (playerCharacter.getPlayerGender() == "Female"){
+                                    String newPlayerFirstName = dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1));
+                                    String newPlayerLastName = dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1));
+                                    playerCharacter.changeFirstName(newPlayerFirstName);
+                                    playerCharacter.changeLastName(newPlayerLastName);
+
+                                    gameMenu.displaySeperator(1);
+                                    gameMenu.menuElement("Your new name is: ", playerCharacter.getFullName(), 2);
+                                    gameMenu.displaySeperator(1);
+                                }else if (playerCharacter.getPlayerGender() == "Male"){
+                                    String newPlayerFirstName = dialogModule.getMaleNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1));
+                                    String newPlayerLastName = dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1));
+                                    playerCharacter.changeFirstName(newPlayerFirstName);
+                                    playerCharacter.changeLastName(newPlayerLastName);
+
+                                    gameMenu.displaySeperator(1);
+                                    gameMenu.menuElement("Your new name is: ", playerCharacter.getFullName(), 2);
+                                    gameMenu.displaySeperator(1);
+                                }else{
+                                    String newPlayerFirstName = dialogModule.getNBNameWithID(ThreadLocalRandom.current().nextInt(0, 78 + 1));
+                                    String newPlayerLastName = dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1));
+                                    playerCharacter.changeFirstName(newPlayerFirstName);
+                                    playerCharacter.changeLastName(newPlayerLastName);
+
+                                    gameMenu.displaySeperator(1);
+                                    gameMenu.menuElement("Your new name is: ", playerCharacter.getFullName(), 2);
+                                    gameMenu.displaySeperator(1);
+                                }
+                                break;
+                            case '2':
+                                //reroll player name
+                                if (playerCharacter.getPlayerGender() == "Female"){
+                                    String newPlayerFirstName = dialogModule.getFemaleNameWithID(ThreadLocalRandom.current().nextInt(0, 193 + 1));
+                                    playerCharacter.changeFirstName(newPlayerFirstName);
+
+                                    gameMenu.displaySeperator(1);
+                                    gameMenu.menuElement("Your new name is: ", playerCharacter.getFullName(), 2);
+                                    gameMenu.displaySeperator(1);
+                                }else if (playerCharacter.getPlayerGender() == "Male"){
+                                    String newPlayerFirstName = dialogModule.getMaleNameWithID(ThreadLocalRandom.current().nextInt(0, 227 + 1));
+                                    playerCharacter.changeFirstName(newPlayerFirstName);
+                                    
+
+                                    gameMenu.displaySeperator(1);
+                                    gameMenu.menuElement("Your new name is: ", playerCharacter.getFullName(), 2);
+                                    gameMenu.displaySeperator(1);
+                                }else{
+                                    String newPlayerFirstName = dialogModule.getNBNameWithID(ThreadLocalRandom.current().nextInt(0, 78 + 1));
+                                    playerCharacter.changeFirstName(newPlayerFirstName);
+
+                                    gameMenu.displaySeperator(1);
+                                    gameMenu.menuElement("Your new name is: ", playerCharacter.getFullName(), 2);
+                                    gameMenu.displaySeperator(1);
+                                }
+                                break;
+                            case '3':
+                                //reroll player name
+                                if (playerCharacter.getPlayerGender() == "Female"){
+                                    String newPlayerLastName = dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1));
+                                    playerCharacter.changeLastName(newPlayerLastName);
+
+                                    gameMenu.displaySeperator(1);
+                                    gameMenu.menuElement("Your new name is: ", playerCharacter.getFullName(), 2);
+                                    gameMenu.displaySeperator(1);
+                                }else if (playerCharacter.getPlayerGender() == "Male"){
+                                    String newPlayerLastName = dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1));
+                                    playerCharacter.changeLastName(newPlayerLastName);
+
+                                    gameMenu.displaySeperator(1);
+                                    gameMenu.menuElement("Your new name is: ", playerCharacter.getFullName(), 2);
+                                    gameMenu.displaySeperator(1);
+                                }else{
+                                    String newPlayerLastName = dialogModule.getLastNameWithID(ThreadLocalRandom.current().nextInt(0, 161 + 1));
+                                    playerCharacter.changeLastName(newPlayerLastName);
+
+                                    gameMenu.displaySeperator(1);
+                                    gameMenu.menuElement("Your new name is: ", playerCharacter.getFullName(), 2);
+                                    gameMenu.displaySeperator(1);
+                                }
+                                break;
+                            case '0':
+                                break;
+                        }
+
+                        break;
+                    case '0':
+                        //exit
+                        doRunSettingsMenu = false;
+                        break;
+                    default:
+                        logger.info("Error! Non-Fatal - Unknown input in settingsMenu. looping.");
+                        break;
+                }
+
+
             }
         }
 
@@ -1314,6 +1541,9 @@ public class MiniLifeMain {
                 MiniLifeMenu gameMenu = new MiniLifeMenu();
                 gameMenu.createMenu("\u25CF", "\u25CF", "\u25AC", "\u258B", menu_width, false, sysTerm);
 
+                MiniLifeMenu errorMenu = new MiniLifeMenu();
+                errorMenu.createMenu("\u26CC", "\u26CC", "-", "\u258B", menu_width, false, sysTerm);
+
                 //header
                 gameMenuHeader.displaySeperator(1);
                 gameMenuHeader.menuElement("---Game Menu---", "", 2);
@@ -1419,52 +1649,85 @@ public class MiniLifeMain {
                         //choice 4 code here
                         logger.info("##DEBUG## - game menu - choice 4 selected - advance year");
 
-                        switch(playerCharacter.getAge()){
-                            //call gameplay loop 1 for ages 0-5 (de facto 1-5)
-                            case 0, 1, 2, 3, 4:
-                                //create a new game instance
-                                List<Boolean> debugFlagsGPL1 = new ArrayList<Boolean>();
+                        int playerAge = playerCharacter.getAge();
 
-                                debugFlagsGPL1.add(gameIsDemo); //demo indicator
-                                debugFlagsGPL1.add(false);//minigame debug mode
-                                debugFlagsGPL1.add(false);//minigame force enable
-                                debugFlagsGPL1.add(false); //lottery win force enable
-                                debugFlagsGPL1.add(false); //force player injury
-                                debugFlagsGPL1.add(false); //force player cancer
-                                debugFlagsGPL1.add(false); //unused in this section
-                                debugFlagsGPL1.add(false); //unused in this section
-                                debugFlagsGPL1.add(false); //unused in this section
+                        if (playerAge <= 4){
+                            //create a new game instance
+                            List<Boolean> debugFlagsGPL1 = new ArrayList<Boolean>();
+                            debugFlagsGPL1.add(gameIsDemo); //demo indicator
+                            debugFlagsGPL1.add(false);//minigame debug mode
+                            debugFlagsGPL1.add(false);//minigame force enable
+                            debugFlagsGPL1.add(false); //lottery win force enable
+                            debugFlagsGPL1.add(false); //force player injury
+                            debugFlagsGPL1.add(false); //force player cancer
+                            debugFlagsGPL1.add(false); //unused in this section
+                            debugFlagsGPL1.add(false); //unused in this section
+                            debugFlagsGPL1.add(false); //unused in this section
 
-                                MiniLifeGameplay gameplayLoop1 = new MiniLifeGameplay();
-                                gameplayLoop1.initGameModule(playerCharacter, dialogModule, input, logger, isDebug, debugFlagsGPL1);
+                            MiniLifeGameplay gameplayLoop1 = new MiniLifeGameplay();
+                            gameplayLoop1.initGameModule(playerCharacter, dialogModule, input, logger, isDebug, debugFlagsGPL1);
 
-                                //call the gameplay loop 1
-                                gameplayLoop1.callGameWithID(1, false, sysTerm);
-                                break;
+                            //call the gameplay loop 1
+                              gameplayLoop1.callGameWithID(1, false, sysTerm);
+                        }else if (playerAge > 4 && playerAge <= 10){
+                            //create a new game instance
+                            List<Boolean> debugFlagsGPL2 = new ArrayList<Boolean>();
 
-                            case 5, 6, 7, 8, 9, 10:
-                                //create a new game instance
-                                List<Boolean> debugFlagsGPL2 = new ArrayList<Boolean>();
+                            debugFlagsGPL2.add(gameIsDemo); //demo indicator
+                            debugFlagsGPL2.add(false);//minigame debug mode
+                            debugFlagsGPL2.add(false);//minigame force enable
+                            debugFlagsGPL2.add(false); //lottery win force enable
+                            debugFlagsGPL2.add(false); //force player injury
+                            debugFlagsGPL2.add(false); //force player cancer
+                            debugFlagsGPL2.add(false); //heirloom force enable
+                            debugFlagsGPL2.add(false); //new friend force enable
+                            debugFlagsGPL2.add(false); //trivia game force enable
 
-                                debugFlagsGPL2.add(gameIsDemo); //demo indicator
-                                debugFlagsGPL2.add(false);//minigame debug mode
-                                debugFlagsGPL2.add(false);//minigame force enable
-                                debugFlagsGPL2.add(false); //lottery win force enable
-                                debugFlagsGPL2.add(false); //force player injury
-                                debugFlagsGPL2.add(false); //force player cancer
-                                debugFlagsGPL2.add(false); //heirloom force enable
-                                debugFlagsGPL2.add(false); //new friend force enable
-                                debugFlagsGPL2.add(false); //trivia game force enable
+                            MiniLifeGameplay gameplayLoop2 = new MiniLifeGameplay();
+                            gameplayLoop2.initGameModule(playerCharacter, dialogModule, input, logger, isDebug, debugFlagsGPL2);
 
-                                MiniLifeGameplay gameplayLoop2 = new MiniLifeGameplay();
-                                gameplayLoop2.initGameModule(playerCharacter, dialogModule, input, logger, isDebug, debugFlagsGPL2);
+                            //call the gameplay loop 2
+                              gameplayLoop2.callGameWithID(2, false, sysTerm);
+                        }else if (playerAge > 10 && playerAge <= 13){
+                            List<Boolean> debugFlagsGPL3 = new ArrayList<Boolean>();
 
-                                //call the gameplay loop 2
-                                gameplayLoop2.callGameWithID(2, false, sysTerm);
-                                break;
+                            debugFlagsGPL3.add(gameIsDemo); //demo indicator
+                            debugFlagsGPL3.add(false);//minigame debug mode
+                            debugFlagsGPL3.add(false);//minigame force enable
+                            debugFlagsGPL3.add(false); //lottery win force enable
+                            debugFlagsGPL3.add(false); //force player injury
+                            debugFlagsGPL3.add(false); //force player cancer
+                            debugFlagsGPL3.add(false); //heirloom force enable
+                            debugFlagsGPL3.add(false); //new friend force enable
+                            debugFlagsGPL3.add(false); //trivia game force enable
 
-                            case 11, 12, 13:
-                                //create a new game instance
+                            MiniLifeGameplay gameplayLoop3 = new MiniLifeGameplay();
+                            gameplayLoop3.initGameModule(playerCharacter, dialogModule, input, logger, isDebug, debugFlagsGPL3);
+
+                            //call the gameplay loop 3
+                            gameplayLoop3.callGameWithID(3, false, sysTerm);
+                        }else if (playerAge == 14){
+                            //create a new game instance
+                            List<Boolean> debugFlagsDemoEnd = new ArrayList<Boolean>();
+
+                            debugFlagsDemoEnd.add(gameIsDemo); //demo indicator
+                            debugFlagsDemoEnd.add(false);//minigame debug mode
+                            debugFlagsDemoEnd.add(false);//minigame force enable
+                            debugFlagsDemoEnd.add(false); //lottery win force enable
+                            debugFlagsDemoEnd.add(false); //force player injury
+                            debugFlagsDemoEnd.add(false); //force player cancer
+                            debugFlagsDemoEnd.add(false); //heirloom force enable
+                            debugFlagsDemoEnd.add(false); //new friend force enable
+                            debugFlagsDemoEnd.add(false); //trivia game force enable
+
+                            MiniLifeGameplay gameplayLoopDemoEnd = new MiniLifeGameplay();
+                            gameplayLoopDemoEnd.initGameModule(playerCharacter, dialogModule, input, logger, isDebug, debugFlagsDemoEnd);
+
+                            //call the gameplay loop 3
+                            gameplayLoopDemoEnd.callGameWithID(99, false, sysTerm);
+                        }else if (playerAge > 14 && playerAge <= 74){
+                            //DEMO ONLY
+                            if (gameIsDemo){
                                 List<Boolean> debugFlagsGPL3 = new ArrayList<Boolean>();
 
                                 debugFlagsGPL3.add(gameIsDemo); //demo indicator
@@ -1482,17 +1745,38 @@ public class MiniLifeMain {
 
                                 //call the gameplay loop 3
                                 gameplayLoop3.callGameWithID(3, false, sysTerm);
-                                break;
-
+                            }
+                        }else if (playerAge >= 75){
+                            if (gameIsDemo){
+                                errorMenu.displaySeperator(1);
+                                errorMenu.menuElement("You have reached the end of the demo.", "", 2);
+                                errorMenu.menuElement("You may no longer advance in age.", "", 2);
+                                errorMenu.menuElement("Thank you for playing!", "", 2);
+                                errorMenu.menuElement("ありがとうございます.", "", 2);
+                                errorMenu.menuElement("----DEMO END----", "", 2);
+                                errorMenu.displaySeperator(1);
+                            }
                         }
+
+
                         break;
                     case '5':
                         //choice 5 code here
                         logger.info("##DEBUG## - game menu - choice 5 selected - Look for Jobs");
+                        if (gameIsDemo){
+                            errorMenu.displaySeperator(1);
+                            errorMenu.menuElement("This function is not available in the demo version.", "", 2);
+                            errorMenu.displaySeperator(1);
+                        }
                         break;
                     case '6':
                         //choice 6 code here
                         logger.info("##DEBUG## - game menu - choice 6 selected - doctor's office menu");
+                        if (gameIsDemo){
+                            errorMenu.displaySeperator(1);
+                            errorMenu.menuElement("This function is not available in the demo version.", "", 2);
+                            errorMenu.displaySeperator(1);
+                        }
                         break;
                     case '7':
                         logger.info("##DEBUG## - game menu - choice 7 selected - settings menu");
@@ -1597,7 +1881,8 @@ public class MiniLifeMain {
                 //job
                 if (playerCharacter.doesPlayerHaveJob() || jobFieldEnabled){
                     playerInfoScreen.menuElement("----Job Info----", "", 2);
-                    playerInfoScreen.menuElement("Salary: ", playerCharacter.getJob().getSalary(), 2);
+                    playerInfoScreen.menuElement("Salary: ", (String.format("%.2f", playerCharacter.getJob().getSalary())), 2);
+                    playerInfoScreen.menuElement("Job Title: ", playerCharacter.getJob().getJobTitle(), 2);
                     playerInfoScreen.menuElement("Employer: ", playerCharacter.getJob().getEmployerName(), 2);
                     playerInfoScreen.displaySeperator(1);
                 }
@@ -1617,7 +1902,7 @@ public class MiniLifeMain {
                 }
                 if (playerCharacter.getPlayerBooleanInfo(17) || heirloomFieldEnabled){
                     for (int n = 0; n < playerCharacter.getInventory().getHeirloomsList().size();n++){
-                        playerInfoScreen.menuElement(("Heirloom: " + playerCharacter.getInventory().getHeirloomsList().get(n)),(", Value: " + (String.format("%.2f", playerCharacter.getInventory().getHeirloomValueList().get(n)))), n);
+                        playerInfoScreen.menuElement(("Heirloom: " + playerCharacter.getInventory().getHeirloomsList().get(n)),(", Value: " + (String.format("%.2f", playerCharacter.getInventory().getHeirloomValueList().get(n)))), 2);
                     }
                 }
 
@@ -2544,6 +2829,9 @@ public class MiniLifeMain {
                                 break;
                             case "debugAchievement":
                                 inventoryScreen.menuElement("You ran the game in debug mode.", "", 2);
+                                break;
+                            case "playerTransitioned":
+                                inventoryScreen.menuElement("You transitioned to another gender.", "", 2);
                                 break;
                             default:
                                 inventoryScreen.menuElement("You got an unknown achievement.", "", 2);
