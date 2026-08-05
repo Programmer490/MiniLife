@@ -1,5 +1,5 @@
 //MiniLife main program file
-//version 0.50-rc1 (Aug 4, 2026)
+//version 0.51-rc2 (Aug 4, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
 //this project uses some code licensed under the Apache License version 2.0. This code includes the Apache Commons Lang library. see the "apache-LICENSE.txt" file for license terms.
 //This project uses some code licensed under the BSD 3-clause license. This code includes the Jline3 library. see "jline-license.txt" for license terms.

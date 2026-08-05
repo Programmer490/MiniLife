@@ -1,5 +1,5 @@
 //MiniLife gameplay program file
-//version 0.1-InDev3 (Jul 20, 2026)
+//version 1.1-rc2 (aug 4, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
 //this project uses some code licensed under the Apache License version 2.0. This code includes the Apache Commons Lang library. see the "apache-LICENSE.txt" file for license terms.
 //This project uses some code licensed under the BSD 3-clause license. This code includes the Jline3 library. see "jline-license.txt" for license terms.
@@ -163,7 +163,7 @@ public class MiniLifeGameplay{
         Boolean minigameShouldBeRun = false;
         Boolean minigameShouldBeRunConclusive = false;
         Boolean minigameWasWon = false;
-        int minigameToRun = ThreadLocalRandom.current().nextInt(0, 4);
+        int minigameToRun = ThreadLocalRandom.current().nextInt(1, 4);
         String minigameName;
 
         //tie minigame logic to the only currently working minigame (for debug)
@@ -446,7 +446,7 @@ public class MiniLifeGameplay{
         Boolean minigame1ShouldBeRun = false;
         Boolean minigame1ShouldBeRunConclusive = false;
         Boolean minigame1WasWon = false;
-        int minigameToRun = ThreadLocalRandom.current().nextInt(0, 4);
+        int minigameToRun = ThreadLocalRandom.current().nextInt(1, 4);
         String minigameName;
 
         //tie minigame logic to the only currently working minigame (for debug)
@@ -795,7 +795,7 @@ public class MiniLifeGameplay{
                 //check if a minigame should be run, also selects which minigame to run
                 Boolean minigame2ShouldBeRun = true;
                 Boolean minigame2ShouldBeRunConclusive = true;
-                int minigameToRun_2 = ThreadLocalRandom.current().nextInt(0, 4);
+                int minigameToRun_2 = ThreadLocalRandom.current().nextInt(1, 4);
                 String minigameName_2;
 
                 //tie minigame logic to the only currently working minigame (for debug)
@@ -1197,7 +1197,7 @@ public class MiniLifeGameplay{
         Boolean minigame1ShouldBeRun = false;
         Boolean minigame1ShouldBeRunConclusive = false;
         Boolean minigame1WasWon = false;
-        int minigameToRun = ThreadLocalRandom.current().nextInt(0, 4);
+        int minigameToRun = ThreadLocalRandom.current().nextInt(1, 4);
         String minigameName;
 
         //odds: 35/100
@@ -1581,7 +1581,7 @@ public class MiniLifeGameplay{
                 //check if a minigame should be run, also selects which minigame to run
                 Boolean minigame2ShouldBeRun = true;
                 minigame2ShouldBeRunConclusive = true;
-                int minigameToRun_2 = ThreadLocalRandom.current().nextInt(0, 4);
+                int minigameToRun_2 = ThreadLocalRandom.current().nextInt(1, 4);
                 String minigameName_2;
 
                 //tie minigame logic to the only currently working minigame (for debug)
@@ -1663,7 +1663,7 @@ public class MiniLifeGameplay{
                     //check if a minigame should be run, also selects which minigame to run
                     Boolean minigame3ShouldBeRun = true;
                     Boolean minigame3ShouldBeRunConclusive = true;
-                    int minigameToRun_3 = ThreadLocalRandom.current().nextInt(0, 4);
+                    int minigameToRun_3 = ThreadLocalRandom.current().nextInt(1, 4);
                     String minigameName_3;
 
                     //ask the player if they would like to play a minigame to recieve a prize
@@ -2452,7 +2452,7 @@ public class MiniLifeGameplay{
         Boolean minigame1ShouldBeRun = false;
         Boolean minigame1ShouldBeRunConclusive = false;
         Boolean minigame1WasWon = false;
-        int minigameToRun = ThreadLocalRandom.current().nextInt(0, 4);
+        int minigameToRun = ThreadLocalRandom.current().nextInt(1, 4);
         String minigameName;
 
         //odds: 35/100
@@ -2836,7 +2836,7 @@ public class MiniLifeGameplay{
                 //check if a minigame should be run, also selects which minigame to run
                 Boolean minigame2ShouldBeRun = true;
                 minigame2ShouldBeRunConclusive = true;
-                int minigameToRun_2 = ThreadLocalRandom.current().nextInt(0, 4);
+                int minigameToRun_2 = ThreadLocalRandom.current().nextInt(1, 4);
                 String minigameName_2;
 
                 //tie minigame logic to the only currently working minigame (for debug)
@@ -2918,7 +2918,7 @@ public class MiniLifeGameplay{
                     //check if a minigame should be run, also selects which minigame to run
                     Boolean minigame3ShouldBeRun = true;
                     Boolean minigame3ShouldBeRunConclusive = true;
-                    int minigameToRun_3 = ThreadLocalRandom.current().nextInt(0, 4);
+                    int minigameToRun_3 = ThreadLocalRandom.current().nextInt(1, 4);
                     String minigameName_3;
 
                     //ask the player if they would like to play a minigame to recieve a prize
