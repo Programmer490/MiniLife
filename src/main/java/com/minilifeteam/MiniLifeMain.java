@@ -1,5 +1,5 @@
 //MiniLife main program file
-//version 1.0-Release (Aug 4, 2026)
+//version 1.1-Release (Aug 8, 2026)
 //this file is licensed under the GNU GPL v3 license. see LICENSE file for more information.
 //this project uses some code licensed under the Apache License version 2.0. This code includes the Apache Commons Lang library. see the "apache-LICENSE.txt" file for license terms.
 //This project uses some code licensed under the BSD 3-clause license. This code includes the Jline3 library. see "jline-license.txt" for license terms.
@@ -2368,7 +2368,7 @@ public class MiniLifeMain {
                                     if (playerCharacter.getMoney() >= carPrice1 && !(playerCharacter.getAge() < 18)){
                                         playerCharacter.removeMoney(carPrice1);
                                         playerCharacter.getInventory().appendToCarsList(dialogModule.getCarsWithID(carID1), carPrice1);
-                                        playerCharacter.setPlayerBooleanInfo(15, true);
+                                        playerCharacter.setPlayerBooleanInfo(16, true);
                                         shopMenu.displaySeperator(1);
                                         shopMenu.menuElement("Car Purchased Successfully!", "", 2);
                                         shopMenu.displaySeperator(1);
@@ -2383,7 +2383,7 @@ public class MiniLifeMain {
                                          if (gameIsDemo && playerCharacter.getMoney() >= carPrice1){
                                             playerCharacter.removeMoney(carPrice1);
                                             playerCharacter.getInventory().appendToCarsList(dialogModule.getCarsWithID(carID1), carPrice1);
-                                            playerCharacter.setPlayerBooleanInfo(15, true);
+                                            playerCharacter.setPlayerBooleanInfo(16, true);
                                             shopMenu.displaySeperator(1);
                                             shopMenu.menuElement("Congratulations! In the demo version, you may purchase this car at any age!", "", 2);
                                             shopMenu.menuElement("Car Purchased Successfully.", "", 2);
@@ -2395,7 +2395,7 @@ public class MiniLifeMain {
                                     if (playerCharacter.getMoney() >= carPrice2 && !(playerCharacter.getAge() < 18)){
                                         playerCharacter.removeMoney(carPrice2);
                                         playerCharacter.getInventory().appendToCarsList(dialogModule.getCarsWithID(carID2), carPrice2);
-                                        playerCharacter.setPlayerBooleanInfo(15, true);
+                                        playerCharacter.setPlayerBooleanInfo(16, true);
                                         shopMenu.displaySeperator(1);
                                         shopMenu.menuElement("Car Purchased Successfully!", "", 2);
                                         shopMenu.displaySeperator(1);
@@ -2410,7 +2410,7 @@ public class MiniLifeMain {
                                          if (gameIsDemo && playerCharacter.getMoney() >= carPrice2){
                                             playerCharacter.removeMoney(carPrice2);
                                             playerCharacter.getInventory().appendToCarsList(dialogModule.getCarsWithID(carID2), carPrice2);
-                                            playerCharacter.setPlayerBooleanInfo(15, true);
+                                            playerCharacter.setPlayerBooleanInfo(16, true);
                                             shopMenu.displaySeperator(1);
                                             shopMenu.menuElement("Congratulations! In the demo version, you may purchase this car at any age!", "", 2);
                                             shopMenu.menuElement("Car Purchased Successfully.", "", 2);
@@ -2422,7 +2422,7 @@ public class MiniLifeMain {
                                     if (playerCharacter.getMoney() >= carPrice3 && !(playerCharacter.getAge() < 18)){
                                         playerCharacter.removeMoney(carPrice3);
                                         playerCharacter.getInventory().appendToCarsList(dialogModule.getCarsWithID(carID3), carPrice3);
-                                        playerCharacter.setPlayerBooleanInfo(15, true);
+                                        playerCharacter.setPlayerBooleanInfo(16, true);
                                         shopMenu.displaySeperator(1);
                                         shopMenu.menuElement("Car Purchased Successfully!", "", 2);
                                         shopMenu.displaySeperator(1);
@@ -2437,7 +2437,7 @@ public class MiniLifeMain {
                                          if (gameIsDemo && playerCharacter.getMoney() >= carPrice3){
                                             playerCharacter.removeMoney(menu_width);
                                             playerCharacter.getInventory().appendToCarsList(dialogModule.getCarsWithID(carID3), carPrice3);
-                                            playerCharacter.setPlayerBooleanInfo(15, true);
+                                            playerCharacter.setPlayerBooleanInfo(16, true);
                                             shopMenu.displaySeperator(1);
                                             shopMenu.menuElement("Congratulations! In the demo version, you may purchase this car at any age!", "", 2);
                                             shopMenu.menuElement("Car Purchased Successfully.", "", 2);
